@@ -86,16 +86,6 @@ void QMPQArchivePrivate::getListFile(QStringList listfile)
         }
     }
 
-//    int index = getFileInfo("(listfile)");
-//    if (index != -1)
-//        if (!indexes.contains(index))
-//            indexes.append(index);
-//
-//    index = getFileInfo("(attributes)");
-//    if (index != -1)
-//        if (!indexes.contains(index))
-//            indexes.append(index);
-
     int count = SFileGetFileInfo(mpq, SFILE_INFO_BLOCK_TABLE_SIZE);
     for (int i = 0; i < count; i++)
     {
@@ -103,8 +93,6 @@ void QMPQArchivePrivate::getListFile(QStringList listfile)
             continue;
         getFileInfo((const char *)i, SFILE_OPEN_BY_INDEX);
     }
-//    m_listFile = listfile;
-//    qDebug () << m_listFile;
 }
 
 int QMPQArchivePrivate::getFileInfo(const char * fileName, quint32 searchScope)
@@ -117,12 +105,8 @@ int QMPQArchivePrivate::getFileInfo(const char * fileName, quint32 searchScope)
     if (SFileOpenFileEx(mpq, fileName, searchScope, &hFile))
     {
         hf = (TMPQFile *)hFile;
-        //                char * buffer[100];
-        //                SFileReadFile(hFile, buffer, sizeof(buffer));
         index = SFileGetFileInfo( hFile, SFILE_INFO_BLOCKINDEX);
-        //indexes << index;
-        //                qDebug("listfile name: %s %d", sf.cFileName, index);
-        //                nFiles++;
+
         QString name;
         if (searchScope == SFILE_OPEN_BY_INDEX) {
             char buffer[255];
@@ -163,7 +147,6 @@ QByteArray QMPQArchivePrivate::readFile(const QString &file)
         return QByteArray();
     }
     unsigned size = SFileGetFileSize(filePointer, 0);
-//    qDebug() << "size = " << size;
     char buffer[size];
     result = SFileReadFile(filePointer, buffer, size, 0, 0);
     if (!result) {
@@ -192,15 +175,7 @@ bool QMPQArchivePrivate::addLocalFile(const QString &localFile, const QString &f
 bool QMPQArchivePrivate::remove(const QString &file)
 {
     setUpdateOnClose();
-//    qDebug() << "QMPQArchivePrivate::remove" << file << indexHash.value(file);
-//    void * hFile;
-//    if (SFileOpenFileEx(mpq, file.toLocal8Bit().data(), 0, &hFile))
-//    {
-//        int index = SFileGetFileInfo(hFile, SFILE_INFO_BLOCKINDEX);
-////        qDebug() << index;
-//        SFileCloseFile(hFile);
-//
-//    }
+
     if (!SFileRemoveFile(mpq, (const char *)indexHash.value(file), SFILE_OPEN_BY_INDEX)) {
         m_lastError = GetLastError();
         qWarning()  << "can't remove file: " << m_lastError.errorMessage();
@@ -281,29 +256,16 @@ bool QMPQArchive::openArchive(const QString & name, QByteArray listfile)
 bool QMPQArchive::closeArchive()
 {
     Q_D(QMPQArchive);
-//    if (!mpq) {
-//        return true;
-//    }
-//    qDebug() << "QMPQArchive::closeArchive";
+//    qDebug("QMPQArchive::closeArchive");
     if (d->m_updateOnClose)
         updateListFile();
-    //crashes program TODO: understand why
-    //SFileCompactArchive(mpq);
     d->hash.clear();
     //not to lose root after cleaning
     d->hash.insert("", d->m_rootItem);
     qDeleteAll(d->m_rootItem->childItems);
     d->m_rootItem->childItems.clear();
     bool result = d->closeArchive();
-//    bool result = SFileCloseArchive(mpq);
-//    if (!result) {
-//        m_lastError = GetLastError();
-//        qDebug() << "can't close archive: "<< m_lastError.errorMessage();
-//        return false;
-//    }
-//    mpq = 0;
     d->m_listFile.clear();
-//    qDebug() << "closed";
     return result;
 }
 
@@ -364,18 +326,6 @@ const QString QMPQArchive::getFilePath(const QString & fullPath)
         return fullPath.left(index);
 }
 
-//void QMPQArchive::replace(const QString & name, const QString & path)
-//{
-//    TreeItem * item = hash[name];
-//    bool result = SFileRemoveFile(mpq, (const char *)item->index/*name.toLocal8Bit().data()*/, SFILE_OPEN_BY_INDEX/*0*/);
-//    result = SFileAddFile(mpq,
-//                          path.toLocal8Bit().data(),
-//                          name.toLocal8Bit().data(),
-//                          0);
-//            getFileInfo(name.toLocal8Bit().data(), 0);
-//
-//}
-
 bool QMPQArchive::extract(TreeItem * item, const QString & path)
 {
     Q_D(QMPQArchive);
@@ -399,37 +349,16 @@ bool QMPQArchive::extract(TreeItem * item, const QString & path)
         QString targetPath;
         QString name = item->data(Name).toString();
         QString fullPath = item->data(FullPath).toString();
-//    qDebug() << "QMPQArchive::extract" << name.toLocal8Bit().data() << size;
-//        char buffer[size];
-        //char * buffer;
-//        void * filePointer;
         if (QFileInfo(path).isDir()) {
             targetPath = path + "/" + name;
         } else {
             targetPath = path;
         }
 
-//        bool result = d->extract(item->data(FullPath).toString());
-//        bool result = SFileOpenFileEx(mpq, (const char*)item->index/*fullPath.toLocal8Bit().data()*/, SFILE_OPEN_BY_INDEX/*0*/, &filePointer);
-//        if (!result) {
-//            return false;
-//            m_lastError = GetLastError();
-//            qDebug() << "can't extract file: errcode = " << m_lastError.errorCode() << m_lastError.errorMessage();
-//            return false;
-//        }
-//        size = SFileGetFileSize(filePointer, 0);
-//        qDebug() << "size = " << size;
-//        char buffer [size];
-//        result = SFileReadFile(filePointer, buffer, size, 0, 0);
-//        if (!result) {
-//            m_lastError = GetLastError();
-//            return false;
-//        }
+
         QFile file(targetPath);
         file.open(QIODevice::WriteOnly);
         QByteArray bytes = d->readFile(item->data(FullPath).toString());
-//        QByteArray bytes(buffer, size);
-//        qDebug() << "length = " << bytes.length();
         file.write(bytes);
         file.close();
     }
@@ -456,31 +385,21 @@ QString QMPQArchive::extractToTemp(TreeItem * item)
 bool QMPQArchive::add(const QStringList & files, TreeItem * parent)
 {
     Q_D(QMPQArchive);
-//    qDebug() << "QMPQArchive::add";
+//    qDebug(QMPQArchive::add");
     if (!parent) {
         return false;
     }
 
-    d->m_updateOnClose = true;
+    d->setUpdateOnClose();
 
     if (!parent->isDir()) {
-        return false; //FIX!!! crashes model representation
+        return false;
     } else {
         foreach (QString file, files) {
             QString name = parent->data(FullPath).toString();
             name = (name == "" ? "" : name + "\\") + QFileInfo(file).fileName();
 //            qDebug () << "adding file " << file << " as " << name;
             d->addLocalFile(file, name);
-//            bool result = SFileAddFile(mpq,
-//                                file.toLocal8Bit().data(),
-//                                name.toLocal8Bit().data(),
-//                                0);
-//            if (!result) {
-//                m_lastError = GetLastError();
-//                qDebug() << "can't add file: " << m_lastError.errorMessage();
-//                return false;
-//            }
-
             d->getFileInfo(name.toLocal8Bit().data(), 0);
             d->m_listFile << name;
         }
@@ -491,17 +410,16 @@ bool QMPQArchive::add(const QStringList & files, TreeItem * parent)
 bool QMPQArchive::rename(TreeItem * item, const QString & newName)
 {
     Q_D(QMPQArchive);
-//    qDebug() << "QMPQArchive::rename";
+//    qDebug("QMPQArchive::rename");
     if (!item) {
         return false;
     }
 
-    d->m_updateOnClose = true;
+    d->setUpdateOnClose();
 
     const QString & oldName = item->data(FullPath).toString();
 //    qDebug() << oldName << newName;
 
-//    TreeItem * newItem = hash[newName];
     if (d->hash.contains(newName)) {
         //file or filder already exists
         return false;
@@ -528,16 +446,10 @@ bool QMPQArchive::rename(TreeItem * item, const QString & newName)
         name = newName;
     }
 //    qDebug() << "path: " << path << "name: " << name;
-        //TreeItem * newParent = treeItem(path, true);
         TreeItem * oldParent = item->parent();
         oldParent->deleteChild(item);
-//        item = new TreeItem(newParent);
-//        item = treeItem(newName, true);
         item = mkfile(newName);
-//        oldParent->childItems.removeAll(item);
-//        newParent->appendChild(item);
         d->hash.remove(oldName);
-//        hash.insert(newName, item);
         item->setData(FullPath, newName);
         item->setData(Name, newName.split('\\').last());
         d->m_listFile.removeAll(oldName);
@@ -555,7 +467,7 @@ bool QMPQArchive::remove(TreeItem * item)
     if (!item)
         return false;
 
-    d->m_updateOnClose = true;
+    d->setUpdateOnClose();
 
     TreeItem * parent = item->parent();
     QString name = item->data(FullPath).toString();
@@ -568,12 +480,6 @@ bool QMPQArchive::remove(TreeItem * item)
         bool result = d->remove(item->data(FullPath).toString());
         if (!result)
             return false;
-//        bool result = SFileRemoveFile(mpq, (const char *)item->index/*name.toLocal8Bit().data()*/, SFILE_OPEN_BY_INDEX/*0*/);
-//        if (!result) {
-//            m_lastError = GetLastError();
-//            qDebug()  << "can't remove file: " << m_lastError.errorMessage();
-//            return false;
-//        }
     }
     parent->deleteChild(item);
     d->m_listFile.removeAll(name);
@@ -584,8 +490,6 @@ bool QMPQArchive::remove(TreeItem * item)
 bool QMPQArchive::mkdir(const QString & path, bool createParentDirectories)
 {
     Q_D(QMPQArchive);
-
-    d->m_updateOnClose = true;
 
     if (d->hash.contains(path)) {
         return true;
@@ -635,17 +539,9 @@ void QMPQArchive::updateListFile()
     bool ok = true;
     qDebug("QMPQArchive::updateListFile");
     QString path = QDir::tempPath();
-//    if (!extract("(listfile)", path)) {
-//        qWarning() << "can't extract listfile";
-//        return;
-//    }
     path += "/(listfile)";
     QFile file(path);
-    qDebug() << d->m_listFile;
-//    if (!file.exists()) {
-//        qWarning() << "listfile does not exist";
-//        return;
-//    }
+//    qDebug() << d->m_listFile;
     file.open(QIODevice::WriteOnly);
     foreach (QString name, d->m_listFile) {
         file.write((name + "\r\n").toLocal8Bit());
@@ -654,7 +550,7 @@ void QMPQArchive::updateListFile()
     ok = remove("(listfile)");
     ok = add(QStringList() << path, rootItem());
     if (!ok)
-        qWarning() << "can't ipdate (listfile)";
+        qWarning() << "can't update (listfile)";
 }
 
 bool QMPQArchive::isDir(const QString & dirName)

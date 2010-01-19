@@ -39,7 +39,6 @@ public:
     QByteArray read(const QString & file);
     bool rename(const QString & oldName, const QString & newName);
     bool remove(const QString & name);
-//    void replace(const QString & name, const QString & path);
     bool mkdir(const QString & path, bool createParentDirectories = true);
     qint64 size(const QString &file) const;
 
