@@ -6,6 +6,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
+#include <QtGui/QDesktopServices>
 #include <QDebug>
 
 #include "editormanager.h"
@@ -28,18 +29,12 @@ MainWindow::MainWindow(QWidget *parent) :
     title->setMinimumHeight(qApp->style()->pixelMetric(QStyle::PM_TabBarTabHSpace) - 1);
 
     setUnifiedTitleAndToolBarOnMac(true);
-//    ui->toolBar->addAction(ui->actionBack);
-//    ui->toolBar->addAction(ui->actionForward);
-//    ui->toolBar->addSeparator();
-//    ui->toolBar->addAction(ui->actionUp_one_level);
-//    ui->toolBar->addSeparator();
     addressBar = new QLineEdit(this);
     ui->toolBar->addWidget(addressBar);
     initConnections();
 
     previousWidget = 0;
     newTab();
-    setAddress("");
 }
 
 MainWindow::~MainWindow()
@@ -121,6 +116,7 @@ void MainWindow::newTab()
     EditorView * view = new EditorView(this);
     int index = ui->tabWidget->addTab(view, "");
     ui->tabWidget->setCurrentIndex(index);
+    setAddress(QDesktopServices::storageLocation(QDesktopServices::HomeLocation));
 }
 
 void MainWindow::setAddress(const QString & path)

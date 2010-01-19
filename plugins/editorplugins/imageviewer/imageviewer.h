@@ -1,7 +1,7 @@
 #ifndef QMPQIMAGEVIEWER_H
 #define QMPQIMAGEVIEWER_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include <QSettings>
 
 namespace Ui
@@ -12,7 +12,7 @@ namespace Ui
 class ImageSettingsDialog;
 class QLabel;
 
-class ImageViewer : public QMainWindow
+class ImageViewer : public QWidget
 {
     Q_OBJECT
 public:

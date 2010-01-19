@@ -67,7 +67,13 @@ void ImageViewerFactory::shutdown()
 bool ImageViewerFactory::canHandle(const QString &file) const
 {
 //    qDebug("ImageViewerFactory::canHandle");
-    return QFileInfo(file).suffix() == "blp";
+    QStringList extensions;
+    QString suffix = QFileInfo(file).suffix().toLower();
+    extensions << "blp" << "tga" << "jpg" << "bmp" << "png";
+    foreach (QString extension, extensions)
+        if (suffix == extension)
+            return true;
+    return false;
 }
 
 Q_EXPORT_PLUGIN2(image_viewer_factory, ImageViewerFactory)

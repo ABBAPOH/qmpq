@@ -15,20 +15,20 @@ class ImageSettingsDialog: public Ui::ImageSettingsDialog, public QDialog
 };
 
 ImageViewer::ImageViewer(QWidget *parent)
-        :QMainWindow(parent), ui(new Ui::ImageViewer), m_settings(new QSettings("QMPQ", "ImageViewer"))
+        :QWidget(parent), ui(new Ui::ImageViewer), m_settings(new QSettings("QMPQ", "ImageViewer"))
 {
     ui->setupUi(this);
-    setWindowTitle(tr("QMPQ Image Viewer"));
+//    setWindowTitle(tr("QMPQ Image Viewer"));
 //    ui->label->setScaledContents(true);
     label = new QLabel();
     label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     ui->scrollArea->setWidget(label);
     ui->scrollArea->setBackgroundRole(QPalette::Dark);
 
-    connect(ui->actionOpen, SIGNAL(triggered()), SLOT(open()));
-    connect(ui->actionSave_As, SIGNAL(triggered()), SLOT(save_As()));
-    connect(ui->actionPreferences, SIGNAL(triggered()), SLOT(preferences()));
-    connect(ui->actionCopy, SIGNAL(triggered()), SLOT(copy()));
+//    connect(ui->actionOpen, SIGNAL(triggered()), SLOT(open()));
+//    connect(ui->actionSave_As, SIGNAL(triggered()), SLOT(save_As()));
+//    connect(ui->actionPreferences, SIGNAL(triggered()), SLOT(preferences()));
+//    connect(ui->actionCopy, SIGNAL(triggered()), SLOT(copy()));
 
     if (m_settings->allKeys().isEmpty()) {
         ImageSettingsDialog dialog(this);
