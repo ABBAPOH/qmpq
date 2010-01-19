@@ -4,5 +4,5 @@ SUBDIRS = \
     plugins/imageformats/QtgaImagePlugin \
     QMPQFileEngine \
     plugins/editorplugins/MPQEditor \
-    plugins/editorplugins/imageviewer \
+    plugins/editorplugins/ImageViewer \
     app

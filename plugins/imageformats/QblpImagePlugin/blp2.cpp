@@ -284,8 +284,8 @@ bool BLPHandler::loadDXT5( QDataStream & s, const BLPHeader & blp, QImage &img )
     qDebug() << "BLPHandler::loadDXT5";
 
     quint32 offset = blp.mipMapOffset[0];
-    qDebug() << offset;
-    qDebug() << blp.mipMapSize[0];
+//    qDebug() << offset;
+//    qDebug() << blp.mipMapSize[0];
     s.device()->seek(offset);
     for (quint32 i = 0; i < blp.height/4; i++)
         for (quint32 j = 0; j < blp.width/4; j++) {

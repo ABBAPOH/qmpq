@@ -13,6 +13,7 @@ class QTableView;
 class QTreeView;
 class QDirModel;
 class QAbstractItemModel;
+class QStackedLayout;
 class MPQEditor : public QWidget
 {
     Q_OBJECT
@@ -28,12 +29,14 @@ private:
 //    const int test = 5;
     QString m_currentFile;
     QListView * listView;
+    QListView * iconView;
     QColumnView * columnView;
     QTableView * tableView;
     QTreeView * treeView;
     QAbstractItemView * views[MaxViews];
     QAbstractItemView * currentView;
     ViewMode m_viewMode;
+    QStackedLayout * layout;
     static QDirModel * m_model;
     QModelIndexList selectedIndexes();
 

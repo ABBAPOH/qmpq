@@ -35,10 +35,10 @@ void ARGB2BGRA(QImage & image)
         image.setPixel(i, j, qRgba(b, g, r, a));
     }
 }
-
+// Applications/Warcraft III/war3.mpq/UI/Console/Human/HumanUITile04.blp
 bool BLPHandler::loadJPEG( QDataStream & s, const BLPHeader & blp, QImage &img )
 {
-//    qDebug() << "JPEG";
+    qDebug("BLPHandler::loadJPEG");
     quint32 offset = 0;
     quint32 size = 0;
 
@@ -86,7 +86,7 @@ bool BLPHandler::loadJPEG( QDataStream & s, const BLPHeader & blp, QImage &img )
 
 bool BLPHandler::loadPalletted( QDataStream & s, const BLPHeader & blp, QImage &img )
 {
-//    qDebug() << "palette";
+    qDebug("BLPHandler::loadPalletted");
 
     bool hasAplha = blp.flags == 0x8;
     quint32 offset = blp.mipMapOffset[0];
@@ -104,21 +104,18 @@ bool BLPHandler::loadPalletted( QDataStream & s, const BLPHeader & blp, QImage &
     s.device()->seek(offset);
 
     //        if (blp.pictureType == 3 || blp.pictureType == 4) {
-    for (quint32 i = 0; i < blp.width; i++)
-        for (quint32 j = 0; j < blp.height; j++) {
+    for (quint32 j = 0; j < blp.height; j++)
+        for (quint32 i = 0; i < blp.width; i++) {
         s >> indexList[i][j];
     }
     if (blp.pictureType == 3 || blp.pictureType == 4) {
-        for (quint32 i = 0; i < blp.width; i++)
-            for (quint32 j = 0; j < blp.height; j++) {
+        for (quint32 j = 0; j < blp.height; j++)
+            for (quint32 i = 0; i < blp.width; i++) {
             s >> alphaList[i][j];
         }
     }
     for (quint32 i = 0; i < blp.width; i++)
         for (quint32 j = 0; j < blp.height; j++) {
-//        quint8 red = (palette[indexList[i][j]] & 0x00ff0000) >> 16;
-//        quint8 green = (palette[indexList[i][j]] & 0x0000ff00) >> 8;
-//        quint8 blue = (palette[indexList[i][j]] & 0x000000ff) >> 0;
             quint8 red = (palette[indexList[i][j]] >> 16) & 0xff;
             quint8 green = (palette[indexList[i][j]] >> 8) & 0xff;
             quint8 blue = (palette[indexList[i][j]]  >> 0) & 0xff;
@@ -128,9 +125,9 @@ bool BLPHandler::loadPalletted( QDataStream & s, const BLPHeader & blp, QImage &
                 if (blp.pictureType == 3 || blp.pictureType == 4)
                     alpha = alphaList[i][j];
                 else if (blp.pictureType == 5)
-                    alpha = (palette[indexList[i][j]] & 0xff000000) >> 24;
+                    alpha = (palette[indexList[i][j]] >> 24) & 0xff;
             }
-            img.setPixel(j, i, qRgba(red, green, blue, alpha));
+            img.setPixel(i, j, qRgba(red, green, blue, alpha));
         }
     return true;
 }
@@ -138,6 +135,7 @@ bool BLPHandler::loadPalletted( QDataStream & s, const BLPHeader & blp, QImage &
 bool BLPHandler::load( QDataStream & s, const BLPHeader & blp, QImage &img )
 {
     // Create image.
+//    qDebug() << blp.width << blp.height;
     img = QImage(blp.width, blp.height, QImage::Format_ARGB32);
 
     if (blp.blpType() == 1) {

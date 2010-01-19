@@ -33,7 +33,7 @@ struct BLPHeader
         quint32 pictureType;                    //3 - Uncompressed index list + alpha list
                                                 //4 - Uncompressed index list + alpha list
                                                 //5 - Uncompressed index list
-        quint32 pictureSubType;                 //1 - ???
+        quint32 pictureSubType;                 //0 - one mipmap; 1 - all mipmaps present
     quint32 mipMapOffset[16];
     quint32 mipMapSize[16];
 

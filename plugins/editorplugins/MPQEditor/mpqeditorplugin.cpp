@@ -5,6 +5,8 @@
 #include <QtGui/QFileDialog>
 #include <QtCore/QSignalMapper>
 #include <QtGui/QAction>
+#include <QtGui/QMenu>
+#include <QtGui/QContextMenuEvent>
 //#include <QDebug>
 
 #include "mpqeditor.h"
@@ -17,13 +19,15 @@ MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
     m_editor = editor;
     m_toolBar = new QToolBar();
 
+    m_editor->installEventFilter(this);
+
 //    m_toolBar->addAction(QIcon(":/icons/images/prev.png"), "back", this, SLOT(back()));
 //    m_toolBar->addAction(QIcon(":/icons/images/next.png"), "forward", this, SLOT(forward()));
 //    m_toolBar->addAction(QIcon(":/icons/images/up.png"), "up", m_editor, SLOT(up()));
 //    m_toolBar->addSeparator();
-    m_toolBar->addAction(QIcon(":/icons/images/add.png"), "add", this, SLOT(add()));
-    m_toolBar->addAction(QIcon(":/icons/images/extract.png"), "extract", this, SLOT(extract()));
-    m_toolBar->addAction(QIcon(":/icons/images/remove.png"), "remove", m_editor, SLOT(remove()));
+    actionAdd = m_toolBar->addAction(QIcon(":/icons/images/add.png"), "add", this, SLOT(add()));
+    actionExtract = m_toolBar->addAction(QIcon(":/icons/images/extract.png"), "extract", this, SLOT(extract()));
+    actionRemove = m_toolBar->addAction(QIcon(":/icons/images/remove.png"), "remove", m_editor, SLOT(remove()));
     m_toolBar->addSeparator();
     viewModeActions[0] = new QAction("listView", m_toolBar);
     viewModeActions[1] = new QAction("iconView", m_toolBar);
@@ -91,6 +95,26 @@ QToolBar * MPQEditorPlugin::toolBar ()
     return m_toolBar;
 }
 
+bool MPQEditorPlugin::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::ContextMenu) {
+        qDebug("context menu called");
+        return contextMenu(static_cast<QContextMenuEvent*>(event));
+    }
+    return QObject::eventFilter(obj, event);
+}
+
+bool MPQEditorPlugin::contextMenu(QContextMenuEvent *event)
+{
+    QMenu menu;
+//    QList<QAction*> list;
+    menu.addAction(actionAdd);
+    menu.addAction(actionExtract);
+    menu.addAction(actionRemove);
+    menu.exec(event->globalPos());
+    return true;
+}
+
 //================================== MPQEditorFactory ==================================
 
 MPQEditorFactory::MPQEditorFactory()
@@ -128,4 +152,3 @@ bool MPQEditorFactory::canHandle(const QString &file) const
 }
 
 Q_EXPORT_PLUGIN2(mpq_editor_factory, MPQEditorFactory)
-

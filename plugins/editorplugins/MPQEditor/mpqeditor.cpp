@@ -4,7 +4,7 @@
 #include <QtGui/QColumnView>
 #include <QtGui/QTableView>
 #include <QtGui/QTreeView>
-#include <QtGui/QHBoxLayout>
+#include <QtGui/QStackedLayout>
 #include <QtGui/QDirModel>
 #include <QtGui/QApplication>
 #include <QtCore/QAbstractItemModel>
@@ -16,25 +16,31 @@ QDirModel * MPQEditor::m_model = 0;
 
 MPQEditor::MPQEditor(QWidget *parent) :
     QWidget(parent),
-    listView(new QListView(this)),
+    listView(new QListView),
+    iconView(new QListView),
     columnView(new QColumnView(this)),
     tableView(new QTableView(this)),
     treeView(new QTreeView(this)),
     currentView(0)
 {
-    QHBoxLayout * layout = new QHBoxLayout(this);
-    views[0] = listView;
-    views[1] = listView;
-    views[2] = tableView;
-    views[3] = columnView;
-    views[4] = treeView;
-    for(int i = 0; i < MaxViews; i++)
+//    QHBoxLayout * layout = new QHBoxLayout(this);
+    layout = new QStackedLayout(this);
+    views[ListView] = listView;
+    views[IconView] = iconView;
+    views[TableView] = tableView;
+    views[ColumnView] = columnView;
+    views[TreeView] = treeView;
+
+    for (int i = 0; i < MaxViews; i++)
         layout->addWidget(views[i]);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setMargin(0);
+//    layout->setMargin(0);
     setLayout(layout);
 
     listView->setUniformItemSizes(true);
+    iconView->setUniformItemSizes(true);
+    iconView->setViewMode(QListView::IconMode);
+    iconView->setSpacing(24);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     if (!m_model) {
@@ -42,8 +48,7 @@ MPQEditor::MPQEditor(QWidget *parent) :
         m_model->setReadOnly(false);
         m_model->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
     }
-    // i = 1 to skip second initialization of listView
-    for (int i = 1; i < MaxViews; i++) {
+    for (int i = 0; i < MaxViews; i++) {
         views[i]->setEditTriggers(QAbstractItemView::SelectedClicked);
         views[i]->setModel(m_model);
 //        views[i]->setDragDropMode(QAbstractItemView::DragDrop);
@@ -56,10 +61,6 @@ MPQEditor::MPQEditor(QWidget *parent) :
     }
 
     setViewMode(ListView);
-//    listView->setModel(model);
-//    columnView->setModel(model);
-//    treeView->setModel(model);
-//    treeView->setModel(model);
 }
 
 QModelIndexList MPQEditor::selectedIndexes()
@@ -73,17 +74,19 @@ QModelIndexList MPQEditor::selectedIndexes()
 void MPQEditor::setViewMode(ViewMode mode)
 {
 //    qDebug() << "MPQEditor::setViewMode" << mode;
-    m_viewMode = mode;
-    for (int i = 0; i < MaxViews; i++)
-        views[i]->hide();
-    if (mode == 1) {
-        listView->setViewMode(QListView::IconMode);
-        listView->setSpacing(5);
-    }
-    if (mode == 0) {
-        listView->setViewMode(QListView::ListMode);
-        listView->setSpacing(0);
-    }
+    layout->setCurrentIndex(mode);
+
+//    m_viewMode = mode;
+//    for (int i = 0; i < MaxViews; i++)
+//        views[i]->hide();
+//    if (mode == 1) {
+//        listView->setViewMode(QListView::IconMode);
+//        listView->setSpacing(5);
+//    }
+//    if (mode == 0) {
+//        listView->setViewMode(QListView::ListMode);
+//        listView->setSpacing(0);
+//    }
 
     if (mode < 3)
         views[mode]->setRootIndex(currentView ? currentView->rootIndex() : QModelIndex() ); //sets the same directory for list and table views
@@ -166,7 +169,6 @@ void MPQEditor::extract(const QString & destDir)
             return;
         }
     }
-
 }
 
 void MPQEditor::remove()
@@ -229,5 +231,3 @@ void MPQEditor::onDoubleClick(const QModelIndex & index)
         emit currentChanged(m_model->filePath(index));
     }
 }
-
-

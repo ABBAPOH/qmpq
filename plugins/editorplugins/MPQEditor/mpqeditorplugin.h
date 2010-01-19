@@ -6,6 +6,7 @@
 class MPQEditor;
 class QSignalMapper;
 class QAction;
+class QContextMenuEvent;
 class MPQEditorPlugin : public QObject, public IEditor
 {
     Q_OBJECT
@@ -22,11 +23,17 @@ private:
     QToolBar * m_toolBar;
     QSignalMapper * viewModeMapper;
     QAction * viewModeActions[5];
+    QAction * actionAdd;
+    QAction * actionExtract;
+    QAction * actionRemove;
 
 public slots:
     void add();
     void extract();
     void setViewMode(int mode);
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
+    bool contextMenu(QContextMenuEvent *event);
 };
 
 class MPQEditorFactory : public QObject, public IEditorFactory
