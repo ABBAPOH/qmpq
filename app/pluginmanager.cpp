@@ -4,8 +4,6 @@
 #include <QtCore/QDir>
 #include <QtGui/QApplication>
 
-#include <QDebug>
-
 PluginManager * PluginManager::manager = 0;
 
 PluginManager::PluginManager()
@@ -59,7 +57,6 @@ void PluginManager::loadPlugins()
          QObject *plugin = loader.instance();
          IEditorFactory * factory = qobject_cast<IEditorFactory *>(plugin);
          if (factory) {
-             qDebug() << "loading plugin" << factory->name();
             m_factories.append(factory);
         }
      }
@@ -84,7 +81,7 @@ IEditor * PluginManager::getEditor(const QString &file, QWidget * parent) const
 
 void PluginManager::shutdown()
 {
-    qDebug("PluginManager::shutdown");
+//    qDebug("PluginManager::shutdown");
     delete manager;
     manager = 0;
 }

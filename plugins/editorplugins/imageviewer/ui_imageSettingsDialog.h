@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'imageSettingsDialog.ui'
 **
-** Created: Tue Jan 19 09:24:19 2010
+** Created: Tue Jan 19 12:27:50 2010
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!

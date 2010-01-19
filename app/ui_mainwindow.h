@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Tue Jan 19 10:04:01 2010
+** Created: Tue Jan 19 12:27:54 2010
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -33,13 +33,13 @@ public:
     QAction *actionSave;
     QAction *actionClose;
     QAction *actionBack;
-    QAction *actionNew_Tab;
     QAction *actionForward;
     QAction *actionUp_one_level;
     QAction *actionCopy;
     QAction *actionCut;
     QAction *actionPaste;
     QAction *actionSelect_All;
+    QAction *actionNew_Tab;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout;
     QTabWidget *tabWidget;
@@ -73,8 +73,6 @@ public:
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/icons/images/prev.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionBack->setIcon(icon2);
-        actionNew_Tab = new QAction(MainWindow);
-        actionNew_Tab->setObjectName(QString::fromUtf8("actionNew_Tab"));
         actionForward = new QAction(MainWindow);
         actionForward->setObjectName(QString::fromUtf8("actionForward"));
         actionForward->setEnabled(false);
@@ -96,6 +94,8 @@ public:
         actionPaste->setObjectName(QString::fromUtf8("actionPaste"));
         actionSelect_All = new QAction(MainWindow);
         actionSelect_All->setObjectName(QString::fromUtf8("actionSelect_All"));
+        actionNew_Tab = new QAction(MainWindow);
+        actionNew_Tab->setObjectName(QString::fromUtf8("actionNew_Tab"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout = new QVBoxLayout(centralwidget);
@@ -140,6 +140,7 @@ public:
         menuEdit->addAction(actionPaste);
         menuEdit->addSeparator();
         menuEdit->addAction(actionSelect_All);
+        menuWindow->addAction(actionNew_Tab);
         toolBar->addAction(actionBack);
         toolBar->addAction(actionForward);
         toolBar->addSeparator();
@@ -164,8 +165,6 @@ public:
         actionClose->setShortcut(QApplication::translate("MainWindow", "Ctrl+W", 0, QApplication::UnicodeUTF8));
         actionBack->setText(QApplication::translate("MainWindow", "Back", 0, QApplication::UnicodeUTF8));
         actionBack->setShortcut(QApplication::translate("MainWindow", "Ctrl+[", 0, QApplication::UnicodeUTF8));
-        actionNew_Tab->setText(QApplication::translate("MainWindow", "New Tab", 0, QApplication::UnicodeUTF8));
-        actionNew_Tab->setShortcut(QApplication::translate("MainWindow", "Ctrl+T", 0, QApplication::UnicodeUTF8));
         actionForward->setText(QApplication::translate("MainWindow", "Forward", 0, QApplication::UnicodeUTF8));
         actionForward->setShortcut(QApplication::translate("MainWindow", "Ctrl+], Return", 0, QApplication::UnicodeUTF8));
         actionUp_one_level->setText(QApplication::translate("MainWindow", "Up one level", 0, QApplication::UnicodeUTF8));
@@ -178,6 +177,8 @@ public:
         actionPaste->setShortcut(QApplication::translate("MainWindow", "Ctrl+V", 0, QApplication::UnicodeUTF8));
         actionSelect_All->setText(QApplication::translate("MainWindow", "Select All", 0, QApplication::UnicodeUTF8));
         actionSelect_All->setShortcut(QApplication::translate("MainWindow", "Ctrl+A", 0, QApplication::UnicodeUTF8));
+        actionNew_Tab->setText(QApplication::translate("MainWindow", "New Tab", 0, QApplication::UnicodeUTF8));
+        actionNew_Tab->setShortcut(QApplication::translate("MainWindow", "Ctrl+T", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
         menuWindow->setTitle(QApplication::translate("MainWindow", "Window", 0, QApplication::UnicodeUTF8));

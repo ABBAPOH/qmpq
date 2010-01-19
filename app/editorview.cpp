@@ -5,8 +5,10 @@
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QToolBar>
+#include <QtCore/QFileInfo>
+#include <QtCore/QSet>
 
-#include <QDebug>
+//#include <QDebug>
 
 EditorView::EditorView(QWidget *parent) :
     QStackedWidget(parent), editorManager(new EditorManager(this))
@@ -16,7 +18,8 @@ EditorView::EditorView(QWidget *parent) :
 
 EditorView::~EditorView()
 {
-    foreach (IEditor * editor, m_editors) {
+    foreach (IEditor * editor, m_editors.values().toSet()) {
+//        qDebug() << "deleting " << (long long)editor;
         editor->close();
         delete editor;
     }
@@ -46,9 +49,11 @@ void EditorView::forward()
 
 void EditorView::up()
 {
-    int index = m_current.lastIndexOf('/') + 1;
-    qDebug() << m_current << index;
-    setUrl(m_current.left(index));
+    QFileInfo info(m_current);
+    if (info.isRoot())
+        setUrl("");
+    else
+        setUrl(info.path());
 }
 
 bool EditorView::openUrl(const QString & url)
@@ -59,7 +64,7 @@ bool EditorView::openUrl(const QString & url)
     if (!editor)
         return false;
     m_current = url;
-    if (m_editors.contains(url))
+    if (!m_editors.contains(url))
         m_editors.insert(url, editor);
     QWidget * widget;
     if (m_widgets.contains(editor)) {
@@ -85,9 +90,8 @@ void EditorView::setCentralWidget(QWidget * widget)
 
 void EditorView::setUrl(const QString & url)
 {
-    if (m_current == url)
+    if (QFileInfo(m_current) == QFileInfo(url)) // ignores / in the end of the path
         return;
-    qDebug() << url;
 
     if (openUrl(url))
         emit currentUrlChanged(url);

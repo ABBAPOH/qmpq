@@ -9,7 +9,8 @@
 #include <QtGui/QApplication>
 #include <QtCore/QAbstractItemModel>
 #include <QtGui/QMessageBox>
-#include <QDebug>
+
+//#include <QDebug>
 
 QDirModel * MPQEditor::m_model = 0;
 
@@ -41,7 +42,8 @@ MPQEditor::MPQEditor(QWidget *parent) :
         m_model->setReadOnly(false);
         m_model->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
     }
-    for (int i = 0; i < MaxViews; i++) {
+    // i = 1 to skip second initialization of listView
+    for (int i = 1; i < MaxViews; i++) {
         views[i]->setEditTriggers(QAbstractItemView::SelectedClicked);
         views[i]->setModel(m_model);
 //        views[i]->setDragDropMode(QAbstractItemView::DragDrop);
@@ -60,16 +62,28 @@ MPQEditor::MPQEditor(QWidget *parent) :
 //    treeView->setModel(model);
 }
 
+QModelIndexList MPQEditor::selectedIndexes()
+{
+    if (currentView == listView || currentView == columnView)
+        return currentView->selectionModel()->selectedIndexes();
+    else
+        return currentView->selectionModel()->selectedRows();
+}
+
 void MPQEditor::setViewMode(ViewMode mode)
 {
 //    qDebug() << "MPQEditor::setViewMode" << mode;
     m_viewMode = mode;
     for (int i = 0; i < MaxViews; i++)
         views[i]->hide();
-    if (mode == 1)
+    if (mode == 1) {
         listView->setViewMode(QListView::IconMode);
-    if (mode == 0)
+        listView->setSpacing(5);
+    }
+    if (mode == 0) {
         listView->setViewMode(QListView::ListMode);
+        listView->setSpacing(0);
+    }
 
     if (mode < 3)
         views[mode]->setRootIndex(currentView ? currentView->rootIndex() : QModelIndex() ); //sets the same directory for list and table views
@@ -92,14 +106,14 @@ void MPQEditor::open(const QString &file)
 void MPQEditor::closeFile()
 {
     m_currentFile = "";
-    currentView->setRootIndex(QModelIndex());
+//    currentView->setRootIndex(QModelIndex());
 }
 
 void MPQEditor::add(const QStringList & files)
 {
     if (files.isEmpty())
         return;
-    QModelIndexList list = currentView->selectionModel()->selectedRows();
+    QModelIndexList list = selectedIndexes();
     if (list.count() != 1) {
         QMessageBox box(QMessageBox::Information, "Warning", "Select exactly one file or folder", QMessageBox::Ok);
         box.exec();
@@ -112,10 +126,9 @@ void MPQEditor::add(const QStringList & files)
             QFileInfo fileInfo(filePath);
             QFileInfo info(m_model->filePath(list.first()));
             if (!info.isDir())
-                info = QFileInfo(info.dir().absolutePath());
+                info = QFileInfo(info.path());
 
-            QString newPath = info.absolutePath() + "/" + fileInfo.fileName();
-            qDebug() << newPath;
+            QString newPath = info.absoluteFilePath() + "/" + fileInfo.fileName();
 //            result = file.copy(newPath);
             file.open(QFile::ReadOnly);
             QFile targetFile(newPath);
@@ -139,7 +152,7 @@ void MPQEditor::add(const QStringList & files)
 
 void MPQEditor::extract(const QString & destDir)
 {
-    foreach (QModelIndex index, currentView->selectionModel()->selectedRows()) {
+    foreach (QModelIndex index, selectedIndexes()) {
 //        index = proxy->mapToSource(index);
         QFile file(m_model->filePath(index));
         QFileInfo info(m_model->filePath(index));
@@ -158,7 +171,7 @@ void MPQEditor::extract(const QString & destDir)
 
 void MPQEditor::remove()
 {
-    foreach (QModelIndex index, currentView->selectionModel()->selectedRows()) {
+    foreach (QModelIndex index, selectedIndexes()) {
 //        QFile file(model->filePath(index));
         bool result = m_model->remove(index);
         if (!result) {
@@ -207,14 +220,11 @@ void MPQEditor::up()
 
 void MPQEditor::onDoubleClick(const QModelIndex & index)
 {
-    qDebug() << "MPQEditor::onDoubleClick";
+//    qDebug() << "MPQEditor::onDoubleClick";
     if (QFileInfo(m_model->filePath(index)).isDir()/* && m_viewMode < 3*/) {
-        qDebug() << "dir";
         open(m_model->filePath(index));
-//        currentView->setRootIndex(index);
 //        emit currentChanged(m_model->filePath(index));
     } else {
-        qDebug() << m_model->filePath(index);
 //        emit openRequested(m_model->filePath(index));
         emit currentChanged(m_model->filePath(index));
     }

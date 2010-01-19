@@ -5,7 +5,7 @@
 #include <QtGui/QFileDialog>
 #include <QtCore/QSignalMapper>
 #include <QtGui/QAction>
-#include <QDebug>
+//#include <QDebug>
 
 #include "mpqeditor.h"
 
@@ -47,8 +47,8 @@ MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
 
 MPQEditorPlugin::~MPQEditorPlugin()
 {
-    qDebug("MPQEditorPlugin::~MPQEditorPlugin()");
-    qDebug() << (long long)this;
+//    qDebug("MPQEditorPlugin::~MPQEditorPlugin()");
+//    qDebug() << (long long)this;
 }
 
 bool MPQEditorPlugin::open(const QString &file)
@@ -113,13 +113,14 @@ IEditor * MPQEditorFactory::createEditor(QWidget * parent)
 
 void MPQEditorFactory::shutdown()
 {
-    qDebug("MPQEditorFactory::shutdown");
+//    qDebug("MPQEditorFactory::shutdown");
     delete MPQEditor::model();
+//    MPQEditor::model()->deleteLater();;
 }
 
 bool MPQEditorFactory::canHandle(const QString &file) const
 {
-    qDebug("MPQEditorFactory::canHandle");
+//    qDebug("MPQEditorFactory::canHandle");
     if (file == "" || QFileInfo(file).isDir())
         return true;
     else

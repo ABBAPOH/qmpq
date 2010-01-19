@@ -83,7 +83,7 @@ void MainWindow::connectAction(QAction * sender, const char * signal, QObject * 
         return;
     member++; // skip code
     if (receiver->metaObject()->indexOfSlot(member) == -1) {
-        qDebug() << "can't connect: class "<< receiver->metaObject()->className() << "has no slot" << member;
+//        qDebug() << "can't connect: class "<< receiver->metaObject()->className() << "has no slot" << member;
         sender->setEnabled(false);
     } else {
         sender->setEnabled(true);
@@ -140,7 +140,6 @@ void MainWindow::disconnectEditor(QWidget * editor)
 
 void MainWindow::connectEditor(QWidget * editor)
 {
-    qDebug("MainWindow::connectEditor");
     disconnectEditor(m_editor);
     m_editor = editor;
     connectAction(ui->actionSave, SIGNAL(triggered()), editor, SLOT(save()));

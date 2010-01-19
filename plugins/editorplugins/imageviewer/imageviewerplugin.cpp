@@ -60,13 +60,13 @@ IEditor * ImageViewerFactory::createEditor(QWidget * parent)
 
 void ImageViewerFactory::shutdown()
 {
-    qDebug("ImageViewerFactory::shutdown");
+//    qDebug("ImageViewerFactory::shutdown");
 //    delete MPQEditor::model();
 }
 
 bool ImageViewerFactory::canHandle(const QString &file) const
 {
-    qDebug("ImageViewerFactory::canHandle");
+//    qDebug("ImageViewerFactory::canHandle");
     return QFileInfo(file).suffix() == "blp";
 }
 

@@ -68,6 +68,7 @@
     <property name="title">
      <string>Window</string>
     </property>
+    <addaction name="actionNew_Tab"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -139,14 +140,6 @@
     <string>Ctrl+[</string>
    </property>
   </action>
-  <action name="actionNew_Tab">
-   <property name="text">
-    <string>New Tab</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+T</string>
-   </property>
-  </action>
   <action name="actionForward">
    <property name="enabled">
     <bool>false</bool>
@@ -210,6 +203,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionNew_Tab">
+   <property name="text">
+    <string>New Tab</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
  </widget>

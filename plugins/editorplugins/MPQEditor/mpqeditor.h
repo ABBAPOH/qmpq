@@ -35,6 +35,7 @@ private:
     QAbstractItemView * currentView;
     ViewMode m_viewMode;
     static QDirModel * m_model;
+    QModelIndexList selectedIndexes();
 
 signals:
     void openRequested(const QString &file);
