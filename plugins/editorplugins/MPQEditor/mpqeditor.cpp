@@ -48,7 +48,7 @@ MPQEditor::MPQEditor(QWidget *parent) :
         views[i]->setModel(m_model);
 //        views[i]->setDragDropMode(QAbstractItemView::DragDrop);
         views[i]->setDragDropMode(QAbstractItemView::DropOnly);
-        views[i]->setDragEnabled(true);
+//        views[i]->setDragEnabled(true);
         views[i]->setAcceptDrops(true);
         views[i]->setDragDropOverwriteMode(false);
         views[i]->setDefaultDropAction(Qt::MoveAction);

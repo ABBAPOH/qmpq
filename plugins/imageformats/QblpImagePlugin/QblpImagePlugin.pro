@@ -16,6 +16,7 @@ INCLUDEPATH += -I \
     ../../../3rdparty/libjpeg/
 
 mac: target.path += ../../../app/bin/QMPQ.app/Contents/MacOS/imageformats
+win32: target.path += ../../../app/bin/imageformats
 INSTALLS += target
 
 #============ libjpeg ============#

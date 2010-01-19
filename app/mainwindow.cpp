@@ -76,9 +76,8 @@ void MainWindow::connectAction(QAction * sender, const char * signal, QObject * 
 {
     if (!receiver || !sender)
         return;
-    member++; // skip code
-    if (receiver->metaObject()->indexOfSlot(member) == -1) {
-//        qDebug() << "can't connect: class "<< receiver->metaObject()->className() << "has no slot" << member;
+    if (receiver->metaObject()->indexOfSlot(member+1) == -1) {
+//        qDebug() << "can't connect: class "<< receiver->metaObject()->className() << "has no slot" << member+1;
         sender->setEnabled(false);
     } else {
         sender->setEnabled(true);

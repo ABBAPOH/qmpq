@@ -8,4 +8,5 @@ HEADERS += tga.h
 SOURCES += tga.cpp
 
 mac: target.path += ../../../app/bin/QMPQ.app/Contents/MacOS/imageformats
+win32: target.path += ../../../app/bin/imageformats
 INSTALLS += target
