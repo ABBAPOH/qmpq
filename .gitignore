@@ -9,3 +9,5 @@ object_script.*.*
 *~
 qtcreator-build*
 *.qm
+commit.txt
+thoughts.txt

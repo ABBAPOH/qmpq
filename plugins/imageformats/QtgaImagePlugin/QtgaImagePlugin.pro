@@ -6,3 +6,6 @@ MOC_DIR = build
 
 HEADERS += tga.h
 SOURCES += tga.cpp
+
+mac: target.path += ../../../app/bin/QMPQ.app/Contents/MacOS/imageformats
+INSTALLS += target

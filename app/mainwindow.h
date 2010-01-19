@@ -31,10 +31,14 @@ private:
     QLabel * title;
     QLineEdit * addressBar;
     QWidget * previousWidget;
+    QWidget * m_editor;
 
     void initConnections();
     void showEditor(IEditor * editor);
     void connectAction(QAction * sender, const char * signal, QObject * receiver, const char * member);
+    void connectView(QWidget * view);
+    void disconnectView(QWidget * view);
+    void disconnectEditor(QWidget * editor);
 
 public slots:
     void open(const QString & path = "");
@@ -45,6 +49,7 @@ public slots:
 private slots:
     void tabChanged(int index);
     void closeTab(int index);
+    void connectEditor(QWidget * editor);
 };
 
 #endif // MAINWINDOW_H

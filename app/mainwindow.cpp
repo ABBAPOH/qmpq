@@ -81,9 +81,11 @@ void MainWindow::connectAction(QAction * sender, const char * signal, QObject * 
 {
     if (!receiver || !sender)
         return;
-    if (receiver->metaObject()->indexOfSlot(member) == -1)
+    member++; // skip code
+    if (receiver->metaObject()->indexOfSlot(member) == -1) {
+        qDebug() << "can't connect: class "<< receiver->metaObject()->className() << "has no slot" << member;
         sender->setEnabled(false);
-    else {
+    } else {
         sender->setEnabled(true);
         connect(sender, signal, receiver, member);
     }
@@ -127,6 +129,40 @@ void MainWindow::setAddress(const QString & path)
     ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), QFileInfo(path).fileName());
 }
 
+void MainWindow::disconnectEditor(QWidget * editor)
+{
+    disconnect(ui->actionSave, 0, editor, 0);
+    disconnect(ui->actionCut, 0, editor, 0);
+    disconnect(ui->actionCopy, 0, editor, 0);
+    disconnect(ui->actionPaste, 0, editor, 0);
+    disconnect(ui->actionSelect_All, 0, editor, 0);
+}
+
+void MainWindow::connectEditor(QWidget * editor)
+{
+    qDebug("MainWindow::connectEditor");
+    disconnectEditor(m_editor);
+    m_editor = editor;
+    connectAction(ui->actionSave, SIGNAL(triggered()), editor, SLOT(save()));
+    connectAction(ui->actionCut, SIGNAL(triggered()), editor, SLOT(cut()));
+    connectAction(ui->actionCopy, SIGNAL(triggered()), editor, SLOT(copy()));
+    connectAction(ui->actionPaste, SIGNAL(triggered()), editor, SLOT(paste()));
+    connectAction(ui->actionSelect_All, SIGNAL(triggered()), editor, SLOT(selectAll()));
+}
+
+void MainWindow::connectView(QWidget * view)
+{
+    connect(view, SIGNAL(currentUrlChanged(const QString &)), this, SLOT(setAddress(const QString &)));
+    connect(view, SIGNAL(centralWidgetChanged(QWidget *)), this, SLOT(connectEditor(QWidget *)));
+    connect(ui->actionUp_one_level, SIGNAL(triggered()), view, SLOT(up()));
+    connect(addressBar, SIGNAL(textChanged(const QString &)), view, SLOT(setUrl(const QString &)));
+}
+
+void MainWindow::disconnectView(QWidget * view)
+{
+    disconnect(addressBar, 0, view, 0);
+}
+
 void MainWindow::tabChanged(int index)
 {
     QWidget * widget = ui->tabWidget->widget(index);
@@ -135,12 +171,10 @@ void MainWindow::tabChanged(int index)
     Q_ASSERT(view);
 //    qDebug() << index << currentFiles.value(widget);
     if (previousWidget)
-        disconnect(addressBar, 0, previousWidget, 0);
+        disconnectView(previousWidget);
+    connectView(view);
+    connectEditor(view->centralWidget());
     setAddress(view->currentUrl());
-    connectAction(ui->actionSave, SIGNAL(triggered()), widget, SLOT(save()));
-    connect(ui->actionUp_one_level, SIGNAL(triggered()), view, SLOT(up()));
-    connect(addressBar, SIGNAL(textChanged(const QString &)), view, SLOT(setUrl(const QString &)));
-    connect(view, SIGNAL(currentUrlChanged(const QString &)), this, SLOT(setAddress(const QString &)));
 
     previousWidget = widget;
 //    bool enabled;

@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'imageviewer.ui'
 **
-** Created: Mon Jan 18 23:11:04 2010
-**      by: Qt User Interface Compiler version 4.6.0
+** Created: Tue Jan 19 09:24:19 2010
+**      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -61,6 +61,7 @@ public:
         centralwidget = new QWidget(ImageViewer);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout = new QVBoxLayout(centralwidget);
+        verticalLayout->setContentsMargins(0, 0, 0, 0);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         scrollArea = new QScrollArea(centralwidget);
         scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
@@ -69,7 +70,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 372, 328));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 396, 352));
         scrollArea->setWidget(scrollAreaWidgetContents);
 
         verticalLayout->addWidget(scrollArea);

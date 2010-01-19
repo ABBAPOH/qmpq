@@ -71,7 +71,16 @@ bool EditorView::openUrl(const QString & url)
         connect(editor->widget(), SIGNAL(currentChanged(const QString &)), SLOT(setUrl(const QString &)));
     }
     setCurrentWidget(widget);
+    setCentralWidget(editor->widget());
     return true;
+}
+
+void EditorView::setCentralWidget(QWidget * widget)
+{
+    if (m_centralWidget != widget) {
+        m_centralWidget = widget;
+        emit centralWidgetChanged(widget);
+    }
 }
 
 void EditorView::setUrl(const QString & url)

@@ -15,6 +15,9 @@ SOURCES += blp.cpp \
 INCLUDEPATH += -I \
     ../../../3rdparty/libjpeg/
 
+mac: target.path += ../../../app/bin/QMPQ.app/Contents/MacOS/imageformats
+INSTALLS += target
+
 #============ libjpeg ============#
 wince*: { 
     DEFINES += NO_GETENV

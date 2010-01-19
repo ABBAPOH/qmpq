@@ -34,6 +34,7 @@ MPQEditor::MPQEditor(QWidget *parent) :
     setLayout(layout);
 
     listView->setUniformItemSizes(true);
+    tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     if (!m_model) {
         m_model = new QDirModel;
@@ -41,13 +42,14 @@ MPQEditor::MPQEditor(QWidget *parent) :
         m_model->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
     }
     for (int i = 0; i < MaxViews; i++) {
+        views[i]->setEditTriggers(QAbstractItemView::SelectedClicked);
         views[i]->setModel(m_model);
-        views[i]->setDragDropMode(QAbstractItemView::DragDrop);
+//        views[i]->setDragDropMode(QAbstractItemView::DragDrop);
+        views[i]->setDragDropMode(QAbstractItemView::DropOnly);
         views[i]->setDragEnabled(true);
         views[i]->setAcceptDrops(true);
-//        views[i]->setDragDropOverwriteMode(false);
-//        views[i]->setDefaultDropAction(Qt::MoveAction);
-//        views[i]->setDropIndicatorShown(true);
+        views[i]->setDragDropOverwriteMode(false);
+        views[i]->setDefaultDropAction(Qt::MoveAction);
         connect(views[i], SIGNAL(doubleClicked(const QModelIndex &)), SLOT(onDoubleClick(const QModelIndex &)));
     }
 
