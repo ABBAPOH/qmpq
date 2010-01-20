@@ -25,9 +25,10 @@ MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
 //    m_toolBar->addAction(QIcon(":/icons/images/next.png"), "forward", this, SLOT(forward()));
 //    m_toolBar->addAction(QIcon(":/icons/images/up.png"), "up", m_editor, SLOT(up()));
 //    m_toolBar->addSeparator();
-    actionAdd = m_toolBar->addAction(QIcon(":/icons/images/add.png"), "add", this, SLOT(add()));
-    actionExtract = m_toolBar->addAction(QIcon(":/icons/images/extract.png"), "extract", this, SLOT(extract()));
-    actionRemove = m_toolBar->addAction(QIcon(":/icons/images/remove.png"), "remove", m_editor, SLOT(remove()));
+    actionAdd = m_toolBar->addAction(QIcon(":/icons/images/add.png"), "Add", this, SLOT(add()));
+    actionExtract = m_toolBar->addAction(QIcon(":/icons/images/extract.png"), "Extract", this, SLOT(extract()));
+    actionRename = m_toolBar->addAction(QIcon(":/icons/images/rename.png"), "Rename", m_editor, SLOT(rename()));
+    actionRemove = m_toolBar->addAction(QIcon(":/icons/images/remove.png"), "Remove", m_editor, SLOT(remove()));
     m_toolBar->addSeparator();
     viewModeActions[0] = new QAction("listView", m_toolBar);
     viewModeActions[1] = new QAction("iconView", m_toolBar);
@@ -40,7 +41,8 @@ MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
         viewModeMapper->setMapping(viewModeActions[i], i);
     }
     connect(viewModeMapper, SIGNAL(mapped(int)), this, SLOT(setViewMode(int)));
-
+    actionNew_Folder = new QAction("new Folder", this);
+    connect(actionNew_Folder, SIGNAL(triggered()), m_editor, SLOT(newFolder()));
 
 //    m_toolBar->addAction("listView", this, SLOT(setListViewMode()));
 //    m_toolBar->addAction("iconView", this, SLOT(setIconViewMode()));
@@ -53,6 +55,7 @@ MPQEditorPlugin::~MPQEditorPlugin()
 {
 //    qDebug("MPQEditorPlugin::~MPQEditorPlugin()");
 //    qDebug() << (long long)this;
+    delete m_editor;
 }
 
 bool MPQEditorPlugin::open(const QString &file)
@@ -98,7 +101,7 @@ QToolBar * MPQEditorPlugin::toolBar ()
 bool MPQEditorPlugin::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::ContextMenu) {
-        qDebug("context menu called");
+//        qDebug("context menu called");
         return contextMenu(static_cast<QContextMenuEvent*>(event));
     }
     return QObject::eventFilter(obj, event);
@@ -108,8 +111,11 @@ bool MPQEditorPlugin::contextMenu(QContextMenuEvent *event)
 {
     QMenu menu;
 //    QList<QAction*> list;
+    menu.addAction(actionNew_Folder);
+    menu.addSeparator();
     menu.addAction(actionAdd);
     menu.addAction(actionExtract);
+    menu.addAction(actionRename);
     menu.addAction(actionRemove);
     menu.exec(event->globalPos());
     return true;
@@ -138,7 +144,7 @@ IEditor * MPQEditorFactory::createEditor(QWidget * parent)
 void MPQEditorFactory::shutdown()
 {
 //    qDebug("MPQEditorFactory::shutdown");
-    delete MPQEditor::model();
+//    delete MPQEditor::model();
 //    MPQEditor::model()->deleteLater();;
 }
 

@@ -25,7 +25,9 @@ private:
     QAction * viewModeActions[5];
     QAction * actionAdd;
     QAction * actionExtract;
+    QAction * actionRename;
     QAction * actionRemove;
+    QAction * actionNew_Folder;
 
 public slots:
     void add();

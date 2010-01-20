@@ -19,6 +19,7 @@ class MPQEditor : public QWidget
     Q_OBJECT
 public:
     explicit MPQEditor(QWidget *parent = 0);
+    ~MPQEditor();
     enum ViewMode { ListView = 0, IconView, TableView, ColumnView, TreeView };
 
     bool canUp();
@@ -39,6 +40,7 @@ private:
     QStackedLayout * layout;
     static QDirModel * m_model;
     QModelIndexList selectedIndexes();
+    QString selectedDir();
 
 signals:
     void openRequested(const QString &file);
@@ -50,8 +52,10 @@ public slots:
     void add(const QStringList & files);
     void extract(const QString & destDir);
     void remove();
+    void rename();
     void setViewMode(ViewMode mode);
     void up();
+    void newFolder(const QString & name = "");
 //    void remove();
 private slots:
     void onDoubleClick(const QModelIndex & index);

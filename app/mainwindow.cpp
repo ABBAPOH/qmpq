@@ -67,11 +67,6 @@ void MainWindow::initConnections()
     connect(core, SIGNAL(openRequested(const QString &)), SLOT(open(const QString &)));
 }
 
-void MainWindow::showEditor(IEditor *)
-{
-
-}
-
 void MainWindow::connectAction(QAction * sender, const char * signal, QObject * receiver, const char * member)
 {
     if (!receiver || !sender)
@@ -99,14 +94,10 @@ void MainWindow::open(const QString & path)
 
     title->setText(QFileInfo(fileName).fileName());
     setAddress(fileName);
-//    openEditor(fileName);
 }
 
 void MainWindow::closeCurrent()
 {
-//    ui->tabWidget->removeTab(ui->tabWidget->currentIndex());
-//    core->close(currentFile);
-//    mpq_editor->close();
     closeTab(ui->tabWidget->currentIndex());
 }
 
@@ -120,6 +111,7 @@ void MainWindow::newTab()
 
 void MainWindow::setAddress(const QString & path)
 {
+//    qDebug() << "MainWindow::setAddress" << path;
     addressBar->setText(path);
     ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), QFileInfo(path).fileName());
 }
@@ -171,9 +163,6 @@ void MainWindow::tabChanged(int index)
     setAddress(view->currentUrl());
 
     previousWidget = widget;
-//    bool enabled;
-//    enabled = connect(ui->actionSave, SIGNAL(triggered()), widget, SLOT(save()));
-//    ui->actionSave->setEnabled(enabled);
 }
 
 void MainWindow::closeTab(int index)
@@ -183,11 +172,8 @@ void MainWindow::closeTab(int index)
 
     QWidget * widget = ui->tabWidget->widget(index);
     EditorView * view = qobject_cast<EditorView *>(widget);
-//    QString file = currentFiles.value(widget);
     ui->tabWidget->removeTab(index);
     delete view;
-//    core->close(file);
-//    mpq_editor->close();
 }
 
 
