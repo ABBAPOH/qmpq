@@ -27,7 +27,8 @@ MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
 //    m_toolBar->addSeparator();
     actionAdd = m_toolBar->addAction(QIcon(":/icons/images/add.png"), "Add", this, SLOT(add()));
     actionExtract = m_toolBar->addAction(QIcon(":/icons/images/extract.png"), "Extract", this, SLOT(extract()));
-    actionRename = m_toolBar->addAction(QIcon(":/icons/images/rename.png"), "Rename", m_editor, SLOT(rename()));
+    actionRename = new QAction(QIcon(":/icons/images/rename.png"), "Rename", m_toolBar);
+    connect(actionRename, SIGNAL(triggered()), m_editor, SLOT(rename()));
     actionRemove = m_toolBar->addAction(QIcon(":/icons/images/remove.png"), "Remove", m_editor, SLOT(remove()));
     m_toolBar->addSeparator();
     viewModeActions[0] = new QAction("listView", m_toolBar);
@@ -126,11 +127,6 @@ bool MPQEditorPlugin::contextMenu(QContextMenuEvent *event)
 MPQEditorFactory::MPQEditorFactory()
 {
 
-}
-
-QStringList MPQEditorFactory::formats()
-{
-    return QStringList() << "*.mpq" << "*.w3x";
 }
 
 //IEditor * MPQEditorFactory::instance(QWidget * parent)

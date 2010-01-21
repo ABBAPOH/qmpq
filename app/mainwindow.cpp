@@ -119,7 +119,7 @@ void MainWindow::newTab()
 void MainWindow::setAddress(const QString & path)
 {
 //    qDebug() << "MainWindow::setAddress" << path;
-    addressBar->setText(path);
+    addressBar->setText(QDir::toNativeSeparators(path));
     ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), QFileInfo(path).fileName());
 }
 
@@ -164,6 +164,9 @@ void MainWindow::connectView(QWidget * view)
 void MainWindow::disconnectView(QWidget * view)
 {
     disconnect(addressBar, 0, view, 0);
+    disconnect(ui->actionBack, 0, view, 0);
+    disconnect(ui->actionForward, 0, view, 0);
+    disconnect(ui->actionUp_one_level, 0, view, 0);
 }
 
 void MainWindow::tabChanged(int index)

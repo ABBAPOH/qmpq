@@ -12,9 +12,10 @@ QString QMPQFileEnginePrivate::getArchiveFilePath(const QString & path)
 {
 //    QString result = path;
     foreach (QString format, QMPQFileEngine::supportedFormats()) {
-        int index = path.lastIndexOf(format);
+        int index = path.lastIndexOf('.' + format);
+        qDebug() << index;
         if (index != -1) {
-            return path.mid(0, index+format.length());
+            return path.mid(0, index+format.length() + 1);
         }
     }
     return "";
@@ -31,16 +32,6 @@ QMPQFileEngine::QMPQFileEngine(const QString & file)
     Q_D(QMPQFileEngine);
 //    qDebug() << "QMPQFileEngine::QMPQFileEngine" << file;
     setFileName(file);
-    return;
-    d->filePath = file;
-    d->archiveFilePath = d->getArchiveFilePath(file);
-    d->fileName = file.mid(file.lastIndexOf('/') + 1);
-//    d->innerPath = file.mid(d->archiveFilePath.length() + 1).replace('/', '\\');
-    d->innerPath = file.mid(d->archiveFilePath.length() + 1);
-    d->innerPath = d->innerPath.replace("/", "\\");
-    d->archive = SharedMPQArchive::instance(d->archiveFilePath);
-//    qDebug() << d->archiveFilePath;
-//    qDebug() << d->innerPath;
 }
 
 QMPQFileEngine::~QMPQFileEngine()
@@ -275,7 +266,7 @@ void QMPQFileEngine::setFileName(const QString & filePath)
     d->innerPath = file.mid(d->archiveFilePath.length() + 1);
     d->innerPath = d->innerPath.replace("/", "\\");
     d->archive = SharedMPQArchive::instance(d->archiveFilePath);
-//    qDebug() << d->archiveFilePath;
+    qDebug() << d->archiveFilePath;
 //    qDebug() << d->innerPath;
 
 }

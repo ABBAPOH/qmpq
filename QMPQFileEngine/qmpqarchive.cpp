@@ -29,7 +29,8 @@ bool QMPQArchivePrivate::openArchive(const QString & name/*, QByteArray listfile
         closeArchive();
     }
 
-    if (!SFileCreateArchiveEx(name.toLocal8Bit().data(), OPEN_EXISTING, 0, &mpq)) {
+#warning under Linux toLower() may cause bug with case-sensitive files
+    if (!SFileCreateArchiveEx(name.toLower().toLocal8Bit().data(), OPEN_EXISTING, 0, &mpq)) {
         m_lastError = GetLastError();
         qWarning() << "can't open archive: "<< m_lastError.errorMessage();
         return false;

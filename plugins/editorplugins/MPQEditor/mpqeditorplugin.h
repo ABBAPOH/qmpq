@@ -43,7 +43,6 @@ class MPQEditorFactory : public QObject, public IEditorFactory
     Q_OBJECT
     Q_INTERFACES(IEditorFactory)
 public:
-    QStringList formats();
     virtual QString name() { return "MPQEditor"; }
 //    IEditor * instance(QWidget * parent);
     IEditor * createEditor(QWidget * parent);

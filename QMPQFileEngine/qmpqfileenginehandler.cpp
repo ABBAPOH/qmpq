@@ -15,12 +15,12 @@ QAbstractFileEngine *QMPQFileEngineHandler::create(const QString &fileName) cons
 {
     if (lock)
         return 0;
-    QStringList suffixes;
-    suffixes << "mpq" << "w3x" << "w3m";
+    QStringList suffixes = QMPQFileEngine::supportedFormats();
+//    suffixes << "mpq" << "w3x" << "w3m";
     foreach (QString suffix, suffixes) {
         if (fileName.toLower().contains('.' + suffix))
-#warning under Linux may cause bug with case-sensitive files
-            return new QMPQFileEngine(fileName.toLower());
+//#warning under Linux may cause bug with case-sensitive files
+            return new QMPQFileEngine(fileName);
     }
     return 0;
     //    return fileName.toLower().contains(".mpq") ? new QMPQFileEngine(fileName) : 0;

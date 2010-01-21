@@ -6,6 +6,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QToolBar>
 #include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 #include <QtCore/QSet>
 #include <QApplication>
 

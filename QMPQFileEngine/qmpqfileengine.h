@@ -40,7 +40,7 @@ public:
     bool setSize(qint64 size);
     qint64 write(const char * data, qint64 len);
 
-    static QStringList supportedFormats() { return QStringList() << ".mpq" << ".w3x"; }
+    static QStringList supportedFormats() { return QStringList() << "mpq" << "w3x" << "w3m"; }
 private:
 
 protected:
