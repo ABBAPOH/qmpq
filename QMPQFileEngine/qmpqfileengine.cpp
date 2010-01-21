@@ -12,8 +12,7 @@ QString QMPQFileEnginePrivate::getArchiveFilePath(const QString & path)
 {
 //    QString result = path;
     foreach (QString format, QMPQFileEngine::supportedFormats()) {
-        int index = path.lastIndexOf('.' + format);
-        qDebug() << index;
+        int index = path.toLower().lastIndexOf('.' + format);
         if (index != -1) {
             return path.mid(0, index+format.length() + 1);
         }
@@ -266,7 +265,7 @@ void QMPQFileEngine::setFileName(const QString & filePath)
     d->innerPath = file.mid(d->archiveFilePath.length() + 1);
     d->innerPath = d->innerPath.replace("/", "\\");
     d->archive = SharedMPQArchive::instance(d->archiveFilePath);
-    qDebug() << d->archiveFilePath;
+//    qDebug() << d->archiveFilePath;
 //    qDebug() << d->innerPath;
 
 }

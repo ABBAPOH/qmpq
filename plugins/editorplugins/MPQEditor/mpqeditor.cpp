@@ -9,6 +9,7 @@
 #include <QtGui/QApplication>
 #include <QtCore/QAbstractItemModel>
 #include <QtGui/QMessageBox>
+#include <QtGui/QDesktopServices>
 
 #include <QDebug>
 
@@ -58,6 +59,9 @@ MPQEditor::MPQEditor(QWidget *parent) :
         views[i]->setDragDropOverwriteMode(false);
         views[i]->setDefaultDropAction(Qt::MoveAction);
         connect(views[i], SIGNAL(doubleClicked(const QModelIndex &)), SLOT(onDoubleClick(const QModelIndex &)));
+//fixes slow initializing of view under windows
+#warning TODO: remove after writing new model
+        views[i]->setRootIndex(m_model->index(QDesktopServices::storageLocation(QDesktopServices::HomeLocation)));
     }
 
     setViewMode(ListView);
@@ -81,14 +85,14 @@ void MPQEditor::setViewMode(ViewMode mode)
     layout->setCurrentIndex(mode);
 
     m_viewMode = mode;
+    currentView = views[mode];
 
     if (mode < 3)
         views[mode]->setRootIndex(currentView ? currentView->rootIndex() : QModelIndex() ); //sets the same directory for list and table views
     else
         views[mode]->setRootIndex(m_model->index(m_currentFile));
-    currentView = views[mode];
-    currentView->show();
-    setFocusPolicy(Qt::NoFocus);
+
+//    setFocusPolicy(Qt::NoFocus);
 //    open(m_currentFile);
 }
 

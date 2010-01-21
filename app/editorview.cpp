@@ -32,7 +32,7 @@ EditorView::~EditorView()
 
 QWidget * EditorView::createWidgetForEditor(IEditor * editor)
 {
-    qDebug() << "EditorView::createWidgetForEditor" << (long long)editor;
+//    qDebug() << "EditorView::createWidgetForEditor" << (long long)editor;
     QWidget * widget = new QWidget();
     QVBoxLayout * lay = new QVBoxLayout();
     lay->setContentsMargins(0,0,0,0);
@@ -46,8 +46,8 @@ QWidget * EditorView::createWidgetForEditor(IEditor * editor)
 
 void EditorView::back()
 {
-    qDebug("EditorView::back");
-    qDebug() << m_history << historyPos;
+//    qDebug("EditorView::back");
+//    qDebug() << m_history << historyPos;
     if (historyPos == 0)
         return;
     historyPos--;
@@ -56,8 +56,8 @@ void EditorView::back()
 
 void EditorView::forward()
 {
-    qDebug("EditorView::forward");
-    qDebug() << m_history << historyPos;
+//    qDebug("EditorView::forward");
+//    qDebug() << m_history << historyPos;
     if (historyPos == m_history.count() - 1)
         return;
     historyPos++;
@@ -76,7 +76,7 @@ void EditorView::up()
 //cleans all history from start to end of list
 void EditorView::cleanHistory(int start)
 {
-    qDebug("EditorView::cleanHistory");
+//    qDebug("EditorView::cleanHistory");
     for (int i = start, end = m_history.count(); i < end; i++) {
         QString path = m_history.at(start);
 
@@ -92,7 +92,7 @@ void EditorView::cleanHistory(int start)
         m_history.removeAt(start);
     }
     historyPos = start - 1;
-    qDebug() << m_history;
+//    qDebug() << m_history;
 }
 
 bool EditorView::openUrl(const QString & url)

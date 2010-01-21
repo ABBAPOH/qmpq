@@ -12,7 +12,8 @@ MOC_DIR = build
 LIBS += -lStorm
 
 #mac: target.path += ../app/bin/QMPQ.app/Contents/Frameworks
-#INSTALLS += target
+win32: target.path += ../app/bin/
+INSTALLS += target
 
 DEFINES += QMPQFILEENGINE_LIBRARY
 SOURCES += qmpqfileengine.cpp \
