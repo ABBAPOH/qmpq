@@ -44,6 +44,7 @@ public slots:
     void closeCurrent();
     void newTab();
     void setAddress(const QString & path);
+    void about();
 
 private slots:
     void tabChanged(int index);

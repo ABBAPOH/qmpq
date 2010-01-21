@@ -21,6 +21,8 @@ public:
     void close(const QString &file);
     bool isOpened(const QString &file) { return m_editors.contains(file); }
     IEditor * editor(const QString &file);
+//    int count(IEditor *editor) { return m_editors.values().count(editor); }
+    bool isOpened(IEditor *editor) { return m_editors.values().contains(editor); }
 
 signals:
     void openRequested(const QString &file);

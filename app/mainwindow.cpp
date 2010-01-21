@@ -7,6 +7,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QDesktopServices>
+#include <QtGui/QMessageBox>
 #include <QDebug>
 
 #include "editormanager.h"
@@ -57,10 +58,16 @@ void MainWindow::changeEvent(QEvent *e)
 
 void MainWindow::initConnections()
 {
+//  File menu
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(open()));
     connect(ui->actionClose, SIGNAL(triggered()), SLOT(closeCurrent()));
 
+//  Window menu
     connect(ui->actionNew_Tab, SIGNAL(triggered()), SLOT(newTab()));
+
+//  Help menu
+    connect(ui->actionAbout_QMPQ, SIGNAL(triggered()), SLOT(about()));
+    connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
     connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
@@ -116,6 +123,14 @@ void MainWindow::setAddress(const QString & path)
     ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), QFileInfo(path).fileName());
 }
 
+void MainWindow::about()
+{
+   QMessageBox::about(this, tr("About QMPQ"),
+            tr("<b>QMPQ 1.3b</b> a Qt-based program that allows to manipulate "
+               "with Blizzard's MPQ-archives. "
+               "Copyright 2009 Nevermore (N) aka ABBAPOH"));
+}
+
 void MainWindow::disconnectEditor(QWidget * editor)
 {
     disconnect(ui->actionSave, 0, editor, 0);
@@ -140,6 +155,8 @@ void MainWindow::connectView(QWidget * view)
 {
     connect(view, SIGNAL(currentUrlChanged(const QString &)), this, SLOT(setAddress(const QString &)));
     connect(view, SIGNAL(centralWidgetChanged(QWidget *)), this, SLOT(connectEditor(QWidget *)));
+    connect(ui->actionBack, SIGNAL(triggered()), view, SLOT(back()));
+    connect(ui->actionForward, SIGNAL(triggered()), view, SLOT(forward()));
     connect(ui->actionUp_one_level, SIGNAL(triggered()), view, SLOT(up()));
     connect(addressBar, SIGNAL(textChanged(const QString &)), view, SLOT(setUrl(const QString &)));
 }

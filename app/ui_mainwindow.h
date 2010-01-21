@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Wed Jan 20 23:30:32 2010
+** Created: Thu Jan 21 15:10:33 2010
 **      by: Qt User Interface Compiler version 4.6.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -40,6 +40,8 @@ public:
     QAction *actionPaste;
     QAction *actionSelect_All;
     QAction *actionNew_Tab;
+    QAction *actionAbout_QMPQ;
+    QAction *actionAbout_Qt;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout;
     QTabWidget *tabWidget;
@@ -47,6 +49,7 @@ public:
     QMenu *menuFile;
     QMenu *menuEdit;
     QMenu *menuWindow;
+    QMenu *menuHelp;
     QStatusBar *statusbar;
     QToolBar *toolBar;
 
@@ -69,13 +72,13 @@ public:
         actionClose->setObjectName(QString::fromUtf8("actionClose"));
         actionBack = new QAction(MainWindow);
         actionBack->setObjectName(QString::fromUtf8("actionBack"));
-        actionBack->setEnabled(false);
+        actionBack->setEnabled(true);
         QIcon icon2;
         icon2.addFile(QString::fromUtf8(":/icons/images/prev.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionBack->setIcon(icon2);
         actionForward = new QAction(MainWindow);
         actionForward->setObjectName(QString::fromUtf8("actionForward"));
-        actionForward->setEnabled(false);
+        actionForward->setEnabled(true);
         QIcon icon3;
         icon3.addFile(QString::fromUtf8(":/icons/images/next.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionForward->setIcon(icon3);
@@ -96,6 +99,10 @@ public:
         actionSelect_All->setObjectName(QString::fromUtf8("actionSelect_All"));
         actionNew_Tab = new QAction(MainWindow);
         actionNew_Tab->setObjectName(QString::fromUtf8("actionNew_Tab"));
+        actionAbout_QMPQ = new QAction(MainWindow);
+        actionAbout_QMPQ->setObjectName(QString::fromUtf8("actionAbout_QMPQ"));
+        actionAbout_Qt = new QAction(MainWindow);
+        actionAbout_Qt->setObjectName(QString::fromUtf8("actionAbout_Qt"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout = new QVBoxLayout(centralwidget);
@@ -119,6 +126,8 @@ public:
         menuEdit->setObjectName(QString::fromUtf8("menuEdit"));
         menuWindow = new QMenu(menubar);
         menuWindow->setObjectName(QString::fromUtf8("menuWindow"));
+        menuHelp = new QMenu(menubar);
+        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -131,6 +140,7 @@ public:
         menubar->addAction(menuFile->menuAction());
         menubar->addAction(menuEdit->menuAction());
         menubar->addAction(menuWindow->menuAction());
+        menubar->addAction(menuHelp->menuAction());
         menuFile->addAction(actionOpen);
         menuFile->addAction(actionSave);
         menuFile->addSeparator();
@@ -141,6 +151,8 @@ public:
         menuEdit->addSeparator();
         menuEdit->addAction(actionSelect_All);
         menuWindow->addAction(actionNew_Tab);
+        menuHelp->addAction(actionAbout_QMPQ);
+        menuHelp->addAction(actionAbout_Qt);
         toolBar->addAction(actionBack);
         toolBar->addAction(actionForward);
         toolBar->addSeparator();
@@ -179,9 +191,12 @@ public:
         actionSelect_All->setShortcut(QApplication::translate("MainWindow", "Ctrl+A", 0, QApplication::UnicodeUTF8));
         actionNew_Tab->setText(QApplication::translate("MainWindow", "New Tab", 0, QApplication::UnicodeUTF8));
         actionNew_Tab->setShortcut(QApplication::translate("MainWindow", "Ctrl+T", 0, QApplication::UnicodeUTF8));
+        actionAbout_QMPQ->setText(QApplication::translate("MainWindow", "About QMPQ", 0, QApplication::UnicodeUTF8));
+        actionAbout_Qt->setText(QApplication::translate("MainWindow", "About Qt", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
         menuWindow->setTitle(QApplication::translate("MainWindow", "Window", 0, QApplication::UnicodeUTF8));
+        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0, QApplication::UnicodeUTF8));
         toolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

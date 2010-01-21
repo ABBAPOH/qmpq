@@ -11,12 +11,15 @@ class EditorView : public QStackedWidget
 {
 Q_OBJECT
     QString m_current;
-    QHash<QString, IEditor *> m_editors;
+//    QHash<QString, IEditor *> m_editors;
     QHash<IEditor *, QWidget *> m_widgets;
     EditorManager * editorManager;
     QWidget * m_centralWidget;
+    QStringList m_history;
+    int historyPos;
 
     QWidget * createWidgetForEditor(IEditor * editor);
+    void cleanHistory(int start);
     bool openUrl(const QString & url);
     void setCentralWidget(QWidget * widget);
 

@@ -4,6 +4,8 @@
 
 #include "../plugins/editorplugins/MPQEditor/mpqeditor.h"
 
+#include <QDebug>
+
 EditorManager::EditorManager(QObject *parent) :
         QObject(parent), m_pluginManager(PluginManager::instance())
 {
@@ -16,6 +18,8 @@ IEditor * EditorManager::open(const QString &file)
         const IEditorFactory * factory = editor->factory();
         if (factory->canHandle(file)) {
             editor->open(file);
+            m_editors.insert(file, editor);
+            qDebug() << m_editors;
             return editor;
         }
     }
@@ -46,10 +50,12 @@ IEditor * EditorManager::editor(const QString &file)
 
 void EditorManager::close(const QString &file)
 {
-    IEditor * editor = m_editors.value(file);
-    m_editors.remove(file);
+    IEditor * editor = m_editors.take(file); // takes only ONE editor
+
+    if (!isOpened(editor)) {
 //    editor->close();
-    delete editor;
+        delete editor;
+    }
 }
 
 
