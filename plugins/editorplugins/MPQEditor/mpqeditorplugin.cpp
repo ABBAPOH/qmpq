@@ -139,8 +139,8 @@ IEditor * MPQEditorFactory::createEditor(QWidget * parent)
 
 void MPQEditorFactory::shutdown()
 {
-//    qDebug("MPQEditorFactory::shutdown");
-//    delete MPQEditor::model();
+    qDebug("MPQEditorFactory::shutdown");
+    delete MPQEditor::model();
 //    MPQEditor::model()->deleteLater();;
 }
 

@@ -48,6 +48,7 @@ MPQEditor::MPQEditor(QWidget *parent) :
         m_model = new QDirModel;
         m_model->setReadOnly(false);
         m_model->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
+        m_model->setSorting(QDir::DirsFirst);
     }
     for (int i = 0; i < MaxViews; i++) {
         views[i]->setEditTriggers(QAbstractItemView::SelectedClicked);

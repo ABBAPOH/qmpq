@@ -1,6 +1,7 @@
 #include <QtGui/QApplication>
 #include <QtCore/QtPlugin>
 #include "mainwindow.h"
+#include "pluginmanager.h"
 #include <qmpqfileenginehandler.h>
 #include <QDebug>
 
@@ -28,5 +29,7 @@ int main(int argc, char *argv[])
     w.show();
 //    w.showMaximized();
 
-    return app.exec();
+    int code = app.exec();
+    PluginManager::shutdown();
+    return code;
 }

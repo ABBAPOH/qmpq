@@ -211,6 +211,7 @@ QMPQArchive::QMPQArchive()
 
 QMPQArchive::~QMPQArchive()
 {
+    qDebug("QMPQArchive::~QMPQArchive");
     closeArchive();
     delete d_ptr;
 //    if (mpq) {
@@ -542,7 +543,7 @@ void QMPQArchive::updateListFile()
     QString path = QDir::tempPath();
     path += "/(listfile)";
     QFile file(path);
-//    qDebug() << d->m_listFile;
+    qDebug() << d->m_listFile;
     file.open(QIODevice::WriteOnly);
     foreach (QString name, d->m_listFile) {
         file.write((name + "\r\n").toLocal8Bit());
