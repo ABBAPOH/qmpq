@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Thu Jan 21 15:10:33 2010
+** Created: Sat Jan 23 17:20:46 2010
 **      by: Qt User Interface Compiler version 4.6.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -19,10 +19,10 @@
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
 #include <QtGui/QStatusBar>
-#include <QtGui/QTabWidget>
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
+#include "tabwidget.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -44,7 +44,7 @@ public:
     QAction *actionAbout_Qt;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout;
-    QTabWidget *tabWidget;
+    TabWidget *tabWidget;
     QMenuBar *menubar;
     QMenu *menuFile;
     QMenu *menuEdit;
@@ -108,7 +108,7 @@ public:
         verticalLayout = new QVBoxLayout(centralwidget);
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        tabWidget = new QTabWidget(centralwidget);
+        tabWidget = new TabWidget(centralwidget);
         tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
         tabWidget->setDocumentMode(true);
         tabWidget->setTabsClosable(true);

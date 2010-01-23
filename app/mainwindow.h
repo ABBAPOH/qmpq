@@ -35,20 +35,17 @@ private:
 
     void initConnections();
     void connectAction(QAction * sender, const char * signal, QObject * receiver, const char * member);
-    void connectView(QWidget * view);
     void disconnectView(QWidget * view);
     void disconnectEditor(QWidget * editor);
 
 public slots:
     void open(const QString & path = "");
     void closeCurrent();
-    void newTab();
     void setAddress(const QString & path);
     void about();
 
 private slots:
-    void tabChanged(int index);
-    void closeTab(int index);
+    void connectView(QWidget * view);
     void connectEditor(QWidget * editor);
 };
 

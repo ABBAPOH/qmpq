@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     initConnections();
 
     previousWidget = 0;
-    newTab();
+    ui->tabWidget->newTab();
 }
 
 MainWindow::~MainWindow()
@@ -62,14 +62,13 @@ void MainWindow::initConnections()
     connect(ui->actionClose, SIGNAL(triggered()), SLOT(closeCurrent()));
 
 //  Window menu
-    connect(ui->actionNew_Tab, SIGNAL(triggered()), SLOT(newTab()));
+    connect(ui->actionNew_Tab, SIGNAL(triggered()), ui->tabWidget, SLOT(newTab()));
 
 //  Help menu
     connect(ui->actionAbout_QMPQ, SIGNAL(triggered()), SLOT(about()));
     connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
-    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
+    connect(ui->tabWidget, SIGNAL(currentChanged(QWidget *)), SLOT(connectView(QWidget *)));
     connect(core, SIGNAL(openRequested(const QString &)), SLOT(open(const QString &)));
 }
 
@@ -104,15 +103,7 @@ void MainWindow::open(const QString & path)
 
 void MainWindow::closeCurrent()
 {
-    closeTab(ui->tabWidget->currentIndex());
-}
-
-void MainWindow::newTab()
-{
-    EditorView * view = new EditorView(this);
-    int index = ui->tabWidget->addTab(view, "");
-    ui->tabWidget->setCurrentIndex(index);
-    setAddress(QDesktopServices::storageLocation(QDesktopServices::HomeLocation));
+    ui->tabWidget->closeTab(ui->tabWidget->currentIndex());
 }
 
 void MainWindow::setAddress(const QString & path)
@@ -152,12 +143,17 @@ void MainWindow::connectEditor(QWidget * editor)
 
 void MainWindow::connectView(QWidget * view)
 {
+    disconnectView(ui->tabWidget->previousWidget());
     connect(view, SIGNAL(currentUrlChanged(const QString &)), this, SLOT(setAddress(const QString &)));
     connect(view, SIGNAL(centralWidgetChanged(QWidget *)), this, SLOT(connectEditor(QWidget *)));
     connect(ui->actionBack, SIGNAL(triggered()), view, SLOT(back()));
     connect(ui->actionForward, SIGNAL(triggered()), view, SLOT(forward()));
     connect(ui->actionUp_one_level, SIGNAL(triggered()), view, SLOT(up()));
     connect(addressBar, SIGNAL(textChanged(const QString &)), view, SLOT(setUrl(const QString &)));
+
+    EditorView * editorView = qobject_cast<EditorView *>(view);
+    Q_ASSERT(editorView);
+    connectEditor(editorView->centralWidget());
 }
 
 void MainWindow::disconnectView(QWidget * view)
@@ -167,32 +163,3 @@ void MainWindow::disconnectView(QWidget * view)
     disconnect(ui->actionForward, 0, view, 0);
     disconnect(ui->actionUp_one_level, 0, view, 0);
 }
-
-void MainWindow::tabChanged(int index)
-{
-    QWidget * widget = ui->tabWidget->widget(index);
-    Q_ASSERT(widget);
-    EditorView * view = qobject_cast<EditorView *>(widget);
-    Q_ASSERT(view);
-//    qDebug() << index << currentFiles.value(widget);
-    if (previousWidget)
-        disconnectView(previousWidget);
-    connectView(view);
-    connectEditor(view->centralWidget());
-    setAddress(view->currentUrl());
-
-    previousWidget = widget;
-}
-
-void MainWindow::closeTab(int index)
-{
-    if (ui->tabWidget->count() == 1) // do not allow to close last tab
-        return;
-
-    QWidget * widget = ui->tabWidget->widget(index);
-    EditorView * view = qobject_cast<EditorView *>(widget);
-    ui->tabWidget->removeTab(index);
-    delete view;
-}
-
-
