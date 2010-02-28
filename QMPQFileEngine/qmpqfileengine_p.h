@@ -10,6 +10,7 @@ class QMPQFileEnginePrivate
 
     QString filePath;
     QString fileName;
+    QString baseName;
     QString archiveFilePath;
     QString innerPath;
     SharedMPQArchive * archive;

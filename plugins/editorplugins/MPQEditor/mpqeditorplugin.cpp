@@ -36,7 +36,7 @@ MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
     viewModeActions[2] = new QAction("tableView", m_toolBar);
     viewModeActions[3] = new QAction("columnView", m_toolBar);
     viewModeActions[4] = new QAction("treeView", m_toolBar);
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < MaxViews; i++) {
         m_toolBar->addAction(viewModeActions[i]);
         connect(viewModeActions[i], SIGNAL(triggered()), viewModeMapper, SLOT(map()));
         viewModeMapper->setMapping(viewModeActions[i], i);

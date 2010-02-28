@@ -81,7 +81,7 @@ IEditor * PluginManager::getEditor(const QString &file, QWidget * parent) const
 
 void PluginManager::shutdown()
 {
-//    qDebug("PluginManager::shutdown");
+    qDebug("PluginManager::shutdown");
     delete manager;
     manager = 0;
 }

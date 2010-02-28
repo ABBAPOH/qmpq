@@ -11,6 +11,7 @@ QMPQFileEngineHandler::QMPQFileEngineHandler()
 //    qDebug() << "QMPQFileEngineHandler::QMPQFileEngineHandler";
 }
 
+//QAbstractFileEngine *QMPQFileEngineHandler::create(const QString &fileName, QAbstractFileEngine::EngineType type) const
 QAbstractFileEngine *QMPQFileEngineHandler::create(const QString &fileName) const
 {
     if (lock)
@@ -18,9 +19,16 @@ QAbstractFileEngine *QMPQFileEngineHandler::create(const QString &fileName) cons
     QStringList suffixes = QMPQFileEngine::supportedFormats();
 //    suffixes << "mpq" << "w3x" << "w3m";
     foreach (QString suffix, suffixes) {
-        if (fileName.toLower().contains('.' + suffix))
+        int index = fileName.lastIndexOf('.' + suffix);
+        if (index != -1) {
+//            qDebug() << fileName.length() << index << type << fileName;
 //#warning under Linux may cause bug with case-sensitive files
-            return new QMPQFileEngine(fileName);
+//            if (type == QAbstractFileEngine::File && fileName.length() == index+4)
+//                return 0;
+//                qDebug() << "zero";
+//            else
+                return new QMPQFileEngine(fileName);
+        }
     }
     return 0;
     //    return fileName.toLower().contains(".mpq") ? new QMPQFileEngine(fileName) : 0;

@@ -24,12 +24,11 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(mpqeditor);
 
     QMPQFileEngineHandler h;
-    MainWindow w;
-//    w.installEventFilter(new EventFilter());
-    w.show();
-//    w.showMaximized();
+    MainWindow * w = new MainWindow();
+    w->show();
 
     int code = app.exec();
+    delete w;
     PluginManager::shutdown();
     return code;
 }

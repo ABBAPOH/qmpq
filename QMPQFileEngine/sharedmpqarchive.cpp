@@ -30,7 +30,7 @@ SharedMPQArchive::MPQsInUse& SharedMPQArchive::mpqsInUse()
 void SharedMPQArchive::clearCache()
 {
     if (!refcnt) {
-        qDebug() << "SharedMPQArchive::clearCache" << file();
+//        qDebug() << "SharedMPQArchive::clearCache" << file();
         SharedMPQArchive::mpqsInUse().remove(file());
         delete this;
     }

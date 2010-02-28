@@ -11,6 +11,7 @@ class QMPQFILEENGINESHARED_EXPORT QMPQFileEngineHandler : public QAbstractFileEn
     static bool lock;
 public:
     QMPQFileEngineHandler();
+//    QAbstractFileEngine *create(const QString &fileName, QAbstractFileEngine::EngineType type) const;
     QAbstractFileEngine *create(const QString &fileName) const;
     static void setLocked(bool locked) { lock = locked; }
 };
