@@ -41,6 +41,7 @@ private:
     static QDirModel * m_model;
     QModelIndexList selectedIndexes();
     QString selectedDir();
+    void extract(const QString & path, const QString & destDir);
 
 signals:
     void openRequested(const QString &file);

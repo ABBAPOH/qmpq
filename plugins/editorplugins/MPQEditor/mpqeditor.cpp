@@ -171,10 +171,29 @@ void MPQEditor::add(const QStringList & files)
     }
 }
 
+void MPQEditor::extract(const QString & path, const QString & destDir)
+{
+    QFileInfo info(path);
+    if (info.isDir()) {
+        QDir d(path);
+        QDir dest(destDir);
+        dest.mkdir(d.dirName());
+        foreach (QString child, d.entryList()) {
+#warning check for / in end of path
+            extract(child, destDir + "/" + d.dirName());
+        }
+    } else {
+        QFile file(path);
+        bool result = file.copy(destDir + "/" + info.fileName());
+    }
+}
+
 void MPQEditor::extract(const QString & destDir)
 {
     foreach (QModelIndex index, selectedIndexes()) {
 //        index = proxy->mapToSource(index);
+        extract(m_model->filePath(index), destDir);
+        continue;
         QFile file(m_model->filePath(index));
         QFileInfo info(m_model->filePath(index));
 //        qDebug() << file.fileName();
