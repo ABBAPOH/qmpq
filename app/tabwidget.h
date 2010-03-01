@@ -14,7 +14,7 @@ public:
     QWidget * previousWidget();
 
 signals:
-    void	currentChanged(QWidget * widget);
+    void	currentChanged(QWidget * widget); // inner signal
 
 public slots:
     void newTab();

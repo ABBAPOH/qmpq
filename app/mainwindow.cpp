@@ -154,6 +154,7 @@ void MainWindow::connectView(QWidget * view)
     EditorView * editorView = qobject_cast<EditorView *>(view);
     Q_ASSERT(editorView);
     connectEditor(editorView->centralWidget());
+    setAddress(editorView->currentUrl()); // changes current url
 }
 
 void MainWindow::disconnectView(QWidget * view)
