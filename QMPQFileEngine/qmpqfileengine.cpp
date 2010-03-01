@@ -170,7 +170,9 @@ bool QMPQFileEngine::mkdir(const QString & dirName, bool createParentDirectories
 {
 //    qDebug() << "QMPQFileEngine::mkdir";
     Q_D(const QMPQFileEngine);
-    return d->archive->mkdir(dirName.mid(d->archiveFilePath.length() + 1), createParentDirectories);
+    QString innerPath = dirName.mid(d->archiveFilePath.length() + 1);
+    innerPath = innerPath.replace('/', '\\');
+    return d->archive->mkdir(innerPath, createParentDirectories);
 }
 
 bool QMPQFileEngine::open(QIODevice::OpenMode mode)
@@ -237,7 +239,7 @@ bool QMPQFileEngine::remove()
 
 bool QMPQFileEngine::rename(const QString & newName)
 {
-    qDebug() << "QMPQFileEngine::rename" << newName;
+//    qDebug() << "QMPQFileEngine::rename" << newName;
     Q_D(const QMPQFileEngine);
     if (d->innerPath=="") {
         #warning TODO: fix it
@@ -246,15 +248,11 @@ bool QMPQFileEngine::rename(const QString & newName)
         bool result = file.rename(newName);
         QMPQFileEngineHandler::setLocked(false);
         return result;
-    } else
-        return d->archive->rename(d->innerPath, newName.mid(newName.lastIndexOf('/') + 1));
-//    QFile newFile(newName);
-//    newFile.open(QFile::WriteOnly);
-//    open(QIODevice::ReadOnly);
-//    newFile.write(d->fileData);
-//    newFile.close();
-//    close();
-//    return remove();
+    } else {
+        QString newInnerPath = newName.mid(d->archiveFilePath.length() + 1);
+        newInnerPath = newInnerPath.replace('/', '\\');
+        return d->archive->rename(d->innerPath, newInnerPath/*newName.mid(newName.lastIndexOf('/') + 1)*/);
+    }
 }
 
 bool QMPQFileEngine::rmdir(const QString & dirName, bool recurseParentDirectories) const

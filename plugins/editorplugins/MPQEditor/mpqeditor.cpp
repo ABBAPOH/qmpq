@@ -82,7 +82,7 @@ QModelIndexList MPQEditor::selectedIndexes()
 
 void MPQEditor::setViewMode(ViewMode mode)
 {
-    qDebug() << "MPQEditor::setViewMode" << mode;
+//    qDebug() << "MPQEditor::setViewMode" << mode;
     layout->setCurrentIndex(mode);
 
     m_viewMode = mode;
@@ -116,6 +116,9 @@ void MPQEditor::closeFile()
 
 QString MPQEditor::selectedDir()
 {
+    if (m_viewMode != ColumnView)
+        return m_currentFile;
+
     QModelIndexList list = selectedIndexes();
     QString result;
     if (list.count() == 0) {
@@ -275,6 +278,7 @@ void MPQEditor::up()
 void MPQEditor::newFolder(const QString & name)
 {
     QString dir = selectedDir();
+    qDebug() << dir;
     if (dir == "") {
 //        emit error;
     } else {
@@ -283,8 +287,7 @@ void MPQEditor::newFolder(const QString & name)
             folderName = "New Folder";
         QModelIndex index = m_model->mkdir(m_model->index(dir), folderName);
 
-//#warning TODO: remove if condition when Trolls fix bug with QColumnView crash
-//        if (m_viewMode != ColumnView /*index.isValid()*/)
+        if (index.isValid())
             currentView->edit(index);
     }
 }

@@ -20,7 +20,6 @@ QWidget * TabWidget::previousWidget()
 
 void TabWidget::newTab()
 {
-    qDebug("TabWidget::newTab");
     EditorView * view = new EditorView(this);
     int index = addTab(view, "");
     setCurrentIndex(index);
