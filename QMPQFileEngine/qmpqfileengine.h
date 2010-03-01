@@ -42,6 +42,8 @@ public:
 
     static QStringList supportedFormats() { return QStringList() << "mpq" << "w3x" << "w3m"; }
 private:
+    QFile * getNativeFile(QString path) const;
+    QFileInfo * getNativeFileInfo(QString path) const;
 
 protected:
     QMPQFileEnginePrivate * d_ptr;

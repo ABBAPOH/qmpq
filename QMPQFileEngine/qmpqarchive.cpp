@@ -190,10 +190,10 @@ bool QMPQArchivePrivate::rename(const QString &oldName, const QString &newName)
 {
     setUpdateOnClose();
     bool res = SFileRenameFile(mpq, oldName.toLocal8Bit().data(), newName.toLocal8Bit().data());
-    qDebug() << "QMPQArchivePrivate::rename" << oldName << newName << res;
+//    qDebug() << "QMPQArchivePrivate::rename" << oldName << newName << res;
     if (!res) {
         m_lastError = GetLastError();
-        qWarning() << "can't rename file: " << GetLastError();
+        qWarning() << "can't rename file: " << oldName << GetLastError();
         return false;
     }
     return true;
@@ -211,7 +211,7 @@ QMPQArchive::QMPQArchive()
 
 QMPQArchive::~QMPQArchive()
 {
-    qDebug("QMPQArchive::~QMPQArchive");
+//    qDebug("QMPQArchive::~QMPQArchive");
     closeArchive();
     delete d_ptr;
 //    if (mpq) {
@@ -288,7 +288,7 @@ bool QMPQArchive::add(const QStringList & files, const QString & path)
 
 bool QMPQArchive::add(const QString & file, const QString & path)
 {
-    qDebug() << "QMPQArchive::add" << file << path;
+//    qDebug() << "QMPQArchive::add" << file << path;
     return add(QStringList() << file, treeItem(QMPQArchive::getFilePath(path)));
 }
 
@@ -427,7 +427,8 @@ bool QMPQArchive::rename(TreeItem * item, const QString & newName)
         return false;
     }
 
-    if (item->isDir()) {
+    bool isDir = item->isDir();
+    if (isDir) {
 //        return false;
         QString name = newName;
         if (name != "" ) {
@@ -450,17 +451,24 @@ bool QMPQArchive::rename(TreeItem * item, const QString & newName)
 //    qDebug() << "path: " << path << "name: " << name;
         TreeItem * oldParent = item->parent();
         oldParent->deleteChild(item);
-        item = mkfile(newName);
+        if (isDir) {
+            mkdir(newName, true);
+            item = this->treeItem(newName);
+        } else
+            item = mkfile(newName);
         d->hash.remove(oldName);
         item->setData(FullPath, newName);
         item->setData(Name, newName.split('\\').last());
         d->m_listFile.removeAll(oldName);
         d->m_listFile.append(newName);
 
-        bool res = d->rename(oldName, newName);
-        d->getFileInfo(newName.toLocal8Bit().data(), 0);
+        if (!isDir) {
+            bool res = d->rename(oldName, newName);
+            d->getFileInfo(newName.toLocal8Bit().data(), 0);
 
-        return res;
+            return res;
+        }
+        return true;
 }
 
 bool QMPQArchive::remove(TreeItem * item)
@@ -539,11 +547,11 @@ void QMPQArchive::updateListFile()
 {
     Q_D(QMPQArchive);
     bool ok = true;
-    qDebug("QMPQArchive::updateListFile");
+//    qDebug("QMPQArchive::updateListFile");
     QString path = QDir::tempPath();
     path += "/(listfile)";
     QFile file(path);
-    qDebug() << d->m_listFile;
+//    qDebug() << d->m_listFile;
     file.open(QIODevice::WriteOnly);
     foreach (QString name, d->m_listFile) {
         file.write((name + "\r\n").toLocal8Bit());
