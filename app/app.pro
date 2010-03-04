@@ -6,6 +6,7 @@ TEMPLATE = app
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
+RCC_DIR = build
 LIBS += -L../QMPQFileEngine/bin \
     -lQMPQFileEngine
 LIBS += -L../plugins/editorplugins/MPQEditor/bin/ \

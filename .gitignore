@@ -7,6 +7,7 @@ Makefile*
 *.pro.user
 object_script.*.*
 *~
+ui_*
 qtcreator-build*
 *.qm
 commit.txt

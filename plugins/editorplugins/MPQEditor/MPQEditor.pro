@@ -3,6 +3,7 @@ TEMPLATE = lib
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
+RCC_DIR = build
 CONFIG += plugin \
     static
 HEADERS += mpqeditor.h \

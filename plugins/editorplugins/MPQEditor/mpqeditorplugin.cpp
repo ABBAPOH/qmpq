@@ -48,7 +48,7 @@ MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
     }
     #warning TODO: why uses SLOT in this class instead of slot in MPQEditor
     connect(viewModeMapper, SIGNAL(mapped(int)), this, SLOT(setViewMode(int)));
-    viewModeActions[1]->trigger();
+    viewModeActions[0]->trigger();
 
     actionNew_Folder = new QAction("new Folder", this);
     connect(actionNew_Folder, SIGNAL(triggered()), m_editor, SLOT(newFolder()));
