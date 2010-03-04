@@ -5,4 +5,5 @@ SUBDIRS = \
     QMPQFileEngine \
     plugins/editorplugins/MPQEditor \
     plugins/editorplugins/ImageViewer \
+    plugins/editorplugins/CodeEditor \
     app

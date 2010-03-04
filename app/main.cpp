@@ -21,6 +21,8 @@ class EventFilter : public QObject
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    app.setApplicationName("QMPQ");
+    app.setOrganizationName("QMPQ");
     Q_INIT_RESOURCE(mpqeditor);
 
     QMPQFileEngineHandler h;
