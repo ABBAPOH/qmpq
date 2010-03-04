@@ -59,6 +59,7 @@ MPQEditor::MPQEditor(QWidget *parent) :
         views[i]->setAcceptDrops(true);
         views[i]->setDragDropOverwriteMode(false);
         views[i]->setDefaultDropAction(Qt::MoveAction);
+        views[i]->setSelectionMode(QAbstractItemView::ExtendedSelection);
         connect(views[i], SIGNAL(doubleClicked(const QModelIndex &)), SLOT(onDoubleClick(const QModelIndex &)));
 //fixes slow initializing of view under windows
 #warning TODO: remove after writing new model
@@ -85,16 +86,13 @@ void MPQEditor::setViewMode(ViewMode mode)
 //    qDebug() << "MPQEditor::setViewMode" << mode;
     layout->setCurrentIndex(mode);
 
-    m_viewMode = mode;
-    currentView = views[mode];
-
     if (mode < 3)
         views[mode]->setRootIndex(currentView ? currentView->rootIndex() : QModelIndex() ); //sets the same directory for list and table views
     else
         views[mode]->setRootIndex(m_model->index(m_currentFile));
 
-//    setFocusPolicy(Qt::NoFocus);
-//    open(m_currentFile);
+    m_viewMode = mode;
+    currentView = views[mode];
 }
 
 void MPQEditor::open(const QString &file)
