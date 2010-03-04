@@ -29,10 +29,10 @@ GalaxySyntaxHighlighter::GalaxySyntaxHighlighter(QTextDocument *parent)
     }
 
     constFormat.setForeground(Qt::darkBlue);
-    rule.pattern = QRegExp("\\b[0-9]\\b");
+    rule.pattern = QRegExp("\\b[0-9]+\\b");
     rule.format = constFormat;
     highlightingRules.append(rule);
-    rule.pattern = QRegExp("\\bnull|true|false\\b");
+    rule.pattern = QRegExp("\\btrue|false\\b");
     rule.format = constFormat;
     highlightingRules.append(rule);
 

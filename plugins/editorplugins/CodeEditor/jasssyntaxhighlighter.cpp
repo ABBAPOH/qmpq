@@ -30,7 +30,7 @@ JassSyntaxHighlighter::JassSyntaxHighlighter(QTextDocument *parent)
     }
 
     constFormat.setForeground(Qt::darkBlue);
-    rule.pattern = QRegExp("\\b[0-9]\\b");
+    rule.pattern = QRegExp("\\b([0-9]+|0x[0-9a-fA-F]+)\\b|'[0-9A-Z][0-9A-Z][0-9A-Z][0-9A-Z]'");
     rule.format = constFormat;
     highlightingRules.append(rule);
     rule.pattern = QRegExp("\\bnull|true|false\\b");
