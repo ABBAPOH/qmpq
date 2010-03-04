@@ -6,6 +6,7 @@
 class MPQEditor;
 class QSignalMapper;
 class QAction;
+class QActionGroup;
 class QContextMenuEvent;
 class MPQEditorPlugin : public QObject, public IEditor
 {
@@ -22,6 +23,7 @@ private:
     MPQEditor * m_editor;
     QToolBar * m_toolBar;
     QSignalMapper * viewModeMapper;
+    QActionGroup * viewModeActionGroup;
     QAction * viewModeActions[5];
     QAction * actionAdd;
     QAction * actionExtract;

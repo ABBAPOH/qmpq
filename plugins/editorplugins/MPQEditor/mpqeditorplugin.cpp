@@ -5,6 +5,7 @@
 #include <QtGui/QFileDialog>
 #include <QtCore/QSignalMapper>
 #include <QtGui/QAction>
+#include <QtGui/QActionGroup>
 #include <QtGui/QMenu>
 #include <QtGui/QContextMenuEvent>
 //#include <QDebug>
@@ -14,7 +15,8 @@
 //================================== MPQEditorPlugin ==================================
 
 MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
-    : viewModeMapper(new QSignalMapper())
+    : viewModeMapper(new QSignalMapper()),
+    viewModeActionGroup(new QActionGroup(this))
 {
     m_editor = editor;
     m_toolBar = new QToolBar();
@@ -36,12 +38,18 @@ MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
     viewModeActions[2] = new QAction("tableView", m_toolBar);
     viewModeActions[3] = new QAction("columnView", m_toolBar);
     viewModeActions[4] = new QAction("treeView", m_toolBar);
+
     for (int i = 0; i < MaxViews; i++) {
         m_toolBar->addAction(viewModeActions[i]);
         connect(viewModeActions[i], SIGNAL(triggered()), viewModeMapper, SLOT(map()));
         viewModeMapper->setMapping(viewModeActions[i], i);
+        viewModeActions[i]->setCheckable(true);
+        viewModeActionGroup->addAction(viewModeActions[i]);
     }
+    #warning TODO: why uses SLOT in this class instead of slot in MPQEditor
     connect(viewModeMapper, SIGNAL(mapped(int)), this, SLOT(setViewMode(int)));
+    viewModeActions[1]->trigger();
+
     actionNew_Folder = new QAction("new Folder", this);
     connect(actionNew_Folder, SIGNAL(triggered()), m_editor, SLOT(newFolder()));
 
