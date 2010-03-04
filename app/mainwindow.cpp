@@ -116,7 +116,7 @@ void MainWindow::setAddress(const QString & path)
 void MainWindow::about()
 {
    QMessageBox::about(this, tr("About QMPQ"),
-            tr("<b>QMPQ 1.3с</b> a Qt-based program that allows to manipulate "
+            tr("<b>QMPQ 1.4</b> a Qt-based program that allows to manipulate "
                "with Blizzard's MPQ-archives. "
                "Copyright 2009 Nevermore (N) aka ABBAPOH"));
 }
