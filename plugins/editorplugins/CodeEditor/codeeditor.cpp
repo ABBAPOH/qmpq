@@ -2,6 +2,7 @@
 //#include "ui_codeeditor.h"
 #include "linenumberarea.h"
 #include "jasssyntaxhighlighter.h"
+#include "galaxysyntaxhighlighter.h"
 
 #include <QtGui/QPainter>
 #include <QtGui/QFileDialog>
@@ -73,6 +74,8 @@ void CodeEditor::setHighligher()
         delete highlighter;
     if (suffix == "j" || suffix == "ai") {
         highlighter = new JassSyntaxHighlighter(document());
+    } else if (suffix == "galaxy") {
+        highlighter = new GalaxySyntaxHighlighter(document());
     } else {
         highlighter = 0;
     }

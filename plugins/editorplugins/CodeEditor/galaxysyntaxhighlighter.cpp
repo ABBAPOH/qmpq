@@ -1,13 +1,12 @@
-#include "jasssyntaxhighlighter.h"
+#include "galaxysyntaxhighlighter.h"
 
 #include <QSettings>
 
-JassSyntaxHighlighter::JassSyntaxHighlighter(QTextDocument *parent)
-        : QSyntaxHighlighter(parent)
+GalaxySyntaxHighlighter::GalaxySyntaxHighlighter(QTextDocument *parent)
+    : QSyntaxHighlighter(parent)
 {
+    QSettings s("galaxy.ini", QSettings::IniFormat);
     HighlightingRule rule;
-
-    QSettings s("jass.ini", QSettings::IniFormat);
 
     keywordFormat.setForeground(Qt::black);
     keywordFormat.setFontWeight(QFont::Bold);
@@ -48,7 +47,7 @@ JassSyntaxHighlighter::JassSyntaxHighlighter(QTextDocument *parent)
     highlightingRules.append(rule);
 }
 
-void JassSyntaxHighlighter::highlightBlock(const QString &text)
+void GalaxySyntaxHighlighter::highlightBlock(const QString &text)
 {
     foreach (const HighlightingRule &rule, highlightingRules) {
         QRegExp expression(rule.pattern);
@@ -60,5 +59,4 @@ void JassSyntaxHighlighter::highlightBlock(const QString &text)
         }
     }
     setCurrentBlockState(0);
-
 }

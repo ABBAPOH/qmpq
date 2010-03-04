@@ -7,10 +7,12 @@ CONFIG += plugin
 HEADERS += codeeditor.h \
     codeeditorplugin.h \
     linenumberarea.h \
-    jasssyntaxhighlighter.h
+    jasssyntaxhighlighter.h \
+    galaxysyntaxhighlighter.h
 SOURCES += codeeditor.cpp \
     codeeditorplugin.cpp \
-    jasssyntaxhighlighter.cpp
+    jasssyntaxhighlighter.cpp \
+    galaxysyntaxhighlighter.cpp
 FORMS += 
 target.path += ../../../app/bin/plugins
 INSTALLS += target

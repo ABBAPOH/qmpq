@@ -1,19 +1,17 @@
-#ifndef JASSSYNTAXHIGHLIGHTER_H
-#define JASSSYNTAXHIGHLIGHTER_H
+#ifndef GALAXYSYNTAXHIGHLIGHTER_H
+#define GALAXYSYNTAXHIGHLIGHTER_H
 
 #include <QSyntaxHighlighter>
 
-#include <QHash>
+//#include <QHash>
 #include <QTextCharFormat>
 
 class QTextDocument;
 
-class JassSyntaxHighlighter : public QSyntaxHighlighter
+class GalaxySyntaxHighlighter : public QSyntaxHighlighter
 {
-    Q_OBJECT
-
 public:
-    JassSyntaxHighlighter(QTextDocument *parent = 0);
+    GalaxySyntaxHighlighter(QTextDocument *parent = 0);
 
 protected:
     void highlightBlock(const QString &text);
@@ -26,17 +24,12 @@ private:
     };
     QVector<HighlightingRule> highlightingRules;
 
-    QRegExp commentStartExpression;
-    QRegExp commentEndExpression;
-
     QTextCharFormat keywordFormat;
     QTextCharFormat singleLineCommentFormat;
     QTextCharFormat constFormat;
 
-    QTextCharFormat classFormat;
-    QTextCharFormat multiLineCommentFormat;
     QTextCharFormat stringFormat;
     QTextCharFormat functionFormat;
 };
 
-#endif // JASSSYNTAXHIGHLIGHTER_H
+#endif // GALAXYSYNTAXHIGHLIGHTER_H
