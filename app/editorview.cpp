@@ -3,12 +3,13 @@
 #include "editormanager.h"
 #include "ieditor.h"
 
-#include <QtGui/QVBoxLayout>
+#include <QtGui/QApplication>
 #include <QtGui/QToolBar>
+#include <QtGui/QVBoxLayout>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QtCore/QSet>
-#include <QApplication>
+#include <QtCore/QVariant>
 
 #include <QDebug>
 
@@ -83,6 +84,9 @@ void EditorView::cleanHistory(int start)
         // if trying to go manually to some place in removing part, do not try to release editor
         if (path != m_current) {
             IEditor * editor = editorManager->editor(path);
+//            if (!editor->widget()->property("modified").isValid()) {
+//                qWarning() << "MODIFIED!!!";
+//            }
             editorManager->close(path);
             if (!editorManager->isOpened(editor)) {
                 delete m_widgets.value(editor);
@@ -108,7 +112,7 @@ bool EditorView::openUrl(const QString & url)
         m_history.append(url);
         historyPos++;
     } else if (url != m_history.at(historyPos)) {
-        cleanHistory(historyPos+1);
+        cleanHistory(historyPos + 1);
         m_history.append(url);
         historyPos++;
     }

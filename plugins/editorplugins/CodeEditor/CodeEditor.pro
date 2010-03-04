@@ -1,4 +1,4 @@
-TARGET = ImageViewer
+TARGET = CodeEditor
 TEMPLATE = lib
 DESTDIR = bin
 OBJECTS_DIR = build
@@ -13,6 +13,6 @@ SOURCES += codeeditor.cpp \
     codeeditorplugin.cpp \
     jasssyntaxhighlighter.cpp \
     galaxysyntaxhighlighter.cpp
-FORMS += 
 target.path += ../../../app/bin/plugins
 INSTALLS += target
+RESOURCES += codeeditor.qrc

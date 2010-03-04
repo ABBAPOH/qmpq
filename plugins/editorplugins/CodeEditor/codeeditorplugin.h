@@ -18,6 +18,8 @@ public:
     virtual QToolBar * toolBar ();
     virtual void close();
 private:
+    void initToolBar();
+
     CodeEditor * m_editor;
     QToolBar * m_toolBar;
     QAction * viewModeActions[5];

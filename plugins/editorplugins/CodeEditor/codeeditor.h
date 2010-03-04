@@ -25,8 +25,7 @@ public:
 public slots:
     void open(const QString & path = QString());
     void closeFile();
-    void save();
-
+    void save(const QString & path = "");
 
 protected:
     void resizeEvent(QResizeEvent *event);

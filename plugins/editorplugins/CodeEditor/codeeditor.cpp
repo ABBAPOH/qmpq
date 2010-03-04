@@ -55,9 +55,9 @@ void CodeEditor::closeFile()
 
 }
 
-void CodeEditor::save()
+void CodeEditor::save(const QString & path)
 {
-    QFile file(currentFile);
+    QFile file(path == "" ? currentFile : path);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
 //        QString data = ui->textEdit->toPlainText();
         file.write(toPlainText().toLocal8Bit());

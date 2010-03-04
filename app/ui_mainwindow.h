@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Mon Mar 1 19:27:42 2010
+** Created: Thu Mar 4 15:53:40 2010
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -91,10 +91,19 @@ public:
         actionCopy = new QAction(MainWindow);
         actionCopy->setObjectName(QString::fromUtf8("actionCopy"));
         actionCopy->setEnabled(true);
+        QIcon icon5;
+        icon5.addFile(QString::fromUtf8(":/icons/images/copy.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionCopy->setIcon(icon5);
         actionCut = new QAction(MainWindow);
         actionCut->setObjectName(QString::fromUtf8("actionCut"));
+        QIcon icon6;
+        icon6.addFile(QString::fromUtf8(":/icons/images/cut.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionCut->setIcon(icon6);
         actionPaste = new QAction(MainWindow);
         actionPaste->setObjectName(QString::fromUtf8("actionPaste"));
+        QIcon icon7;
+        icon7.addFile(QString::fromUtf8(":/icons/images/paste.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionPaste->setIcon(icon7);
         actionSelect_All = new QAction(MainWindow);
         actionSelect_All->setObjectName(QString::fromUtf8("actionSelect_All"));
         actionNew_Tab = new QAction(MainWindow);

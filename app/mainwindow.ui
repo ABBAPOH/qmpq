@@ -182,6 +182,10 @@
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="qmq.qrc">
+     <normaloff>:/icons/images/copy.png</normaloff>:/icons/images/copy.png</iconset>
+   </property>
    <property name="text">
     <string>Copy</string>
    </property>
@@ -190,6 +194,10 @@
    </property>
   </action>
   <action name="actionCut">
+   <property name="icon">
+    <iconset resource="qmq.qrc">
+     <normaloff>:/icons/images/cut.png</normaloff>:/icons/images/cut.png</iconset>
+   </property>
    <property name="text">
     <string>Cut</string>
    </property>
@@ -198,6 +206,10 @@
    </property>
   </action>
   <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="qmq.qrc">
+     <normaloff>:/icons/images/paste.png</normaloff>:/icons/images/paste.png</iconset>
+   </property>
    <property name="text">
     <string>Paste</string>
    </property>

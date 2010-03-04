@@ -15,6 +15,19 @@ CodeEditorPlugin::CodeEditorPlugin(CodeEditor * editor)
 {
     m_editor = editor;
     m_toolBar = new QToolBar();
+    initToolBar();
+}
+
+void CodeEditorPlugin::initToolBar()
+{
+    m_toolBar->addAction(QIcon(":/icons/images/save.png"), "save", m_editor, SLOT(save()));
+    m_toolBar->addSeparator();
+    m_toolBar->addAction(QIcon(":/icons/images/cut.png"), "cut", m_editor, SLOT(cut()));
+    m_toolBar->addAction(QIcon(":/icons/images/copy.png"), "copy", m_editor, SLOT(copy()));
+    m_toolBar->addAction(QIcon(":/icons/images/paste.png"), "paste", m_editor, SLOT(paste()));
+    m_toolBar->addSeparator();
+    m_toolBar->addAction(QIcon(":/icons/images/undo.png"), "undo", m_editor, SLOT(undo()));
+    m_toolBar->addAction(QIcon(":/icons/images/redo.png"), "redo", m_editor, SLOT(redo()));
 }
 
 CodeEditorPlugin::~CodeEditorPlugin()
