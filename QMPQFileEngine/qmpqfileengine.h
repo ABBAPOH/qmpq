@@ -31,6 +31,7 @@ public:
     uint ownerId(FileOwner owner) const;
     qint64 pos() const;
     qint64 read(char* data, qint64 maxlen);
+    bool	seek(qint64 offset);
     qint64 size() const;
     bool remove();
     bool rename(const QString & newName);

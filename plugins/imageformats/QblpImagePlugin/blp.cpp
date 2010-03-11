@@ -9,6 +9,8 @@
 
 #include <QDebug>
 
+#include <QFile>
+
 BLPHandler::BLPHandler()
         : quality(75)
 {
@@ -38,7 +40,7 @@ void ARGB2BGRA(QImage & image)
 // Applications/Warcraft III/war3.mpq/UI/Console/Human/HumanUITile04.blp
 bool BLPHandler::loadJPEG( QDataStream & s, const BLPHeader & blp, QImage &img )
 {
-    qDebug("BLPHandler::loadJPEG");
+//    qDebug("BLPHandler::loadJPEG");
     quint32 offset = 0;
     quint32 size = 0;
 
@@ -46,13 +48,10 @@ bool BLPHandler::loadJPEG( QDataStream & s, const BLPHeader & blp, QImage &img )
     s >> JpegHeaderSize;
 
     quint8 JpegHeader[JpegHeaderSize];
-    for (quint32 i = 0; i < JpegHeaderSize; i++) {
-        s >> JpegHeader[i];
-    }
-
-    //      Reads JPEG header and data
     QByteArray arr;
-    for (quint32 i = 0; i < JpegHeaderSize; i++) {
+    //      Reads JPEG header and data
+    for (unsigned i = 0; i < JpegHeaderSize; i++) {
+        s >> JpegHeader[i];
         arr.append(JpegHeader[i]);
     }
 
@@ -61,17 +60,15 @@ bool BLPHandler::loadJPEG( QDataStream & s, const BLPHeader & blp, QImage &img )
 
     quint8 jpegData[size];
     s.device()->seek(offset);
-    for (quint32 i = 0; i < size; i++) {
+    for (unsigned i = 0; i < size; i++) {
         s >> jpegData[i];
-    }
-    for (quint32 i = 0; i < size; i++) {
         arr.append(jpegData[i]);
     }
 
+
     //      Reads JPEG from QByteArray to QImage
     QBuffer newDevice(&arr);
-    newDevice.open(QBuffer::ReadWrite);
-
+    newDevice.open(QBuffer::ReadOnly);
     QJpegHandler h;
     h.setDevice(&newDevice);
     if (!h.canRead(&newDevice)) {

@@ -209,11 +209,13 @@ qint64 QMPQFileEngine::pos() const
     return d_func()->offset;
 }
 
-//qint64 QMPQFileEngine::seek() const
-//{
-//    qDebug() << "QMPQFileEngine::seek";
-//    return 0;
-//}
+bool QMPQFileEngine::seek(qint64 offset)
+{
+    qDebug() << "QMPQFileEngine::seek";
+    Q_D(QMPQFileEngine);
+    d->offset += offset;
+    return true;
+}
 
 qint64 QMPQFileEngine::read(char* data, qint64 maxlen)
 {
