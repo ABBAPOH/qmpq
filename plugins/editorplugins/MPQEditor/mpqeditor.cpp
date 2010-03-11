@@ -172,20 +172,19 @@ void MPQEditor::add(const QStringList & files)
     }
 }
 
-void MPQEditor::extract(const QString & path, const QString & destDir)
+void MPQEditor::extract(const QString & path, const QString & dest)
 {
     QFileInfo info(path);
-    if (info.isDir()) {
-        QDir d(path);
-        QDir dest(destDir);
-        dest.mkdir(d.dirName());
-        foreach (QString child, d.entryList()) {
-#warning check for / in end of path
-            extract(child, destDir + "/" + d.dirName());
+    QDir destDir(dest);
+    if (info.isDir()) { // recursively copies current dir
+        QDir dir(path);
+        destDir.mkdir(dir.dirName());
+        foreach (QString child, dir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot)) {
+            extract(dir.filePath(child), destDir.filePath(dir.dirName()));
         }
-    } else {
+    } else { // copies current file
         QFile file(path);
-        bool result = file.copy(destDir + "/" + info.fileName());
+        bool result = file.copy(destDir.filePath(info.fileName()));
     }
 }
 
