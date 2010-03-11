@@ -71,7 +71,7 @@ void EditorView::up()
     if (info.isRoot())
         setUrl("");
     else
-        setUrl(info.path());
+        setUrl(info.dir().path());
 }
 
 //cleans all history from start to end of list
