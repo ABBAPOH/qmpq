@@ -42,6 +42,7 @@ private:
     QModelIndexList selectedIndexes();
     QString selectedDir();
     void extract(const QString & path, const QString & destDir);
+    void remove(const QModelIndex & path);
 
 signals:
     void openRequested(const QString &file);

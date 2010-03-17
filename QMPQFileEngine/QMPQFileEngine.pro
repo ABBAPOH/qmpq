@@ -10,6 +10,7 @@ OBJECTS_DIR = build
 MOC_DIR = build
 
 LIBS += -lStorm
+INCLUDEPATH += ../3rdParty
 
 #mac: target.path += ../app/bin/QMPQ.app/Contents/Frameworks
 win32: target.path += ../app/bin/

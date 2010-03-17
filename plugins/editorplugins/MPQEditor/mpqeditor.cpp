@@ -208,22 +208,45 @@ void MPQEditor::extract(const QString & destDir)
     }
 }
 
+void MPQEditor::remove(const QModelIndex & index)
+{
+qDebug() << m_model->filePath(index);
+
+    if (m_model->isDir(index)) { // recursively removes current dir
+        QDir dir(m_model->filePath(index));
+        foreach (QString child, dir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot)) {
+            remove(m_model->index(dir.filePath(child)));
+        }
+
+//        for (int row = 0, rows = m_model->rowCount(index); row < rows; row++) {
+//            remove(index.child(0, 0));
+//        }
+//        m_model->in
+//        QApplication::processEvents();
+        bool result = m_model->rmdir(index);
+        qDebug() << result;
+    } else { // removes current file
+        bool result = m_model->remove(index);
+    }
+}
+
 void MPQEditor::remove()
 {
     foreach (QModelIndex index, selectedIndexes()) {
 //        QFile file(m_model->filePath(index));
         bool result;
-        QFileInfo info(m_model->filePath(index));
-        if (info.isDir())
+        remove(index);
+//        QFileInfo info(m_model->filePath(index));
+//        if (info.isDir())
             result = m_model->rmdir(index);
-        else
-            result = m_model->remove(index);
-        if (!result) {
-            QMessageBox box(QMessageBox::Critical, "Critical Error", "Can't remove file "
-                            + index.data(Qt::DisplayRole).toString() + ": "/*+ file.errorString()*/, QMessageBox::Ok);
-            box.exec();
-            return;
-        }
+//        else
+//            result = m_model->remove(index);
+//        if (!result) {
+//            QMessageBox box(QMessageBox::Critical, "Critical Error", "Can't remove file "
+//                            + index.data(Qt::DisplayRole).toString() + ": "/*+ file.errorString()*/, QMessageBox::Ok);
+//            box.exec();
+//            return;
+//        }
     }
 }
 
