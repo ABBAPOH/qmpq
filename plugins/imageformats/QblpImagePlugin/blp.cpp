@@ -38,7 +38,7 @@ void ARGB2BGRA(QImage & image)
     }
 }
 // Applications/Warcraft III/war3.mpq/UI/Console/Human/HumanUITile04.blp
-bool BLPHandler::loadJPEG( QDataStream & s, const BLPHeader & blp, QImage &img )
+bool BLPHandler::loadJPEG( QDataStream & s, const BLPHeader & blp, QImage &img)
 {
 //    qDebug("BLPHandler::loadJPEG");
     quint32 offset = 0;
@@ -59,12 +59,12 @@ bool BLPHandler::loadJPEG( QDataStream & s, const BLPHeader & blp, QImage &img )
     size = blp.mipMapSize[0];
 
     quint8 jpegData[size];
-    s.device()->seek(offset);
+    qDebug() << size;
+    qDebug() << s.device()->seek(offset);
     for (unsigned i = 0; i < size; i++) {
         s >> jpegData[i];
         arr.append(jpegData[i]);
     }
-
 
     //      Reads JPEG from QByteArray to QImage
     QBuffer newDevice(&arr);
@@ -129,7 +129,7 @@ bool BLPHandler::loadPalletted( QDataStream & s, const BLPHeader & blp, QImage &
     return true;
 }
 
-bool BLPHandler::load( QDataStream & s, const BLPHeader & blp, QImage &img )
+bool BLPHandler::readData( QDataStream & s, const BLPHeader & blp, QImage &img )
 {
     // Create image.
 //    qDebug() << blp.width << blp.height;
@@ -188,10 +188,10 @@ bool BLPHandler::read(QImage *outImage)
 
     // Read image header.
     BLPHeader blp;
-    s >> blp;
+    readHeader(s, blp);
 
     QImage img;
-    bool result = load(s, blp, img);
+    bool result = readData(s, blp, img);
 
     if (result == false) {
         qWarning() << "Error loading BLP file.";
@@ -203,29 +203,38 @@ bool BLPHandler::read(QImage *outImage)
 
 }
 
-bool BLPHandler::write(const QImage &image)
+void BLPHandler::fillHeader(const QImage &image, BLPHeader & head)
 {
+    head.BLPType[0] = 'B';
+    head.BLPType[1] = 'L';
+    head.BLPType[2] = 'P';
+    head.width = image.width();
+    head.height = image.height();
+}
+
+bool BLPHandler::writeJPEG(const QImage &image)
+{
+    qDebug() << "BLPHandler::writeJPEG";
     QImage result = image;
     ARGB2BGRA(result); // Changes colors in source image
+    BLPHeader header;
     int width = result.width();
     int height = result.height();
     long t = width < height ? width : height;
     int numMipmaps = 0;
-    while(t % 2 == 0) {
+    while (t % 2 == 0) {
         t /= 2;
         ++numMipmaps;
     }
 
+    fillHeader(result, header);
     //Writing Header to create JPEG-compressed image
-    BLPHeader header;
-    header.BLPType[0] = 'B';
-    header.BLPType[1] = 'L';
-    header.BLPType[2] = 'P';
     header.BLPType[3] = '1';
     header.type = 0;
-    header.flags = 0x8;
-    header.width = width;
-    header.height = height;
+//    if (hasAlpha)
+        header.flags = 0x8;
+//    else
+//        header.flags = 0x0;
     header.pictureType = 0;
     header.pictureSubType = 0;
 
@@ -273,7 +282,7 @@ bool BLPHandler::write(const QImage &image)
     QDataStream s(device());
     s.setByteOrder(QDataStream::LittleEndian);
 
-    s << header;
+    writeHeader(s, header);
     s << JpegHeaderSize;
     for (quint32 i = 0; i < JpegHeaderSize; i++) {
         s << jpegHeader[i];
@@ -283,13 +292,24 @@ bool BLPHandler::write(const QImage &image)
     return true;
 }
 
+bool BLPHandler::write(const QImage &image)
+{
+    QByteArray format = this->format();
+    qDebug() << format;
+    if (format == "blp")
+        format = "blp1jpeg";
+    if (format == "blp1jpeg")
+        return writeJPEG(image);
+    return false;
+}
+
 bool BLPHandler::canRead(QIODevice *device)
 {
-        if (!device) {
-                qWarning("BLPHandler::canRead() called with no device");
-                return false;
-        }
-        return device->peek(3) == "BLP";
+    if (!device) {
+        qWarning("BLPHandler::canRead() called with no device");
+        return false;
+    }
+    return device->peek(3) == "BLP";
 }
 
 void BLPHandler::setOption(ImageOption option, const QVariant &value)

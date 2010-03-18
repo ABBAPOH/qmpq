@@ -23,6 +23,8 @@ private:
     QAction * viewModeActions[5];
 
 public slots:
+    void save();
+    void save_As();
 };
 
 class ImageViewerFactory : public QObject, public IEditorFactory

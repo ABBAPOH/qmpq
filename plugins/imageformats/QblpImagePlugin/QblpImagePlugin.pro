@@ -3,35 +3,32 @@ TEMPLATE = lib
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
-
 HEADERS += blp.h \
     jpeg/qjpeghandler.h \
     blpheader.h
 SOURCES += blp.cpp \
     jpeg/qjpeghandler.cpp \
     blp2.cpp \
-    main.cpp
-
+    main.cpp \
+    blpheader.cpp
 INCLUDEPATH += -I \
     ../../../3rdparty/libjpeg/
-
-mac: target.path += ../../../app/bin/QMPQ.app/Contents/MacOS/imageformats
-win32: target.path += ../../../app/bin/imageformats
+mac:target.path += ../../../app/bin/QMPQ.app/Contents/MacOS/imageformats
+win32:target.path += ../../../app/bin/imageformats
 INSTALLS += target
 
-#============ libjpeg ============#
+# ============ libjpeg ============#
 wince*: { 
     DEFINES += NO_GETENV
     contains(CE_ARCH,x86):CONFIG -= stl \
         exceptions
     contains(CE_ARCH,x86):CONFIG += exceptions_off
 }
-
-contains(QT_CONFIG, system-jpeg) {
+contains(QT_CONFIG, system-jpeg) { 
     unix:LIBS += -ljpeg
     win32:LIBS += libjpeg.lib
 }
-!contains(QT_CONFIG, system-jpeg) {
+!contains(QT_CONFIG, system-jpeg) { 
     HEADERS += ../../../3rdparty/libjpeg/jpeglib.h
     SOURCES += ../../../3rdparty/libjpeg/jcapimin.c \
         ../../../3rdparty/libjpeg/jcapistd.c \
@@ -80,4 +77,3 @@ contains(QT_CONFIG, system-jpeg) {
         ../../../3rdparty/libjpeg/jutils.c \
         ../../../3rdparty/libjpeg/jmemnobs.c
 }
-

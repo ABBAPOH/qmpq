@@ -50,7 +50,7 @@ void ImageViewer::open(const QString & path)
         return;
 
     if (!fileName.isEmpty()) {
-        currentFile = fileName;
+        m_currentFile = fileName;
         QImage image(fileName);
         m_currentImage = image;
 
@@ -64,21 +64,19 @@ void ImageViewer::closeFile()
 
 }
 
-void ImageViewer::save_As()
+void ImageViewer::save(QString path)
 {
-    QString path = QFileDialog::getSaveFileName(this, tr("Save As..."), currentFile,  tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)"));
+    qDebug() << "ImageViewer::save()" << path;
     if (path == "")
-        return;
-    currentFile = path;
-
+        path = currentFile();
     QImageWriter writer(path);
     QFileInfo info(path);
 
-    if (info.suffix().toLower() == "blp")
-        writer.setQuality(m_settings->value("blpCompression").toInt());
-    else if (info.suffix().toLower() == "jpg" || info.suffix().toLower() == "jpeg")
-        writer.setQuality(m_settings->value("jpgCompression").toInt());
-
+//    if (info.suffix().toLower() == "blp")
+//        writer.setQuality(m_settings->value("blpCompression").toInt());
+//    else if (info.suffix().toLower() == "jpg" || info.suffix().toLower() == "jpeg")
+//        writer.setQuality(m_settings->value("jpgCompression").toInt());
+    writer.setFormat("blp1jpeg");
     writer.write(m_currentImage);
 }
 

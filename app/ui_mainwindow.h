@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Wed Mar 17 19:22:02 2010
+** Created: Thu Mar 18 10:25:58 2010
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -42,6 +42,7 @@ public:
     QAction *actionNew_Tab;
     QAction *actionAbout_QMPQ;
     QAction *actionAbout_Qt;
+    QAction *actionSave_As;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout;
     TabWidget *tabWidget;
@@ -112,6 +113,8 @@ public:
         actionAbout_QMPQ->setObjectName(QString::fromUtf8("actionAbout_QMPQ"));
         actionAbout_Qt = new QAction(MainWindow);
         actionAbout_Qt->setObjectName(QString::fromUtf8("actionAbout_Qt"));
+        actionSave_As = new QAction(MainWindow);
+        actionSave_As->setObjectName(QString::fromUtf8("actionSave_As"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout = new QVBoxLayout(centralwidget);
@@ -152,6 +155,7 @@ public:
         menubar->addAction(menuHelp->menuAction());
         menuFile->addAction(actionOpen);
         menuFile->addAction(actionSave);
+        menuFile->addAction(actionSave_As);
         menuFile->addSeparator();
         menuFile->addAction(actionClose);
         menuEdit->addAction(actionCopy);
@@ -202,6 +206,7 @@ public:
         actionNew_Tab->setShortcut(QApplication::translate("MainWindow", "Ctrl+T", 0, QApplication::UnicodeUTF8));
         actionAbout_QMPQ->setText(QApplication::translate("MainWindow", "About QMPQ", 0, QApplication::UnicodeUTF8));
         actionAbout_Qt->setText(QApplication::translate("MainWindow", "About Qt", 0, QApplication::UnicodeUTF8));
+        actionSave_As->setText(QApplication::translate("MainWindow", "Save As...", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
         menuWindow->setTitle(QApplication::translate("MainWindow", "Window", 0, QApplication::UnicodeUTF8));

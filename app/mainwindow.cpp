@@ -60,6 +60,7 @@ void MainWindow::initConnections()
 //  File menu
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(open()));
     connect(ui->actionClose, SIGNAL(triggered()), SLOT(closeCurrent()));
+    connect(ui->actionSave_As, SIGNAL(triggered()), SLOT(save_As()));
 
 //  Window menu
     connect(ui->actionNew_Tab, SIGNAL(triggered()), ui->tabWidget, SLOT(newTab()));
@@ -99,6 +100,19 @@ void MainWindow::open(const QString & path)
 
     title->setText(QFileInfo(fileName).fileName());
     setAddress(fileName);
+}
+
+#include <QMetaMethod>
+void MainWindow::save_As()
+{
+    QString path = QFileDialog::getSaveFileName(m_editor, tr("Save As..."), m_editor->property("currentFile").toString()/*,  tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)")*/);
+    if (path == "")
+        return;
+//    m_editor->save(path);
+    for(int i =0; i< m_editor->metaObject()->methodCount(); i++) {
+        qDebug() << m_editor->metaObject()->method(i).signature();
+        }
+    qDebug() << QMetaObject::invokeMethod(m_editor, "save", Qt::DirectConnection, Q_ARG(QString, path));
 }
 
 void MainWindow::closeCurrent()

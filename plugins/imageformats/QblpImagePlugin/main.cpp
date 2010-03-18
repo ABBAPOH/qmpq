@@ -17,7 +17,7 @@ QStringList BLPPlugin::keys() const
 
 QImageIOPlugin::Capabilities BLPPlugin::capabilities(QIODevice *device, const QByteArray &format) const
 {
-        if (format == "blp" || format == "BLP")
+        if (format == "blp" || format == "blp1jpeg")
                 return Capabilities(CanRead | CanWrite);
         if (!format.isEmpty())
                 return 0;

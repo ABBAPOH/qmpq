@@ -40,6 +40,7 @@ private:
 
 public slots:
     void open(const QString & path = "");
+    void save_As();
     void closeCurrent();
     void setAddress(const QString & path);
     void about();

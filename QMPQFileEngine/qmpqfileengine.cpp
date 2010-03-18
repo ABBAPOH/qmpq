@@ -213,7 +213,10 @@ bool QMPQFileEngine::seek(qint64 offset)
 {
     qDebug() << "QMPQFileEngine::seek";
     Q_D(QMPQFileEngine);
-    d->offset += offset;
+    if (d->offset < size())
+        d->offset = offset;
+    else
+        d->offset = size() - 1;
     return true;
 }
 

@@ -18,18 +18,20 @@ class ImageViewer : public QWidget
 public:
     ImageViewer(QWidget *parent = 0);
     ~ImageViewer();
+    QString currentFile() { return m_currentFile; }
+
 public slots:
     void open(const QString & path = QString());
     void closeFile();
 //    void open();
-    void save_As();
+    void save(QString path = "");
     void preferences();
     void copy();
 signals:
     void fileSaved(const QString &);
 private:
     Ui::ImageViewer *ui;
-    QString currentFile;
+    QString m_currentFile;
     QImage m_currentImage;
     QSettings * m_settings;
     QLabel * label;

@@ -44,6 +44,19 @@ QToolBar * ImageViewerPlugin::toolBar ()
     return m_toolBar;
 }
 
+void ImageViewerPlugin::save()
+{
+    m_editor->save(m_editor->currentFile());
+}
+
+void ImageViewerPlugin::save_As()
+{
+    QString path = QFileDialog::getSaveFileName(m_editor, tr("Save As..."), m_editor->currentFile(),  tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)"));
+    if (path == "")
+        return;
+    m_editor->save(path);
+}
+
 //================================== ImageViewerFactory ==================================
 
 ImageViewerFactory::ImageViewerFactory()
