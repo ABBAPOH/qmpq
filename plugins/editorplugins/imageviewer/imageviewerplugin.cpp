@@ -16,7 +16,19 @@ ImageViewerPlugin::ImageViewerPlugin(ImageViewer * editor)
     m_editor = editor;
     m_toolBar = new QToolBar();
 
+    initToolBar();
+}
 
+void ImageViewerPlugin::initToolBar()
+{
+    m_toolBar->addAction(QIcon(":/icons/images/save.png"), "Save", this, SLOT(save()));
+    m_toolBar->addSeparator();
+    m_toolBar->addAction(QIcon(":/icons/images/copy.png"), "Copy", m_editor, SLOT(copy()));
+    m_toolBar->addAction(QIcon(":/icons/images/paste.png"), "Paste", m_editor, SLOT(paste()));
+    m_toolBar->addSeparator();
+    m_toolBar->addAction(QIcon(":/icons/images/zoomin.png"), "Zoom In", m_editor, SLOT(zoomIn()));
+    m_toolBar->addAction(QIcon(":/icons/images/zoomout.png"), "Zoom Out", m_editor, SLOT(zoomOut()));
+    m_toolBar->addAction(QIcon(":/icons/images/resetzoom.png"), "Reset Zoom", m_editor, SLOT(zoomReset()));
 }
 
 ImageViewerPlugin::~ImageViewerPlugin()

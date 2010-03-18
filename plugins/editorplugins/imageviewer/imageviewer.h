@@ -27,15 +27,24 @@ public slots:
     void save(QString path = "");
     void preferences();
     void copy();
+    void paste();
+    void zoomIn();
+    void zoomOut();
+    void zoomReset();
+
+
 signals:
     void fileSaved(const QString &);
+
 private:
     Ui::ImageViewer *ui;
     QString m_currentFile;
     QImage m_currentImage;
     QSettings * m_settings;
     QLabel * label;
+    double scale;
 
+    void setImage(const QImage & image);
     void savePreferences(const ImageSettingsDialog * dialog);
     void loadPreferences(ImageSettingsDialog * dialog);
 };

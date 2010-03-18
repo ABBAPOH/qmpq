@@ -73,16 +73,18 @@ void MainWindow::initConnections()
     connect(core, SIGNAL(openRequested(const QString &)), SLOT(open(const QString &)));
 }
 
-void MainWindow::connectAction(QAction * sender, const char * signal, QObject * receiver, const char * member)
+bool MainWindow::connectAction(QAction * sender, const char * signal, QObject * receiver, const char * member)
 {
     if (!receiver || !sender)
-        return;
+        return false;
     if (receiver->metaObject()->indexOfSlot(member+1) == -1) {
 //        qDebug() << "can't connect: class "<< receiver->metaObject()->className() << "has no slot" << member+1;
         sender->setEnabled(false);
+        return false;
     } else {
         sender->setEnabled(true);
         connect(sender, signal, receiver, member);
+        return true;
     }
 }
 
@@ -148,11 +150,13 @@ void MainWindow::connectEditor(QWidget * editor)
 {
     disconnectEditor(m_editor);
     m_editor = editor;
-    connectAction(ui->actionSave, SIGNAL(triggered()), editor, SLOT(save()));
+    bool canSave = connectAction(ui->actionSave, SIGNAL(triggered()), editor, SLOT(save()));
+    ui->actionSave_As->setEnabled(canSave);
     connectAction(ui->actionCut, SIGNAL(triggered()), editor, SLOT(cut()));
     connectAction(ui->actionCopy, SIGNAL(triggered()), editor, SLOT(copy()));
     connectAction(ui->actionPaste, SIGNAL(triggered()), editor, SLOT(paste()));
     connectAction(ui->actionSelect_All, SIGNAL(triggered()), editor, SLOT(selectAll()));
+
 }
 
 void MainWindow::connectView(QWidget * view)

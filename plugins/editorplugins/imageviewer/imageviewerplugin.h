@@ -17,10 +17,14 @@ public:
     virtual QWidget * widget();
     virtual QToolBar * toolBar ();
     virtual void close();
+
 private:
     ImageViewer * m_editor;
     QToolBar * m_toolBar;
     QAction * viewModeActions[5];
+
+    void initToolBar();
+
 
 public slots:
     void save();

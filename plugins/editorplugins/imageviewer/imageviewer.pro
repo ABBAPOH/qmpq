@@ -13,3 +13,4 @@ FORMS += imageviewer.ui \
     imageSettingsDialog.ui
 target.path += ../../../app/bin/plugins
 INSTALLS += target
+RESOURCES += imageviewer.qrc

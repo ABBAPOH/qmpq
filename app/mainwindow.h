@@ -34,7 +34,7 @@ private:
     QWidget * m_editor;
 
     void initConnections();
-    void connectAction(QAction * sender, const char * signal, QObject * receiver, const char * member);
+    bool connectAction(QAction * sender, const char * signal, QObject * receiver, const char * member);
     void disconnectView(QWidget * view);
     void disconnectEditor(QWidget * editor);
 

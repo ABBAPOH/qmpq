@@ -17,6 +17,7 @@ public:
     virtual QWidget * widget();
     virtual QToolBar * toolBar ();
     virtual void close();
+
 private:
     void initToolBar();
 

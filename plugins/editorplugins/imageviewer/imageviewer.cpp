@@ -15,7 +15,10 @@ class ImageSettingsDialog: public Ui::ImageSettingsDialog, public QDialog
 };
 
 ImageViewer::ImageViewer(QWidget *parent)
-        :QWidget(parent), ui(new Ui::ImageViewer), m_settings(new QSettings("QMPQ", "ImageViewer"))
+        :QWidget(parent),
+        ui(new Ui::ImageViewer),
+        m_settings(new QSettings("QMPQ", "ImageViewer")),
+        scale(1.0)
 {
     ui->setupUi(this);
 //    setWindowTitle(tr("QMPQ Image Viewer"));
@@ -40,6 +43,14 @@ ImageViewer::~ImageViewer()
 {
 }
 
+void ImageViewer::setImage(const QImage & image)
+{
+    m_currentImage = image;
+
+    if (!image.isNull())
+        label->setPixmap(QPixmap().fromImage(m_currentImage));
+}
+
 //Maybe should create class for opening/saving fies
 void ImageViewer::open(const QString & path)
 {
@@ -52,11 +63,8 @@ void ImageViewer::open(const QString & path)
     if (!fileName.isEmpty()) {
         m_currentFile = fileName;
         QImage image(fileName);
-        m_currentImage = image;
-
-        if (!image.isNull())
-            label->setPixmap(QPixmap().fromImage(m_currentImage));
-     }
+        setImage(image);
+    }
 }
 
 void ImageViewer::closeFile()
@@ -92,6 +100,38 @@ void ImageViewer::copy()
 {
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setImage(m_currentImage);
+}
+
+void ImageViewer::paste()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    setImage(clipboard->image());
+}
+
+void ImageViewer::zoomIn()
+{
+    scale += 0.1;
+    int w = m_currentImage.width(), h = m_currentImage.height();
+    QImage scaledImage = m_currentImage.scaled(w*scale, h*scale);
+    label->setPixmap(QPixmap().fromImage(scaledImage));
+}
+
+void ImageViewer::zoomOut()
+{
+    scale -= 0.1;
+    if (scale <= 0.1) {
+        scale = 0.1;
+        return;
+    }
+    int w = m_currentImage.width(), h = m_currentImage.height();
+    QImage scaledImage = m_currentImage.scaled(w*scale, h*scale);
+    label->setPixmap(QPixmap().fromImage(scaledImage));
+}
+
+void ImageViewer::zoomReset()
+{
+    scale = 1.0;
+    label->setPixmap(QPixmap().fromImage(m_currentImage));
 }
 
 void ImageViewer::savePreferences(const ImageSettingsDialog * dialog)
