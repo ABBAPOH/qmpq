@@ -2,20 +2,18 @@
 #include "ui_mainwindow.h"
 
 #include <QtGui/QFileDialog>
-#include <QVBoxLayout>
 #include <QtGui/QToolBar>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QDesktopServices>
 #include <QtGui/QMessageBox>
+ #warning remove
+#include <QMetaMethod>
 #include <QDebug>
 
 #include "editormanager.h"
-#include "ieditor.h"
 #include "pluginmanager.h"
 #include "../plugins/editorplugins/MPQEditor/mpqeditor.h"
-
-#include "editorview.h"
 
 #include <qmpqfileenginehandler.h> // fix lock!!!!
 
@@ -104,7 +102,6 @@ void MainWindow::open(const QString & path)
     setAddress(fileName);
 }
 
-#include <QMetaMethod>
 void MainWindow::save_As()
 {
     QString path = QFileDialog::getSaveFileName(m_editor, tr("Save As..."), m_editor->property("currentFile").toString()/*,  tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)")*/);
@@ -132,7 +129,7 @@ void MainWindow::setAddress(const QString & path)
 void MainWindow::about()
 {
    QMessageBox::about(this, tr("About QMPQ"),
-            tr("<b>QMPQ 1.4</b> a Qt-based program that allows to manipulate "
+            tr("<b>QMPQ 1.5</b> a Qt-based program that allows to manipulate "
                "with Blizzard's MPQ-archives. "
                "Copyright 2009 Nevermore (N) aka ABBAPOH"));
 }
@@ -156,23 +153,23 @@ void MainWindow::connectEditor(QWidget * editor)
     connectAction(ui->actionCopy, SIGNAL(triggered()), editor, SLOT(copy()));
     connectAction(ui->actionPaste, SIGNAL(triggered()), editor, SLOT(paste()));
     connectAction(ui->actionSelect_All, SIGNAL(triggered()), editor, SLOT(selectAll()));
-
 }
 
 void MainWindow::connectView(QWidget * view)
 {
     disconnectView(ui->tabWidget->previousWidget());
-    connect(view, SIGNAL(currentUrlChanged(const QString &)), this, SLOT(setAddress(const QString &)));
+    connect(view, SIGNAL(pathChanged(const QString &)), this, SLOT(setAddress(const QString &)));
     connect(view, SIGNAL(centralWidgetChanged(QWidget *)), this, SLOT(connectEditor(QWidget *)));
     connect(ui->actionBack, SIGNAL(triggered()), view, SLOT(back()));
     connect(ui->actionForward, SIGNAL(triggered()), view, SLOT(forward()));
     connect(ui->actionUp_one_level, SIGNAL(triggered()), view, SLOT(up()));
-    connect(addressBar, SIGNAL(textChanged(const QString &)), view, SLOT(setUrl(const QString &)));
+    connect(addressBar, SIGNAL(textChanged(const QString &)), view, SLOT(setPath(const QString &)));
 
-    EditorView * editorView = qobject_cast<EditorView *>(view);
-    Q_ASSERT(editorView);
-    connectEditor(editorView->centralWidget());
-    setAddress(editorView->currentUrl()); // changes current url
+    QWidget * centralWidget = view->property("centralWidget").value<QWidget*>();
+    Q_ASSERT(centralWidget);
+    connectEditor(centralWidget);
+
+    setAddress(view->property("path").toString()); // changes current url
 }
 
 void MainWindow::disconnectView(QWidget * view)

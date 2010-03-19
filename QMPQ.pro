@@ -6,4 +6,5 @@ SUBDIRS = \
     plugins/editorplugins/MPQEditor \
     plugins/editorplugins/ImageViewer \
     plugins/editorplugins/CodeEditor \
+    plugins/editorplugins/XMLEditor \
     app

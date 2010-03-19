@@ -38,7 +38,9 @@ QWidget * EditorView::createWidgetForEditor(IEditor * editor)
     QVBoxLayout * lay = new QVBoxLayout();
     lay->setContentsMargins(0,0,0,0);
     lay->setSpacing(0);
-    lay->addWidget(editor->toolBar());
+    if (editor->toolBar()) {
+        lay->addWidget(editor->toolBar());
+    }
     editor->toolBar()->setMaximumHeight(24);
     lay->addWidget(editor->widget());
     widget->setLayout(lay);
@@ -52,7 +54,7 @@ void EditorView::back()
     if (historyPos == 0)
         return;
     historyPos--;
-    setUrl(m_history.at(historyPos));
+    setPath(m_history.at(historyPos));
 }
 
 void EditorView::forward()
@@ -62,16 +64,16 @@ void EditorView::forward()
     if (historyPos == m_history.count() - 1)
         return;
     historyPos++;
-    setUrl(m_history.at(historyPos));
+    setPath(m_history.at(historyPos));
 }
 
 void EditorView::up()
 {
-    QFileInfo info(m_current);
+    QFileInfo info(m_path);
     if (info.isRoot())
-        setUrl("");
+        setPath("");
     else
-        setUrl(info.dir().path());
+        setPath(info.dir().path());
 }
 
 //cleans all history from start to end of list
@@ -82,7 +84,7 @@ void EditorView::cleanHistory(int start)
         QString path = m_history.at(start);
 
         // if trying to go manually to some place in removing part, do not try to release editor
-        if (path != m_current) {
+        if (path != m_path) {
             IEditor * editor = editorManager->editor(path);
 //            if (!editor->widget()->property("modified").isValid()) {
 //                qWarning() << "MODIFIED!!!";
@@ -106,7 +108,7 @@ bool EditorView::openUrl(const QString & url)
     IEditor * editor = editorManager->open(url);
     if (!editor)
         return false;
-    m_current = url;
+    m_path = url;
 
     if (historyPos == -1) {
         m_history.append(url);
@@ -126,7 +128,7 @@ bool EditorView::openUrl(const QString & url)
         widget = createWidgetForEditor(editor);
         m_widgets.insert(editor, widget);
         addWidget(widget);
-        connect(editor->widget(), SIGNAL(currentChanged(const QString &)), SLOT(setUrl(const QString &)));
+        connect(editor->widget(), SIGNAL(currentChanged(const QString &)), SLOT(setPath(const QString &)));
     }
     setCurrentWidget(widget);
     setCentralWidget(editor->widget());
@@ -143,11 +145,11 @@ void EditorView::setCentralWidget(QWidget * widget)
     }
 }
 
-void EditorView::setUrl(const QString & url)
+void EditorView::setPath(const QString & url)
 {
-    if (QFileInfo(m_current) == QFileInfo(url)) // ignores / in the end of the path
+    if (QFileInfo(m_path) == QFileInfo(url)) // ignores / in the end of the path
         return;
 
     if (openUrl(url))
-        emit currentUrlChanged(url);
+        emit pathChanged(url);
 }

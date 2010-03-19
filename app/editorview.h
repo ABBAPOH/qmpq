@@ -9,14 +9,9 @@ class IEditor;
 class EditorManager;
 class EditorView : public QStackedWidget
 {
-Q_OBJECT
-    QString m_current;
-//    QHash<QString, IEditor *> m_editors;
-    QHash<IEditor *, QWidget *> m_widgets;
-    EditorManager * editorManager;
-    QWidget * m_centralWidget;
-    QStringList m_history;
-    int historyPos;
+    Q_OBJECT
+    Q_PROPERTY(QWidget * centralWidget READ centralWidget WRITE setCentralWidget NOTIFY centralWidgetChanged)
+    Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged)
 
     QWidget * createWidgetForEditor(IEditor * editor);
     void cleanHistory(int start);
@@ -26,18 +21,28 @@ Q_OBJECT
 public:
     explicit EditorView(QWidget *parent = 0);
     ~EditorView();
-    QString currentUrl() { return m_current; }
-    QWidget * centralWidget() { return m_centralWidget; }
+    QString path() { return m_path; }
+    QWidget * centralWidget() const { return m_centralWidget; }
 
 signals:
-    void currentUrlChanged(const QString & url);
+    void pathChanged(const QString & url);
     void centralWidgetChanged(QWidget * widget);
 
 public slots:
     void back();
     void forward();
     void up();
-    void setUrl(const QString & url);
+    void setPath(const QString & url);
+
+private:
+    QString m_path;
+//    QHash<QString, IEditor *> m_editors;
+    QHash<IEditor *, QWidget *> m_widgets;
+    EditorManager * editorManager;
+    QWidget * m_centralWidget;
+    QStringList m_history;
+    int historyPos;
+
 };
 
 #endif // EDITORVIEW_H
