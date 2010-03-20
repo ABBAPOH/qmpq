@@ -16,20 +16,27 @@ class ImageViewer : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(QImage image READ image WRITE setImage);
+    Q_PROPERTY(bool modified READ modified WRITE setModified);
+
 public:
     ImageViewer(QWidget *parent = 0);
     ~ImageViewer();
     QImage image() { return m_image; }
+    bool modified() { return m_modified; }
 
 public slots:
     void setImage(const QImage & image);
+//    void preferences();
     void clear();
-    void preferences();
     void copy();
     void paste();
     void zoomIn();
     void zoomOut();
     void zoomReset();
+    void setModified(bool modified);
+
+signals:
+    void modificationChanged(bool changed);
 
 private:
     Ui::ImageViewer *ui;
@@ -37,6 +44,7 @@ private:
     QSettings * m_settings;
     QLabel * label;
     double scale;
+    bool m_modified;
 
     void savePreferences(const ImageSettingsDialog * dialog);
     void loadPreferences(ImageSettingsDialog * dialog);

@@ -56,13 +56,13 @@ void ImageViewer::clear()
     setImage(QImage());
 }
 
-void ImageViewer::preferences()
-{
-    ImageSettingsDialog dialog(this);
-    loadPreferences(&dialog);
-    dialog.exec();
-    savePreferences(&dialog);
-}
+//void ImageViewer::preferences()
+//{
+//    ImageSettingsDialog dialog(this);
+//    loadPreferences(&dialog);
+//    dialog.exec();
+//    savePreferences(&dialog);
+//}
 
 void ImageViewer::copy()
 {
@@ -74,6 +74,7 @@ void ImageViewer::paste()
 {
     QClipboard *clipboard = QApplication::clipboard();
     setImage(clipboard->image());
+    setModified(true);
 }
 
 void ImageViewer::zoomIn()
@@ -100,6 +101,14 @@ void ImageViewer::zoomReset()
 {
     scale = 1.0;
     label->setPixmap(QPixmap().fromImage(m_image));
+}
+
+void ImageViewer::setModified(bool modified)
+{
+    bool shouldEmit = m_modified == modified;
+    m_modified = modified;
+    if (shouldEmit)
+        emit modificationChanged(modified);
 }
 
 void ImageViewer::savePreferences(const ImageSettingsDialog * dialog)

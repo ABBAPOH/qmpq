@@ -71,24 +71,17 @@ void ImageViewerPlugin::save(const QString &file)
     //    qDebug() << "ImageViewer::save()" << path;
     //    if (path == "")
     //        path = currentFile();
-        QImageWriter writer(path);
-        QFileInfo info(path);
+    QImageWriter writer(path);
+    QFileInfo info(path);
 
     //    if (info.suffix().toLower() == "blp")
     //        writer.setQuality(m_settings->value("blpCompression").toInt());
     //    else if (info.suffix().toLower() == "jpg" || info.suffix().toLower() == "jpeg")
     //        writer.setQuality(m_settings->value("jpgCompression").toInt());
-        writer.setFormat("blp1jpeg");
-        writer.write(m_editor->image());
+    writer.setFormat("blp1jpeg");
+    writer.write(m_editor->image());
+    m_editor->setModified(false);
 }
-
-//void ImageViewerPlugin::save_As()
-//{
-//    QString path = QFileDialog::getSaveFileName(m_editor, tr("Save As..."), m_editor->currentFile(),  tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)"));
-//    if (path == "")
-//        return;
-//    m_editor->save(path);
-//}
 
 //================================== ImageViewerFactory ==================================
 
@@ -99,20 +92,16 @@ ImageViewerFactory::ImageViewerFactory()
 
 IEditor * ImageViewerFactory::createEditor(QWidget * parent)
 {
-//    qDebug("ImageViewerFactory::instance");
     ImageViewer * editor = new ImageViewer(parent);
     return new ImageViewerPlugin(editor);
 }
 
 void ImageViewerFactory::shutdown()
 {
-//    qDebug("ImageViewerFactory::shutdown");
-//    delete MPQEditor::model();
 }
 
 bool ImageViewerFactory::canHandle(const QString &file) const
 {
-//    qDebug("ImageViewerFactory::canHandle");
     QStringList extensions;
     QString suffix = QFileInfo(file).suffix().toLower();
     extensions << "blp" << "tga" << "jpg" << "bmp" << "png";
