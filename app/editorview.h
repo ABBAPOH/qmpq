@@ -35,7 +35,7 @@ public slots:
     void forward();
     void up();
     void setPath(const QString & url);
-    void save(const QString & path);
+    void save(const QString & path = "");
 
 private:
     QString m_path;

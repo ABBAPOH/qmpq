@@ -34,15 +34,34 @@ CodeEditorPlugin::~CodeEditorPlugin()
 {
 }
 
-bool CodeEditorPlugin::open(const QString &file)
+bool CodeEditorPlugin::open(const QString &filePath)
 {
-    m_editor->open(file);
+    if (!filePath.isEmpty()) {
+        m_currentFile = filePath;
+        QFile file(filePath);
+        if (file.open(QFile::ReadOnly | QFile::Text)) {
+            m_editor->setPlainText(file.readAll());
+            m_editor->setHighligher(QFileInfo(filePath).suffix());
+        }
+    }
+    
+//    m_editor->open(filePath);
     return true;
+}
+
+void CodeEditorPlugin::save(const QString &filePath)
+{
+    QFile file(filePath == "" ? m_currentFile : filePath);
+    if (file.open(QFile::WriteOnly | QFile::Text)) {
+//        QString data = ui->textEdit->toPlainText();
+        file.write(m_editor->toPlainText().toLocal8Bit());
+        file.close();
+    }
 }
 
 void CodeEditorPlugin::close()
 {
-    m_editor->closeFile();
+    m_editor->clear();
 }
 
 QWidget * CodeEditorPlugin::widget()
@@ -50,7 +69,7 @@ QWidget * CodeEditorPlugin::widget()
     return m_editor;
 }
 
-QToolBar * CodeEditorPlugin::toolBar ()
+QToolBar * CodeEditorPlugin::toolBar()
 {
     return m_toolBar;
 }

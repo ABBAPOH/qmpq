@@ -2,12 +2,6 @@
 #define QMPQIMAGEVIEWER_H
 
 #include <QPlainTextEdit>
-//#include <QSettings>
-
-//namespace Ui
-//{
-//    class CodeEditor;
-//}
 
 class LineNumberArea;
 class QSyntaxHighlighter;
@@ -19,13 +13,9 @@ class CodeEditor : public QPlainTextEdit
 public:
     CodeEditor(QWidget *parent = 0);
     ~CodeEditor();
+    void setHighligher(const QString & suffix);
 
     int lineNumberAreaWidth();
-
-public slots:
-    void open(const QString & path = QString());
-    void closeFile();
-    void save(const QString & path = "");
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -37,10 +27,7 @@ private slots:
     void updateLineNumberArea(const QRect &, int);
 
 private:
-    void setHighligher();
-//    Ui::CodeEditor *ui;
     LineNumberArea *lineNumberArea;
-    QString currentFile;
     QSyntaxHighlighter * highlighter;
 };
 

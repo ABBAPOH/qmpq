@@ -33,43 +33,8 @@ CodeEditor::~CodeEditor()
 
 }
 
-void CodeEditor::open(const QString & path)
+void CodeEditor::setHighligher(const QString & suffix)
 {
-     QString fileName = path;
-
-     if (fileName.isNull())
-         fileName = QFileDialog::getOpenFileName(this,
-             tr("Open File"), "", "C++ Files (*.cpp *.h)");
-
-     if (!fileName.isEmpty()) {
-         currentFile = fileName;
-         QFile file(fileName);
-         if (file.open(QFile::ReadOnly | QFile::Text))
-             setPlainText(file.readAll());
-     }
-     setHighligher();
-}
-
-void CodeEditor::closeFile()
-{
-
-}
-
-void CodeEditor::save(const QString & path)
-{
-    QFile file(path == "" ? currentFile : path);
-    if (file.open(QFile::WriteOnly | QFile::Text)) {
-//        QString data = ui->textEdit->toPlainText();
-        file.write(toPlainText().toLocal8Bit());
-        file.close();
-    }
-}
-
-void CodeEditor::setHighligher()
-{
-    QFileInfo info(currentFile);
-    QString suffix = info.suffix();
-
     if (highlighter)
         delete highlighter;
     if (suffix == "j" || suffix == "ai") {

@@ -13,7 +13,8 @@ class CodeEditorPlugin : public QObject, public IEditor
 public:
     CodeEditorPlugin(CodeEditor * editor);
     ~CodeEditorPlugin();
-    virtual bool open(const QString &file);
+    virtual bool open(const QString &filePath);
+    virtual void save(const QString &filePath);
     virtual QWidget * widget();
     virtual QToolBar * toolBar ();
     virtual void close();
@@ -22,6 +23,7 @@ private:
     void initToolBar();
 
     CodeEditor * m_editor;
+    QString m_currentFile;
     QToolBar * m_toolBar;
     QAction * viewModeActions[5];
 
