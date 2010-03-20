@@ -4,10 +4,12 @@
 TARGET = QXMLViewer
 TEMPLATE = lib
 QT += xml
+
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
+
 SOURCES += \
     qxmlviewer.cpp \
     domitem.cpp \

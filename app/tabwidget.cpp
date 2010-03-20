@@ -46,7 +46,7 @@ void TabWidget::tabChanged(int index)
 
 void TabWidget::closeTab(int index)
 {
-#warning hardcoded
+//    view->close();
     if (this->count() == 1) // do not allow to close last tab
         return;
 

@@ -40,7 +40,9 @@ private:
     void disconnectView(QWidget * view);
     void disconnectEditor(QWidget * editor);
 
-    void parseFormats(QStringList formats);
+    bool hasSignal(QObject * obj, const char * slot);
+    bool hasSlot(QObject * obj, const char * slot);
+//    void parseFormats(QStringList formats);
 
 public slots:
     void open(const QString & path = "");
@@ -52,6 +54,7 @@ public slots:
 private slots:
     void connectView(QWidget * view);
     void connectEditor(QWidget * editor);
+    void setSavingEnabled(bool enable);
 };
 
 #endif // MAINWINDOW_H

@@ -113,6 +113,17 @@ void MainWindow::save_As()
 
 void MainWindow::closeCurrent()
 {
+    if (ui->actionSave->isEnabled()) {
+        QMessageBox messageBox(this);
+        messageBox.setText("File " + m_editorView->path() + " has been modified. Save changes?");
+        messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        messageBox.setDefaultButton(QMessageBox::Save);
+        switch (messageBox.exec()) {
+        case QMessageBox::Save: m_editorView->save(); break;
+        case QMessageBox::Discard: break;
+        case QMessageBox::Cancel: return;
+        }
+    }
     ui->tabWidget->closeTab(ui->tabWidget->currentIndex());
 }
 
@@ -133,23 +144,30 @@ void MainWindow::about()
 
 void MainWindow::disconnectEditor(QWidget * editor)
 {
-    disconnect(ui->actionSave, 0, editor, 0);
     disconnect(ui->actionCut, 0, editor, 0);
     disconnect(ui->actionCopy, 0, editor, 0);
     disconnect(ui->actionPaste, 0, editor, 0);
     disconnect(ui->actionSelect_All, 0, editor, 0);
+    disconnect(this, SLOT(setSavingEnabled(bool)));
 }
 
 void MainWindow::connectEditor(QWidget * editor)
 {
     disconnectEditor(m_editor);
     m_editor = editor;
-//    bool canSave = connectAction(ui->actionSave, SIGNAL(triggered()), editor, SLOT(save()));
-//    ui->actionSave_As->setEnabled(canSave);
+
     connectAction(ui->actionCut, SIGNAL(triggered()), editor, SLOT(cut()));
     connectAction(ui->actionCopy, SIGNAL(triggered()), editor, SLOT(copy()));
     connectAction(ui->actionPaste, SIGNAL(triggered()), editor, SLOT(paste()));
     connectAction(ui->actionSelect_All, SIGNAL(triggered()), editor, SLOT(selectAll()));
+
+    ui->actionSave->setEnabled(false);
+    if (hasSignal(editor, SIGNAL(modificationChanged(bool)))) {
+        ui->actionSave_As->setEnabled(true);
+        connect(editor, SIGNAL(modificationChanged(bool)), SLOT(setSavingEnabled(bool)));
+    } else {
+        ui->actionSave_As->setEnabled(false);
+    }
 }
 
 void MainWindow::connectView(QWidget * view)
@@ -159,13 +177,14 @@ void MainWindow::connectView(QWidget * view)
     m_editorView = editorView;
 
     disconnectView(ui->tabWidget->previousWidget());
+
     connect(view, SIGNAL(pathChanged(const QString &)), this, SLOT(setAddress(const QString &)));
     connect(view, SIGNAL(centralWidgetChanged(QWidget *)), this, SLOT(connectEditor(QWidget *)));
+    connect(addressBar, SIGNAL(textChanged(const QString &)), view, SLOT(setPath(const QString &)));
     connect(ui->actionBack, SIGNAL(triggered()), view, SLOT(back()));
     connect(ui->actionForward, SIGNAL(triggered()), view, SLOT(forward()));
     connect(ui->actionUp_one_level, SIGNAL(triggered()), view, SLOT(up()));
     connect(ui->actionSave, SIGNAL(triggered()), view, SLOT(save()));
-    connect(addressBar, SIGNAL(textChanged(const QString &)), view, SLOT(setPath(const QString &)));
 
     QWidget * centralWidget = editorView->centralWidget();
     connectEditor(centralWidget);
@@ -175,16 +194,21 @@ void MainWindow::connectView(QWidget * view)
 
 void MainWindow::disconnectView(QWidget * view)
 {
+    disconnect(view, 0, addressBar, 0);
+    disconnect(view, 0, this, 0);
     disconnect(addressBar, 0, view, 0);
     disconnect(ui->actionBack, 0, view, 0);
     disconnect(ui->actionForward, 0, view, 0);
     disconnect(ui->actionUp_one_level, 0, view, 0);
+    disconnect(ui->actionSave, 0, view, 0);
 }
 
-void MainWindow::parseFormats(QStringList formats)
+bool MainWindow::hasSignal(QObject * object, const char * slot)
 {
-    QString result;
-    foreach (QString format, formats) {
-//        result+=
-    }
+    return object->metaObject()->indexOfSignal(slot+1) != -1;
+}
+
+void MainWindow::setSavingEnabled(bool enable)
+{
+    ui->actionSave->setEnabled(enable);
 }

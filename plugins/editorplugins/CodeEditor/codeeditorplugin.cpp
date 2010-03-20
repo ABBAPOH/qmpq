@@ -56,6 +56,7 @@ void CodeEditorPlugin::save(const QString &filePath)
 //        QString data = ui->textEdit->toPlainText();
         file.write(m_editor->toPlainText().toLocal8Bit());
         file.close();
+        m_editor->setModified(false);
     }
 }
 
