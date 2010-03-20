@@ -53,6 +53,7 @@ void ImageViewer::setImage(const QImage & image)
 
 void ImageViewer::clear()
 {
+    qDebug("ImageViewer::clear");
     setImage(QImage());
 }
 

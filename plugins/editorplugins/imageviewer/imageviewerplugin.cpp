@@ -39,9 +39,10 @@ ImageViewerPlugin::~ImageViewerPlugin()
 bool ImageViewerPlugin::open(const QString &file)
 {
     qDebug() << "ImageViewerPlugin::open" << file;
-    if (!m_currentFile.isEmpty()) {
+    if (!file.isEmpty()) {
         m_currentFile = file;
         QImage image(file);
+        qDebug() << image.isNull();
         m_editor->setImage(image);
         return true;
     }
