@@ -41,7 +41,11 @@ public:
     bool setSize(qint64 size);
     qint64 write(const char * data, qint64 len);
 
-    static QStringList supportedFormats() { return QStringList() << "mpq" << "w3x" << "w3m" << "s2ma"; }
+    static QStringList supportedFormats()
+    {
+        return QStringList() << "mpq" << "w3x" << "w3m" << "s2ma" << "SC2Mod" << "SC2Archive" << "SC2Assets"
+                << "SC2Replay" << "scx" << "w3n" << "snp" << "sv" << "hsv";
+    }
 private:
     QFile * getNativeFile(QString path) const;
     QFileInfo * getNativeFileInfo(QString path) const;
