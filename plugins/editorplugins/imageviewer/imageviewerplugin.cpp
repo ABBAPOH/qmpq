@@ -56,9 +56,12 @@ QToolBar * ImageViewerPlugin::toolBar ()
     return m_toolBar;
 }
 
-void ImageViewerPlugin::save()
+void ImageViewerPlugin::save(const QString &file)
 {
-    m_editor->save(m_editor->currentFile());
+    if (file == "")
+        m_editor->save(m_editor->currentFile());
+    else
+        m_editor->save(file);
 }
 
 void ImageViewerPlugin::save_As()

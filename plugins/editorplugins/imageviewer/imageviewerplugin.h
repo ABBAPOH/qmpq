@@ -27,7 +27,7 @@ private:
 
 
 public slots:
-    void save();
+    void save(const QString &file);
     void save_As();
 };
 
@@ -39,6 +39,7 @@ public:
     IEditor * createEditor(QWidget * parent);
     void shutdown();
     bool canHandle(const QString &file) const;
+    virtual QString saveFilter() const { return tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)"); }
 
     ImageViewerFactory();
 };

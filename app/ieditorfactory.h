@@ -3,6 +3,7 @@
 
 #include <QtCore/QStringList>
 #include <QtCore/QRegExp>
+#include <QtCore/QStringList>
 #include "ieditor.h"
 
 //class IEditor;
@@ -21,6 +22,8 @@ public:
     virtual void shutdown() {}
 
     virtual bool canHandle(const QString &file) const = 0;
+    virtual QString saveFilter() const { return ""; }
+
 private:
     virtual IEditor * createEditor(QWidget * parent = 0) = 0;
 };

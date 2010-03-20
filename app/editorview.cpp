@@ -2,6 +2,7 @@
 
 #include "editormanager.h"
 #include "ieditor.h"
+#include "ieditorfactory.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QToolBar>
@@ -17,6 +18,11 @@ EditorView::EditorView(QWidget *parent) :
     QStackedWidget(parent), editorManager(new EditorManager(this)), m_centralWidget(0), historyPos(-1)
 {
 //    openUrl("");
+}
+
+QString EditorView::saveFilter() const
+{
+    return m_editor->factory()->saveFilter();
 }
 
 EditorView::~EditorView()
@@ -109,6 +115,7 @@ bool EditorView::openUrl(const QString & url)
     if (!editor)
         return false;
     m_path = url;
+    m_editor = editor;
 
     if (historyPos == -1) {
         m_history.append(url);
@@ -152,4 +159,9 @@ void EditorView::setPath(const QString & url)
 
     if (openUrl(url))
         emit pathChanged(url);
+}
+
+void EditorView::save(const QString & path)
+{
+    m_editor->save(path);
 }

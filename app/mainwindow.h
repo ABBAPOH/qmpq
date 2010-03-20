@@ -8,7 +8,7 @@ namespace Ui {
     class MainWindow;
 }
 
-class IEditor;
+class EditorView;
 class EditorManager;
 class QLabel;
 class QLineEdit;
@@ -32,11 +32,15 @@ private:
     QLineEdit * addressBar;
     QWidget * previousWidget;
     QWidget * m_editor;
+    EditorView * m_editorView;
+    QString m_saveExtensions;
 
     void initConnections();
     bool connectAction(QAction * sender, const char * signal, QObject * receiver, const char * member);
     void disconnectView(QWidget * view);
     void disconnectEditor(QWidget * editor);
+
+    void parseFormats(QStringList formats);
 
 public slots:
     void open(const QString & path = "");

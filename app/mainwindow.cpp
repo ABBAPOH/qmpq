@@ -7,11 +7,10 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QDesktopServices>
 #include <QtGui/QMessageBox>
- #warning remove
-#include <QMetaMethod>
 #include <QDebug>
 
 #include "editormanager.h"
+#include "editorview.h"
 #include "pluginmanager.h"
 #include "../plugins/editorplugins/MPQEditor/mpqeditor.h"
 
@@ -104,14 +103,12 @@ void MainWindow::open(const QString & path)
 
 void MainWindow::save_As()
 {
-    QString path = QFileDialog::getSaveFileName(m_editor, tr("Save As..."), m_editor->property("currentFile").toString()/*,  tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)")*/);
+    QString saveFilter = m_editorView->saveFilter();//property("saveFilter").toString();
+    saveFilter += ";;" + tr("AllFiles (*.*)");
+    QString path = QFileDialog::getSaveFileName(m_editor, tr("Save As..."), m_editorView->property("path").toString(), saveFilter);
     if (path == "")
         return;
-//    m_editor->save(path);
-    for(int i =0; i< m_editor->metaObject()->methodCount(); i++) {
-        qDebug() << m_editor->metaObject()->method(i).signature();
-        }
-    qDebug() << QMetaObject::invokeMethod(m_editor, "save", Qt::DirectConnection, Q_ARG(QString, path));
+    m_editorView->save(path);
 }
 
 void MainWindow::closeCurrent()
@@ -147,8 +144,8 @@ void MainWindow::connectEditor(QWidget * editor)
 {
     disconnectEditor(m_editor);
     m_editor = editor;
-    bool canSave = connectAction(ui->actionSave, SIGNAL(triggered()), editor, SLOT(save()));
-    ui->actionSave_As->setEnabled(canSave);
+//    bool canSave = connectAction(ui->actionSave, SIGNAL(triggered()), editor, SLOT(save()));
+//    ui->actionSave_As->setEnabled(canSave);
     connectAction(ui->actionCut, SIGNAL(triggered()), editor, SLOT(cut()));
     connectAction(ui->actionCopy, SIGNAL(triggered()), editor, SLOT(copy()));
     connectAction(ui->actionPaste, SIGNAL(triggered()), editor, SLOT(paste()));
@@ -157,19 +154,23 @@ void MainWindow::connectEditor(QWidget * editor)
 
 void MainWindow::connectView(QWidget * view)
 {
+    EditorView * editorView = qobject_cast<EditorView *>(view);
+    Q_ASSERT(editorView);
+    m_editorView = editorView;
+
     disconnectView(ui->tabWidget->previousWidget());
     connect(view, SIGNAL(pathChanged(const QString &)), this, SLOT(setAddress(const QString &)));
     connect(view, SIGNAL(centralWidgetChanged(QWidget *)), this, SLOT(connectEditor(QWidget *)));
     connect(ui->actionBack, SIGNAL(triggered()), view, SLOT(back()));
     connect(ui->actionForward, SIGNAL(triggered()), view, SLOT(forward()));
     connect(ui->actionUp_one_level, SIGNAL(triggered()), view, SLOT(up()));
+    connect(ui->actionSave, SIGNAL(triggered()), view, SLOT(save()));
     connect(addressBar, SIGNAL(textChanged(const QString &)), view, SLOT(setPath(const QString &)));
 
-    QWidget * centralWidget = view->property("centralWidget").value<QWidget*>();
-    Q_ASSERT(centralWidget);
+    QWidget * centralWidget = editorView->centralWidget();
     connectEditor(centralWidget);
 
-    setAddress(view->property("path").toString()); // changes current url
+    setAddress(editorView->path()); // changes current url
 }
 
 void MainWindow::disconnectView(QWidget * view)
@@ -178,4 +179,12 @@ void MainWindow::disconnectView(QWidget * view)
     disconnect(ui->actionBack, 0, view, 0);
     disconnect(ui->actionForward, 0, view, 0);
     disconnect(ui->actionUp_one_level, 0, view, 0);
+}
+
+void MainWindow::parseFormats(QStringList formats)
+{
+    QString result;
+    foreach (QString format, formats) {
+//        result+=
+    }
 }

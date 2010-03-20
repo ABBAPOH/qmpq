@@ -17,6 +17,7 @@ public:
     virtual ~IEditor() {}
     virtual bool open(const QString &file) = 0;
     virtual void close() {}
+    virtual void save(const QString &/*file*/) {}
     virtual QWidget * widget() = 0;
     virtual QToolBar * toolBar () = 0;
 
