@@ -13,22 +13,21 @@ class ImageViewerPlugin : public QObject, public IEditor
 public:
     ImageViewerPlugin(ImageViewer * editor);
     ~ImageViewerPlugin();
-    virtual bool open(const QString &file);
+    virtual bool open(const QString & file);
     virtual QWidget * widget();
     virtual QToolBar * toolBar ();
     virtual void close();
+    virtual void save(const QString & file);
 
 private:
     ImageViewer * m_editor;
     QToolBar * m_toolBar;
     QAction * viewModeActions[5];
+    QString m_currentFile;
 
     void initToolBar();
 
-
-public slots:
-    void save(const QString &file);
-    void save_As();
+//    void save_As();
 };
 
 class ImageViewerFactory : public QObject, public IEditorFactory

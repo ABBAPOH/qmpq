@@ -45,47 +45,15 @@ ImageViewer::~ImageViewer()
 
 void ImageViewer::setImage(const QImage & image)
 {
-    m_currentImage = image;
+    m_image = image;
 
     if (!image.isNull())
-        label->setPixmap(QPixmap().fromImage(m_currentImage));
+        label->setPixmap(QPixmap().fromImage(m_image));
 }
 
-//Maybe should create class for opening/saving fies
-void ImageViewer::open(const QString & path)
+void ImageViewer::clear()
 {
-    QString fileName = path;
-    if(fileName == "")
-        fileName = QFileDialog::getOpenFileName(this, tr("Select image file"));
-    if (fileName == "")
-        return;
-
-    if (!fileName.isEmpty()) {
-        m_currentFile = fileName;
-        QImage image(fileName);
-        setImage(image);
-    }
-}
-
-void ImageViewer::closeFile()
-{
-
-}
-
-void ImageViewer::save(QString path)
-{
-    qDebug() << "ImageViewer::save()" << path;
-    if (path == "")
-        path = currentFile();
-    QImageWriter writer(path);
-    QFileInfo info(path);
-
-//    if (info.suffix().toLower() == "blp")
-//        writer.setQuality(m_settings->value("blpCompression").toInt());
-//    else if (info.suffix().toLower() == "jpg" || info.suffix().toLower() == "jpeg")
-//        writer.setQuality(m_settings->value("jpgCompression").toInt());
-    writer.setFormat("blp1jpeg");
-    writer.write(m_currentImage);
+    setImage(QImage());
 }
 
 void ImageViewer::preferences()
@@ -99,7 +67,7 @@ void ImageViewer::preferences()
 void ImageViewer::copy()
 {
     QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setImage(m_currentImage);
+    clipboard->setImage(m_image);
 }
 
 void ImageViewer::paste()
@@ -111,8 +79,8 @@ void ImageViewer::paste()
 void ImageViewer::zoomIn()
 {
     scale += 0.1;
-    int w = m_currentImage.width(), h = m_currentImage.height();
-    QImage scaledImage = m_currentImage.scaled(w*scale, h*scale);
+    int w = m_image.width(), h = m_image.height();
+    QImage scaledImage = m_image.scaled(w*scale, h*scale);
     label->setPixmap(QPixmap().fromImage(scaledImage));
 }
 
@@ -123,15 +91,15 @@ void ImageViewer::zoomOut()
         scale = 0.1;
         return;
     }
-    int w = m_currentImage.width(), h = m_currentImage.height();
-    QImage scaledImage = m_currentImage.scaled(w*scale, h*scale);
+    int w = m_image.width(), h = m_image.height();
+    QImage scaledImage = m_image.scaled(w*scale, h*scale);
     label->setPixmap(QPixmap().fromImage(scaledImage));
 }
 
 void ImageViewer::zoomReset()
 {
     scale = 1.0;
-    label->setPixmap(QPixmap().fromImage(m_currentImage));
+    label->setPixmap(QPixmap().fromImage(m_image));
 }
 
 void ImageViewer::savePreferences(const ImageSettingsDialog * dialog)

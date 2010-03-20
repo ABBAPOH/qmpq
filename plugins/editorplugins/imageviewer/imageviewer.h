@@ -15,16 +15,15 @@ class QLabel;
 class ImageViewer : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(QImage image READ image WRITE setImage);
 public:
     ImageViewer(QWidget *parent = 0);
     ~ImageViewer();
-    QString currentFile() { return m_currentFile; }
+    QImage image() { return m_image; }
 
 public slots:
-    void open(const QString & path = QString());
-    void closeFile();
-//    void open();
-    void save(QString path = "");
+    void setImage(const QImage & image);
+    void clear();
     void preferences();
     void copy();
     void paste();
@@ -32,19 +31,13 @@ public slots:
     void zoomOut();
     void zoomReset();
 
-
-signals:
-    void fileSaved(const QString &);
-
 private:
     Ui::ImageViewer *ui;
-    QString m_currentFile;
-    QImage m_currentImage;
+    QImage m_image;
     QSettings * m_settings;
     QLabel * label;
     double scale;
 
-    void setImage(const QImage & image);
     void savePreferences(const ImageSettingsDialog * dialog);
     void loadPreferences(ImageSettingsDialog * dialog);
 };

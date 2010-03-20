@@ -5,6 +5,7 @@
 #include <QtGui/QFileDialog>
 #include <QtCore/QSignalMapper>
 #include <QtGui/QAction>
+#include <QtGui/QImageWriter>
 #include <QDebug>
 
 #include "imageviewer.h"
@@ -37,13 +38,20 @@ ImageViewerPlugin::~ImageViewerPlugin()
 
 bool ImageViewerPlugin::open(const QString &file)
 {
-    m_editor->open(file);
+    qDebug() << "ImageViewerPlugin::open" << file;
+    if (!m_currentFile.isEmpty()) {
+        m_currentFile = file;
+        QImage image(file);
+        m_editor->setImage(image);
+        return true;
+    }
+
     return true;
 }
 
 void ImageViewerPlugin::close()
 {
-    m_editor->closeFile();
+    m_editor->clear();
 }
 
 QWidget * ImageViewerPlugin::widget()
@@ -58,19 +66,29 @@ QToolBar * ImageViewerPlugin::toolBar ()
 
 void ImageViewerPlugin::save(const QString &file)
 {
-    if (file == "")
-        m_editor->save(m_editor->currentFile());
-    else
-        m_editor->save(file);
+    QString path = file ==  "" ? m_currentFile : file;
+
+    //    qDebug() << "ImageViewer::save()" << path;
+    //    if (path == "")
+    //        path = currentFile();
+        QImageWriter writer(path);
+        QFileInfo info(path);
+
+    //    if (info.suffix().toLower() == "blp")
+    //        writer.setQuality(m_settings->value("blpCompression").toInt());
+    //    else if (info.suffix().toLower() == "jpg" || info.suffix().toLower() == "jpeg")
+    //        writer.setQuality(m_settings->value("jpgCompression").toInt());
+        writer.setFormat("blp1jpeg");
+        writer.write(m_editor->image());
 }
 
-void ImageViewerPlugin::save_As()
-{
-    QString path = QFileDialog::getSaveFileName(m_editor, tr("Save As..."), m_editor->currentFile(),  tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)"));
-    if (path == "")
-        return;
-    m_editor->save(path);
-}
+//void ImageViewerPlugin::save_As()
+//{
+//    QString path = QFileDialog::getSaveFileName(m_editor, tr("Save As..."), m_editor->currentFile(),  tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)"));
+//    if (path == "")
+//        return;
+//    m_editor->save(path);
+//}
 
 //================================== ImageViewerFactory ==================================
 
