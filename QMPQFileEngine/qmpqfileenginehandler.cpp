@@ -19,9 +19,9 @@ QAbstractFileEngine *QMPQFileEngineHandler::create(const QString &fileName) cons
     QStringList suffixes = QMPQFileEngine::supportedFormats();
 //    suffixes << "mpq" << "w3x" << "w3m";
     foreach (QString suffix, suffixes) {
-        int index = fileName.toLower().lastIndexOf('.' + suffix/*, 0, Qt::CaseInsensitive*/);
+        int index = fileName.lastIndexOf('.' + suffix, -1, Qt::CaseInsensitive);
         if (index != -1) {
-//            qDebug() << fileName.length() << index << type << fileName;
+//            qDebug() << fileName.length() << index << fileName;
 //#warning under Linux may cause bug with case-sensitive files
 //            if (type == QAbstractFileEngine::File && fileName.length() == index+4)
 //                return 0;

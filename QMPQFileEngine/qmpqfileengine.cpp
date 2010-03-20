@@ -13,7 +13,7 @@ QString QMPQFileEnginePrivate::getArchiveFilePath(const QString & path)
 {
 //    QString result = path;
     foreach (QString format, QMPQFileEngine::supportedFormats()) {
-        int index = path.toLower().lastIndexOf('.' + format);
+        int index = path.lastIndexOf('.' + format, -1, Qt::CaseInsensitive);
         if (index != -1) {
             return path.mid(0, index+format.length() + 1);
         }
