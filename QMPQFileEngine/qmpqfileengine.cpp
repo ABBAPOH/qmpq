@@ -12,12 +12,15 @@
 QString QMPQFileEnginePrivate::getArchiveFilePath(const QString & path)
 {
 //    QString result = path;
-    foreach (QString format, QMPQFileEngine::supportedFormats()) {
-        int index = path.lastIndexOf('.' + format, -1, Qt::CaseInsensitive);
-        if (index != -1) {
-            return path.mid(0, index+format.length() + 1);
-        }
+    QMPQFileEngineStringParser parser(path, QMPQFileEngine::supportedFormats());
+    QString format = parser.suffix();
+    int index = path.lastIndexOf(parser.suffix());
+    if (index != -1) {
+//        qDebug() << parser.suffix() << index;
+//        qDebug() << path.mid(0, index+format.length());
+        return path.mid(0, index+format.length());
     }
+
     return "";
 }
 

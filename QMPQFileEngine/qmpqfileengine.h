@@ -5,6 +5,38 @@
 
 #include <QtCore/QAbstractFileEngine>
 
+class QMPQFileEngineStringParser
+{
+    bool m_found;
+    QString m_fileName;
+    QString m_suffix;
+
+public:
+    QMPQFileEngineStringParser(const QString & fileName, const QStringList suffixes)
+    {
+        m_found = false;
+        const QStringList & names = fileName.split('/');
+        //    foreach (const QString & name, names) {
+        for (int i = names.count() - 1; i >= 0; i--) { // iterates list in a reverse order to support nested archives
+            const QString & name = names.at(i);
+            foreach (const QString & suffix, suffixes) {
+                if (name.endsWith('.' + suffix, Qt::CaseInsensitive)) {
+//                    qDebug() << suffix << fileName;
+                    m_found = true;
+                    m_fileName = fileName;
+                    m_suffix = suffix;
+                    return;
+//                    return new QMPQFileEngine(fileName);
+                }
+            }
+        }
+    }
+
+    bool isFound() { return m_found; }
+    QString fileName() { return m_fileName; }
+    QString suffix() { return m_suffix; }
+};
+
 class QMPQFileEnginePrivate;
 class QMPQFILEENGINESHARED_EXPORT QMPQFileEngine : public QAbstractFileEngine
 {

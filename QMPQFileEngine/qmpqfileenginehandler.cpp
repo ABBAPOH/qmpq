@@ -6,31 +6,29 @@
 
 bool QMPQFileEngineHandler::lock = false;
 
-QMPQFileEngineHandler::QMPQFileEngineHandler()
+QMPQFileEngineHandler::QMPQFileEngineHandler() : QAbstractFileEngineHandler()
 {
 //    qDebug() << "QMPQFileEngineHandler::QMPQFileEngineHandler";
 }
 
-//QAbstractFileEngine *QMPQFileEngineHandler::create(const QString &fileName, QAbstractFileEngine::EngineType type) const
 QAbstractFileEngine *QMPQFileEngineHandler::create(const QString &fileName) const
 {
     if (lock)
         return 0;
     QStringList suffixes = QMPQFileEngine::supportedFormats();
-//    suffixes << "mpq" << "w3x" << "w3m";
-    foreach (QString suffix, suffixes) {
-        int index = fileName.lastIndexOf('.' + suffix, -1, Qt::CaseInsensitive);
-        if (index != -1 && (fileName.length()==index+suffix.length()+1 || fileName[index+suffix.length()+1] == '/')) {
-            qDebug() << fileName.length() << suffix << index << fileName;
-//#warning under Linux may cause bug with case-sensitive files
-//            if (type == QAbstractFileEngine::File && fileName.length() == index+4)
-//                return 0;
-//                qDebug() << "zero";
-//            else
-                return new QMPQFileEngine(fileName);
-        }
-    }
+
+    if (QMPQFileEngineStringParser(fileName, suffixes).isFound())
+        return new QMPQFileEngine(fileName);
+//    const QStringList & names = fileName.split('/');
+//    //    foreach (const QString & name, names) {
+//    for (int i = names.count() - 1; i >= 0; i--) { // iterates list in a reverse order to support nested archives
+//        const QString & name = names.at(i);
+//        foreach (const QString & suffix, suffixes) {
+//            if (name.endsWith('.' + suffix, Qt::CaseInsensitive)) {
+//                qDebug() << suffix << fileName;
+//                return new QMPQFileEngine(fileName);
+//            }
+//        }
+//    }
     return 0;
-    //    return fileName.toLower().contains(".mpq") ? new QMPQFileEngine(fileName) : 0;
-//    return QRegExp(".*(\\.mpq|\\.w3x).*").exactMatch(fileName.toLower()) ? new QMPQFileEngine(fileName.toLower()) : 0;
 }

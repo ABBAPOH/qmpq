@@ -99,7 +99,7 @@ void MainWindow::open(const QString & path)
 
     title->setText(QFileInfo(fileName).fileName());
 //    setAddress(fileName);
-    m_editorView->setPath(path);
+    m_editorView->setPath(fileName);
 }
 
 void MainWindow::save_As()
@@ -138,7 +138,7 @@ void MainWindow::setAddress(const QString & path)
 void MainWindow::about()
 {
    QMessageBox::about(this, tr("About QMPQ"),
-            tr("<b>QMPQ 1.5c</b> a Qt-based program that allows to manipulate "
+            tr("<b>QMPQ 1.5d</b> a Qt-based program that allows to manipulate "
                "with Blizzard's MPQ-archives. "
                "Copyright 2009 Nevermore (N) aka ABBAPOH"));
 }
