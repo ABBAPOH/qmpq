@@ -98,7 +98,8 @@ void MainWindow::open(const QString & path)
         return;
 
     title->setText(QFileInfo(fileName).fileName());
-    setAddress(fileName);
+//    setAddress(fileName);
+    m_editorView->setPath(path);
 }
 
 void MainWindow::save_As()
@@ -180,7 +181,7 @@ void MainWindow::connectView(QWidget * view)
 
     connect(view, SIGNAL(pathChanged(const QString &)), this, SLOT(setAddress(const QString &)));
     connect(view, SIGNAL(centralWidgetChanged(QWidget *)), this, SLOT(connectEditor(QWidget *)));
-    connect(addressBar, SIGNAL(textChanged(const QString &)), view, SLOT(setPath(const QString &)));
+    connect(addressBar, SIGNAL(textEdited(const QString &)), view, SLOT(setPath(const QString &)));
     connect(ui->actionBack, SIGNAL(triggered()), view, SLOT(back()));
     connect(ui->actionForward, SIGNAL(triggered()), view, SLOT(forward()));
     connect(ui->actionUp_one_level, SIGNAL(triggered()), view, SLOT(up()));
