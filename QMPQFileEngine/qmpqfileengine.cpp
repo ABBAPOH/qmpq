@@ -14,7 +14,7 @@ QString QMPQFileEnginePrivate::getArchiveFilePath(const QString & path)
 //    QString result = path;
     QMPQFileEngineStringParser parser(path, QMPQFileEngine::supportedFormats());
     QString format = parser.suffix();
-    int index = path.lastIndexOf(parser.suffix());
+    int index = path.lastIndexOf(parser.suffix(), -1, Qt::CaseInsensitive);
     if (index != -1) {
 //        qDebug() << parser.suffix() << index;
 //        qDebug() << path.mid(0, index+format.length());

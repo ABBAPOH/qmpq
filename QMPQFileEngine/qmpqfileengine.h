@@ -4,6 +4,7 @@
 #include "QMPQFileEngine_global.h"
 
 #include <QtCore/QAbstractFileEngine>
+#include <QDebug>
 
 class QMPQFileEngineStringParser
 {
@@ -15,13 +16,14 @@ public:
     QMPQFileEngineStringParser(const QString & fileName, const QStringList suffixes)
     {
         m_found = false;
+        qDebug() << fileName;
         const QStringList & names = fileName.split('/');
         //    foreach (const QString & name, names) {
         for (int i = names.count() - 1; i >= 0; i--) { // iterates list in a reverse order to support nested archives
             const QString & name = names.at(i);
             foreach (const QString & suffix, suffixes) {
+//                qDebug() << suffix << fileName;
                 if (name.endsWith('.' + suffix, Qt::CaseInsensitive)) {
-//                    qDebug() << suffix << fileName;
                     m_found = true;
                     m_fileName = fileName;
                     m_suffix = suffix;
