@@ -251,8 +251,9 @@ bool QMPQFileEngine::remove()
 
 bool QMPQFileEngine::rename(const QString & newName)
 {
-//    qDebug() << "QMPQFileEngine::rename" << newName;
+    qDebug() << "QMPQFileEngine::rename" << newName;
     Q_D(const QMPQFileEngine);
+    qDebug() <<  d->innerPath;
     if (d->innerPath=="") {
         #warning TODO: fix it
         QMPQFileEngineHandler::setLocked(true);
@@ -291,7 +292,10 @@ void QMPQFileEngine::initArchive()
         if ( archiveFilePath == "" )
             break;
         int index = archiveFilePath.lastIndexOf("/");
-        archiveFilePath = archiveFilePath.mid(0, index - 1);
+        if (index != -1)
+            archiveFilePath = archiveFilePath.mid(0, index - 1);
+        else
+            archiveFilePath = "";
 //        qDebug() << archiveFilePath;
     }
     d->archiveFilePath = archiveFilePath;
