@@ -24,17 +24,16 @@ QString QMPQFileEnginePrivate::getArchiveFilePath(const QString & path)
     return "";
 }
 
-QMPQFileEngine::QMPQFileEngine()
-{
-//    qDebug() << "QMPQFileEngine::QMPQFileEngine";
-}
+//QMPQFileEngine::QMPQFileEngine()
+//{
+////    qDebug() << "QMPQFileEngine::QMPQFileEngine";
+//}
 
-QMPQFileEngine::QMPQFileEngine(const QString & file)
+QMPQFileEngine::QMPQFileEngine()
     : QAbstractFileEngine(), d_ptr(new QMPQFileEnginePrivate(this))
 {
     Q_D(QMPQFileEngine);
 //    qDebug() << "QMPQFileEngine::QMPQFileEngine" << file;
-    setFileName(file);
 }
 
 QMPQFileEngine::~QMPQFileEngine()
@@ -169,6 +168,11 @@ bool QMPQFileEngine::isRelativePath() const
 //    return false;
 }
 
+bool QMPQFileEngine::isCreated()
+{
+    return d_func()->isCreated;
+}
+
 bool QMPQFileEngine::mkdir(const QString & dirName, bool createParentDirectories) const
 {
 //    qDebug() << "QMPQFileEngine::mkdir";
@@ -272,6 +276,27 @@ bool QMPQFileEngine::rmdir(const QString & dirName, bool recurseParentDirectorie
     return d_func()->archive->remove(dirName);
 }
 
+void QMPQFileEngine::initArchive()
+{
+    Q_D(QMPQFileEngine);
+    qDebug() << "QMPQFileEngine::initArchive()";
+    QString archiveFilePath = d->filePath;
+    while (1) {
+        archiveFilePath = d->getArchiveFilePath(archiveFilePath);
+        d->archive = SharedMPQArchive::instance(archiveFilePath);
+        if (d->archive && d->archive->isOpened()) {
+            d->isCreated = true;
+            break;
+        }
+        if ( archiveFilePath == "" )
+            break;
+        int index = archiveFilePath.lastIndexOf("/");
+        archiveFilePath = archiveFilePath.mid(0, index - 1);
+//        qDebug() << archiveFilePath;
+    }
+    d->archiveFilePath = archiveFilePath;
+}
+
 void QMPQFileEngine::setFileName(const QString & fileName)
 {
     Q_D(QMPQFileEngine);
@@ -282,12 +307,13 @@ void QMPQFileEngine::setFileName(const QString & fileName)
 //    qDebug() << "QMPQFileEngine::setFileName" << d->filePath << file;
     SharedMPQArchive::releaseInstance(d->archiveFilePath);
     d->filePath = file;
-    d->archiveFilePath = d->getArchiveFilePath(d->filePath);
+    initArchive();
+//    d->archiveFilePath = d->getArchiveFilePath(d->filePath);
     d->baseName = file.mid(file.lastIndexOf('/') + 1);
 //    d->innerPath = file.mid(d->archiveFilePath.length() + 1).replace('/', '\\');
     d->innerPath = file.mid(d->archiveFilePath.length() + 1);
     d->innerPath = d->innerPath.replace("/", "\\");
-    d->archive = SharedMPQArchive::instance(d->archiveFilePath);
+//    d->archive = SharedMPQArchive::instance(d->archiveFilePath);
 //    qDebug() << d->archiveFilePath;
 //    qDebug() << d->innerPath;
 

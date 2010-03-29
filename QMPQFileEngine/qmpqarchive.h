@@ -48,6 +48,7 @@ public:
 
     bool exists(const QString & file) { return treeItem(file); }
     bool isDir(const QString & dirName);
+    bool isOpened();
 
     QString file();
 

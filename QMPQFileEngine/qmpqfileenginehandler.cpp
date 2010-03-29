@@ -17,8 +17,16 @@ QAbstractFileEngine *QMPQFileEngineHandler::create(const QString &fileName) cons
         return 0;
     QStringList suffixes = QMPQFileEngine::supportedFormats();
 
-    if (QMPQFileEngineStringParser(fileName, suffixes).isFound())
-        return new QMPQFileEngine(fileName);
+    if (QMPQFileEngineStringParser(fileName, suffixes).isFound()) {
+        QMPQFileEngine * engine = new QMPQFileEngine;
+        engine->setFileName(fileName);
+        if (!engine->isCreated()) {
+            delete engine;
+            return 0;
+        }
+
+        return engine;
+    }
 //    const QStringList & names = fileName.split('/');
 //    //    foreach (const QString & name, names) {
 //    for (int i = names.count() - 1; i >= 0; i--) { // iterates list in a reverse order to support nested archives

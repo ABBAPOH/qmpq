@@ -227,6 +227,11 @@ bool BLPHandler::writeJPEG(const QImage &image)
         ++numMipmaps;
     }
 
+    for(int i = 0; i < 16; i++) {
+        header.mipMapOffset[i] = 0;
+        header.mipMapSize[i] = 0;
+    }
+
     fillHeader(result, header);
     //Writing Header to create JPEG-compressed image
     header.BLPType[3] = '1';
@@ -235,10 +240,10 @@ bool BLPHandler::writeJPEG(const QImage &image)
         header.flags = 0x8;
 //    else
 //        header.flags = 0x0;
-    header.pictureType = 0;
-    header.pictureSubType = 0;
+    header.pictureType = 0x5;
+    header.pictureSubType = 0x0;
 
-    quint32 JpegHeaderSize = 10;
+    quint32 JpegHeaderSize = 2;
     quint8 jpegHeader[JpegHeaderSize];
 
     quint32 headerOffset = sizeof(header) + sizeof(JpegHeaderSize) + sizeof(jpegHeader);
@@ -248,7 +253,7 @@ bool BLPHandler::writeJPEG(const QImage &image)
     QBuffer mipMaps;
     mipMaps.open(QBuffer::WriteOnly);
 
-    for (int k = 0; !result.isNull(); k++) {
+    for (int k = 0; k < 1 && !result.isNull(); k++) {
 //        qDebug() << result.width() << result.height();
 
         QBuffer buffer;
@@ -270,8 +275,8 @@ bool BLPHandler::writeJPEG(const QImage &image)
         mipMaps.write(paddingArr);
         offset = mipMaps.pos() + headerOffset;
         header.mipMapOffset[k] = offset;
+        header.mipMapSize[k] = buffer.size();
         qint64 size = mipMaps.write(buffer.readAll());
-        header.mipMapSize[k] = size;
 
         result = result.scaled(width /=2, height /= 2);
     }
@@ -288,6 +293,7 @@ bool BLPHandler::writeJPEG(const QImage &image)
         s << jpegHeader[i];
     }
     s << mipMaps.data();
+    qDebug() << "end writing JPEG BLP";
 
     return true;
 }

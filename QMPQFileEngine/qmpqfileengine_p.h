@@ -19,12 +19,13 @@ class QMPQFileEnginePrivate
     uint mappedCnt;
     qint64 offset;
     QByteArray fileData;
+    bool isCreated;
 
     QString getArchiveFilePath(const QString & path);
 
 public:
     QMPQFileEnginePrivate(QMPQFileEngine * q)
-        : archive(0), openMode(QIODevice::NotOpen), offset(0)
+        : archive(0), openMode(QIODevice::NotOpen), offset(0), isCreated(false)
     {
         q_ptr = q;
     }

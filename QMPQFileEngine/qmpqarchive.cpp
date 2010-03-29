@@ -11,7 +11,7 @@
 #include <QDebug>
 
 QMPQArchivePrivate::QMPQArchivePrivate(QMPQArchive * q)
-    :  mpq(0), m_updateOnClose(false), q_ptr(q)
+    :  mpq(0), m_updateOnClose(false), m_isOpened(false), q_ptr(q)
 {
 }
 
@@ -36,12 +36,14 @@ bool QMPQArchivePrivate::openArchive(const QString & name/*, QByteArray listfile
         return false;
     }
 
+    m_isOpened = true;
     return true;
 }
 
 bool QMPQArchivePrivate::closeArchive()
 {
     if (!mpq) {
+        m_isOpened = false;
         return true;
     }
     bool result = SFileCloseArchive(mpq);
@@ -51,6 +53,7 @@ bool QMPQArchivePrivate::closeArchive()
         return false;
     }
     mpq = 0;
+    m_isOpened = false;
     return true;
 }
 
@@ -570,6 +573,12 @@ bool QMPQArchive::isDir(const QString & dirName)
         return false;
     return item->isDir();
 }
+
+bool QMPQArchive::isOpened()
+{
+    return d_func()->m_isOpened;
+}
+
 
 QString QMPQArchive::file()
 {

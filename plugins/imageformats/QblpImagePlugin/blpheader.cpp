@@ -32,7 +32,7 @@ void readHeader(QDataStream & s, BLPHeader & head )
 
 void writeHeader(QDataStream & s, const BLPHeader & head)
 {
-    for(int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
         s << head.BLPType[i];
     s << head.type;
     s << head.flags;
@@ -44,5 +44,13 @@ void writeHeader(QDataStream & s, const BLPHeader & head)
         s << head.mipMapOffset[i];
     for (int i = 0; i < 16; i++)
         s << head.mipMapSize[i];
+    qDebug() << head.type;
+    qDebug() << head.flags;
+    qDebug() << head.width;
+    qDebug() << head.height;
+    qDebug() << head.pictureType;
+    qDebug() << head.pictureSubType;
+    qDebug() << head.mipMapOffset[0];
+    qDebug() << head.mipMapSize[0];
 }
 

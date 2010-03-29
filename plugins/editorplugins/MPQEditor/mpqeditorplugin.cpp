@@ -33,11 +33,11 @@ MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
     connect(actionRename, SIGNAL(triggered()), m_editor, SLOT(rename()));
     actionRemove = m_toolBar->addAction(QIcon(":/icons/images/remove.png"), "Remove", m_editor, SLOT(remove()));
     m_toolBar->addSeparator();
-    viewModeActions[0] = new QAction("listView", m_toolBar);
-    viewModeActions[1] = new QAction("iconView", m_toolBar);
-    viewModeActions[2] = new QAction("tableView", m_toolBar);
-    viewModeActions[3] = new QAction("columnView", m_toolBar);
-    viewModeActions[4] = new QAction("treeView", m_toolBar);
+    viewModeActions[0] = new QAction(QIcon(":/icons/images/list2.png"), "listView", m_toolBar);
+    viewModeActions[1] = new QAction(QIcon(":/icons/images/icons2.png"), "iconView", m_toolBar);
+    viewModeActions[2] = new QAction(QIcon(":/icons/images/table2.png"), "tableView", m_toolBar);
+    viewModeActions[3] = new QAction(QIcon(":/icons/images/column2.png"), "columnView", m_toolBar);
+    viewModeActions[4] = new QAction(QIcon(":/icons/images/treeview2.png"), "treeView", m_toolBar);
 
     for (int i = 0; i < MaxViews; i++) {
         m_toolBar->addAction(viewModeActions[i]);

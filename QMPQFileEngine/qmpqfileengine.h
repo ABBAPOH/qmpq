@@ -58,6 +58,7 @@ public:
     QDateTime fileTime(FileTime time) const;
     bool flush();
     bool isRelativePath() const;
+    bool isCreated();
 //    bool isSequential() const { return true; } // Why works with it???
     bool mkdir(const QString & dirName, bool createParentDirectories) const;
     bool open(QIODevice::OpenMode mode);
@@ -83,6 +84,7 @@ public:
 private:
     QFile * getNativeFile(QString path) const;
     QFileInfo * getNativeFileInfo(QString path) const;
+    void initArchive();
 
 protected:
     QMPQFileEnginePrivate * d_ptr;

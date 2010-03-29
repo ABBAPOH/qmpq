@@ -36,6 +36,7 @@ public:
     void * mpq; //qfmpq archive pointer;
     QMPQError m_lastError;
     bool m_updateOnClose;
+    bool m_isOpened;
 private:
     QMPQArchive * q_ptr;
 };
