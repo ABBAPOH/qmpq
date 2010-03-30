@@ -246,7 +246,19 @@ qint64 QMPQFileEngine::read(char* data, qint64 maxlen)
 bool QMPQFileEngine::remove()
 {
 //    qDebug() << "QMPQFileEngine::remove";
-    return d_func()->archive->remove(d_func()->innerPath);
+//    return d_func()->archive->remove(d_func()->innerPath);
+    Q_D(QMPQFileEngine);
+    if (d->innerPath=="") {
+        #warning TODO: fix it
+        QMPQFileEngineHandler::setLocked(true);
+        QFile file(d->archiveFilePath);
+        d->archive->closeArchive();
+        bool result = file.remove();
+        QMPQFileEngineHandler::setLocked(false);
+        return result;
+    } else {
+        return d->archive->remove(d_func()->innerPath);
+    }
 }
 
 bool QMPQFileEngine::rename(const QString & newName)
