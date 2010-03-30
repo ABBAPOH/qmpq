@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 SUBDIRS = \
+    3rdParty \
     plugins/imageformats/QblpImagePlugin \
     plugins/imageformats/QtgaImagePlugin \
     QMPQFileEngine \

@@ -285,15 +285,18 @@ void QMPQFileEngine::initArchive()
     while (1) {
         archiveFilePath = d->getArchiveFilePath(archiveFilePath);
         d->archive = SharedMPQArchive::instance(archiveFilePath);
+        qDebug() << archiveFilePath << d->archive->isOpened();
         if (d->archive && d->archive->isOpened()) {
             d->isCreated = true;
             break;
         }
         if ( archiveFilePath == "" )
             break;
+        SharedMPQArchive::releaseInstance(archiveFilePath);
+        d->archive = 0;
         int index = archiveFilePath.lastIndexOf("/");
         if (index != -1)
-            archiveFilePath = archiveFilePath.mid(0, index - 1);
+            archiveFilePath = archiveFilePath.mid(0, index + 1);
         else
             archiveFilePath = "";
 //        qDebug() << archiveFilePath;

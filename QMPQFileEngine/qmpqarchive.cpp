@@ -33,6 +33,7 @@ bool QMPQArchivePrivate::openArchive(const QString & name/*, QByteArray listfile
     if (!SFileCreateArchiveEx(name.toLower().toLocal8Bit().data(), OPEN_EXISTING, 0, &mpq)) {
         m_lastError = GetLastError();
         qWarning() << "can't open archive: "<< m_lastError.errorMessage();
+        m_isOpened = false;
         return false;
     }
 
@@ -261,7 +262,7 @@ bool QMPQArchive::openArchive(const QString & name, QByteArray listfile)
 bool QMPQArchive::closeArchive()
 {
     Q_D(QMPQArchive);
-//    qDebug("QMPQArchive::closeArchive");
+    qDebug("QMPQArchive::closeArchive");
     if (d->m_updateOnClose)
         updateListFile();
     d->hash.clear();
