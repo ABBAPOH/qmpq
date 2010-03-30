@@ -246,7 +246,6 @@ qint64 QMPQFileEngine::read(char* data, qint64 maxlen)
 bool QMPQFileEngine::remove()
 {
 //    qDebug() << "QMPQFileEngine::remove";
-//    return d_func()->archive->remove(d_func()->innerPath);
     Q_D(QMPQFileEngine);
     if (d->innerPath=="") {
         #warning TODO: fix it
@@ -263,13 +262,13 @@ bool QMPQFileEngine::remove()
 
 bool QMPQFileEngine::rename(const QString & newName)
 {
-    qDebug() << "QMPQFileEngine::rename" << newName;
+//    qDebug() << "QMPQFileEngine::rename" << newName;
     Q_D(const QMPQFileEngine);
-    qDebug() <<  d->innerPath;
     if (d->innerPath=="") {
         #warning TODO: fix it
         QMPQFileEngineHandler::setLocked(true);
         QFile file(d->archiveFilePath);
+        d->archive->closeArchive();
         bool result = file.rename(newName);
         QMPQFileEngineHandler::setLocked(false);
         return result;
@@ -292,12 +291,12 @@ bool QMPQFileEngine::rmdir(const QString & dirName, bool recurseParentDirectorie
 void QMPQFileEngine::initArchive()
 {
     Q_D(QMPQFileEngine);
-    qDebug() << "QMPQFileEngine::initArchive()";
+//    qDebug() << "QMPQFileEngine::initArchive()";
     QString archiveFilePath = d->filePath;
     while (1) {
         archiveFilePath = d->getArchiveFilePath(archiveFilePath);
         d->archive = SharedMPQArchive::instance(archiveFilePath);
-        qDebug() << archiveFilePath << d->archive->isOpened();
+//        qDebug() << archiveFilePath << d->archive->isOpened();
         if (d->archive && d->archive->isOpened()) {
             d->isCreated = true;
             break;
@@ -361,7 +360,7 @@ qint64 QMPQFileEngine::size() const
 qint64 QMPQFileEngine::write(const char * data, qint64 maxlen)
 {
     Q_D(QMPQFileEngine);
-    qDebug() << "QMPQFileEngine::write" << data << maxlen;
+//    qDebug() << "QMPQFileEngine::write" << data << maxlen;
     if (!d->openMode & QIODevice::WriteOnly)
         return 0;
     if (maxlen <= 0)
