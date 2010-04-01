@@ -240,7 +240,6 @@ void MPQEditor::remove()
 //        QFile file(m_model->filePath(index));
         bool result;
         remove(index);
-
     }
 }
 

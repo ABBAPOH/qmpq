@@ -111,21 +111,25 @@ bool BLPHandler::loadPalletted( QDataStream & s, const BLPHeader & blp, QImage &
             s >> alphaList[i][j];
         }
     }
-    for (quint32 i = 0; i < blp.width; i++)
+    for (quint32 i = 0; i < blp.width; i++) {
         for (quint32 j = 0; j < blp.height; j++) {
-            quint8 red = (palette[indexList[i][j]] >> 16) & 0xff;
-            quint8 green = (palette[indexList[i][j]] >> 8) & 0xff;
-            quint8 blue = (palette[indexList[i][j]]  >> 0) & 0xff;
+            quint8 index = indexList[i][j];
+            quint8 red = (palette[index] >> 16) & 0xff;
+            quint8 green = (palette[index] >> 8) & 0xff;
+            quint8 blue = (palette[index]  >> 0) & 0xff;
 
             quint8 alpha = 255;
             if (hasAplha) {
                 if (blp.pictureType == 3 || blp.pictureType == 4)
                     alpha = alphaList[i][j];
-                else if (blp.pictureType == 5)
-                    alpha = (palette[indexList[i][j]] >> 24) & 0xff;
+                else if (blp.pictureType == 5) {
+                    quint8 index = indexList[i][j];
+                    alpha = (palette[index] >> 24) & 0xff;
+                }
             }
             img.setPixel(i, j, qRgba(red, green, blue, alpha));
         }
+    }
     return true;
 }
 
@@ -212,6 +216,41 @@ void BLPHandler::fillHeader(const QImage &image, BLPHeader & head)
     head.height = image.height();
 }
 
+QByteArray compressImageJPEG(const QImage &image, int quality)
+{
+    QBuffer buffer;
+    buffer.open(QBuffer::WriteOnly);
+    QJpegHandler handler;
+    handler.setOption(QImageIOHandler::Quality, quality);
+    handler.setDevice(&buffer);
+    handler.write(image);
+    buffer.close();
+    return buffer.data();
+}
+
+struct JPEGData
+{
+    quint32 jpegHeaderSize;
+    QByteArray jpegHeader;
+    QByteArray mipMap[16];
+//    struct MipMap
+//    {
+//        QByteArray data;
+//    } mipMap[16];
+};
+
+void cutJPEGHeader(JPEGData & data)
+{
+    data.jpegHeaderSize = 4;
+    data.jpegHeader = data.mipMap[0].left(4);
+    for (int i = 0; i < 16; i++) {
+        QByteArray bytes = data.mipMap[i];
+        if (bytes.isEmpty())
+            break;
+        data.mipMap[i] = bytes.mid(4);
+    }
+}
+
 bool BLPHandler::writeJPEG(const QImage &image)
 {
     qDebug() << "BLPHandler::writeJPEG";
@@ -228,10 +267,13 @@ bool BLPHandler::writeJPEG(const QImage &image)
         ++numMipmaps;
     }
 
-    for(int i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++) {
         header.mipMapOffset[i] = 0;
         header.mipMapSize[i] = 0;
     }
+
+    JPEGData data;
+    data.jpegHeaderSize = 0;
 
     fillHeader(result, header);
     //Writing Header to create JPEG-compressed image
@@ -260,8 +302,12 @@ bool BLPHandler::writeJPEG(const QImage &image)
     quint32 headerOffset = headerSize + sizeof(JpegHeaderSize) + sizeof(jpegHeader) + paddingArr.size();
 
     mipMaps.write(paddingArr);
-    for (int k = 0; k < 1 && !result.isNull(); k++) {
+    numMipmaps = header.pictureSubType == 0 ? 1 : numMipmaps;
+    qDebug() << numMipmaps;
+    for (int k = 0; k < numMipmaps; k++) {
 //        qDebug() << result.width() << result.height();
+
+        data.mipMap[k] = compressImageJPEG(result, quality);
 
         QBuffer buffer;
         buffer.open(QBuffer::WriteOnly);
