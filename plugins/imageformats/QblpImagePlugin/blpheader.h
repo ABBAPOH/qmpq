@@ -6,6 +6,7 @@
 
 #include <QDebug>
 
+#define BLP1_HEADER_SIZE 156
 struct BLPHeader
 {
     quint8 BLPType[4];                               //BLP1 or BLP2

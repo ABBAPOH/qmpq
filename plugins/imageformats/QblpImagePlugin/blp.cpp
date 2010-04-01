@@ -37,8 +37,22 @@ void ARGB2BGRA(QImage & image)
         image.setPixel(i, j, qRgba(b, g, r, a));
     }
 }
+
+bool decompressImageJPEG(QByteArray & arr, QImage & image)
+{
+    QBuffer newDevice(&arr);
+    newDevice.open(QBuffer::ReadOnly);
+    QJpegHandler h;
+    h.setDevice(&newDevice);
+    if (!h.canRead(&newDevice)) {
+        qWarning() << "not a jpeg";
+        return false;
+    }
+    return h.read(&image);
+}
+
 // Applications/Warcraft III/war3.mpq/UI/Console/Human/HumanUITile04.blp
-bool BLPHandler::loadJPEG( QDataStream & s, const BLPHeader & blp, QImage &img)
+bool BLPHandler::loadJPEG(QDataStream & s, const BLPHeader & blp, QImage &img)
 {
 //    qDebug("BLPHandler::loadJPEG");
     quint32 offset = 0;
@@ -59,23 +73,15 @@ bool BLPHandler::loadJPEG( QDataStream & s, const BLPHeader & blp, QImage &img)
     size = blp.mipMapSize[0];
 
     quint8 jpegData[size];
-    qDebug() << size;
-    qDebug() << s.device()->seek(offset);
+    s.device()->seek(offset);
     for (unsigned i = 0; i < size; i++) {
         s >> jpegData[i];
         arr.append(jpegData[i]);
     }
 
     //      Reads JPEG from QByteArray to QImage
-    QBuffer newDevice(&arr);
-    newDevice.open(QBuffer::ReadOnly);
-    QJpegHandler h;
-    h.setDevice(&newDevice);
-    if (!h.canRead(&newDevice)) {
-        qWarning() << "not a jpeg";
+    if (!decompressImageJPEG(arr, img))
         return false;
-    }
-    h.read(&img);
 
     ARGB2BGRA(img);
     return true;
@@ -239,16 +245,64 @@ struct JPEGData
 //    } mipMap[16];
 };
 
-void cutJPEGHeader(JPEGData & data)
+void cutJPEGHeader(/*BLPHeader & blp, */JPEGData & data)
 {
-    data.jpegHeaderSize = 4;
-    data.jpegHeader = data.mipMap[0].left(4);
+    const int jpegHeaderSize = 4;
+    data.jpegHeaderSize = jpegHeaderSize;
+    data.jpegHeader = data.mipMap[0].left(jpegHeaderSize);
     for (int i = 0; i < 16; i++) {
         QByteArray bytes = data.mipMap[i];
         if (bytes.isEmpty())
             break;
-        data.mipMap[i] = bytes.mid(4);
+        data.mipMap[i] = bytes.mid(jpegHeaderSize);
     }
+}
+
+void writeJPEGData(QDataStream & s, const JPEGData & data)
+{
+    s << data.jpegHeaderSize;
+    for (quint32 i = 0; i < data.jpegHeaderSize; i++) {
+        s << (quint8)data.jpegHeader.at(i);
+    }
+    //  can't write whole QByteArray because it prepends it's size
+    for (quint32 i = 0; i < 16; i++) {
+        QByteArray bytes = data.mipMap[i];
+        if (bytes.isEmpty())
+            break;
+        for (int j = 0; j < bytes.size(); j++) {
+            s << (quint8)bytes.at(j);
+        }
+    }
+}
+
+void fillOffsets(BLPHeader & blp, JPEGData & data)
+{
+    for (int i = 0; i < 16; i++) {
+        QByteArray bytes = data.mipMap[i];
+        if (bytes.isEmpty()) {
+            blp.mipMapOffset[i] = 0;
+            blp.mipMapSize[i] = 0;
+        } else {
+            if (i > 0) {
+                blp.mipMapOffset[i] = blp.mipMapOffset[i - 1] + blp.mipMapSize[i - 1];
+                blp.mipMapSize[i] = bytes.size();
+            } else {
+                blp.mipMapOffset[i] = BLP1_HEADER_SIZE + 4 + data.jpegHeaderSize; //we add 4 to skip jpegHeaderSize field (32 bits)
+                blp.mipMapSize[i] = bytes.size();
+            }
+        }
+    }
+}
+
+int calcMipMapsNumber(int width, int height)
+{
+    long t = width < height ? width : height;
+    int numMipmaps = 0;
+    while (t % 2 == 0) {
+        t /= 2;
+        ++numMipmaps;
+    }
+    return numMipmaps;
 }
 
 bool BLPHandler::writeJPEG(const QImage &image)
@@ -256,100 +310,38 @@ bool BLPHandler::writeJPEG(const QImage &image)
     qDebug() << "BLPHandler::writeJPEG";
     QImage result = image;
     result = result.convertToFormat(QImage::Format_ARGB32_Premultiplied);
-    ARGB2BGRA(result); // Changes colors in source image
-    BLPHeader header;
-    int width = result.width();
-    int height = result.height();
-    long t = width < height ? width : height;
-    int numMipmaps = 0;
-    while (t % 2 == 0) {
-        t /= 2;
-        ++numMipmaps;
-    }
-
-    for (int i = 0; i < 16; i++) {
-        header.mipMapOffset[i] = 0;
-        header.mipMapSize[i] = 0;
-    }
-
+    BLPHeader blp;
     JPEGData data;
-    data.jpegHeaderSize = 0;
+    int width = image.width();
+    int height = image.height();
 
-    fillHeader(result, header);
+    ARGB2BGRA(result); // Changes colors in source image
+    fillHeader(result, blp);
     //Writing Header to create JPEG-compressed image
-    header.BLPType[3] = '1';
-    header.type = 0;
+    blp.BLPType[3] = '1';
+    blp.type = 0;
 //    if (hasAlpha)
-        header.flags = 0x8;
+        blp.flags = 0x8;
 //    else
 //        header.flags = 0x0;
-    header.pictureType = 0x5;
-    header.pictureSubType = 0x0;
+    blp.pictureType = 0x5;
+    blp.pictureSubType = 0x0;
 
-    quint32 JpegHeaderSize = 2;
-    quint8 jpegHeader[JpegHeaderSize];
-
-
-    const int headerSize = sizeof(header) - 4; // we do not need to count BLP2 field within structure
-    qDebug() << "header size" << headerSize;
-    qDebug() << "JpegHeaderSize size" << sizeof(JpegHeaderSize);
-    qDebug() << "jpegHeader size" << sizeof(jpegHeader);
-    quint32 offset = 0;
-
-    QByteArray paddingArr(0, (char)0); // Creates padding between jpeg images
-    QBuffer mipMaps;
-    mipMaps.open(QBuffer::WriteOnly);
-    quint32 headerOffset = headerSize + sizeof(JpegHeaderSize) + sizeof(jpegHeader) + paddingArr.size();
-
-    mipMaps.write(paddingArr);
-    numMipmaps = header.pictureSubType == 0 ? 1 : numMipmaps;
-    qDebug() << numMipmaps;
+    int numMipmaps = blp.pictureSubType == 0 ? 1 : calcMipMapsNumber(width, height);
     for (int k = 0; k < numMipmaps; k++) {
-//        qDebug() << result.width() << result.height();
-
         data.mipMap[k] = compressImageJPEG(result, quality);
-
-        QBuffer buffer;
-        buffer.open(QBuffer::WriteOnly);
-
-        // Creates single JPEG image
-        QJpegHandler handler;
-        handler.setOption(Quality, quality);
-        handler.setDevice(&buffer);
-        handler.write(result);
-        buffer.close();
-        buffer.open(QBuffer::ReadOnly);
-        // Cuts JPEG header
-        QByteArray jpegHeaderArr = buffer.read(JpegHeaderSize);
-        for (quint32 i = 0; i < JpegHeaderSize; i++) {
-             jpegHeader[i] = jpegHeaderArr.at(i);
-        }
-
-        offset = mipMaps.pos() + headerOffset;
-        header.mipMapOffset[k] = offset;
-        header.mipMapSize[k] = buffer.size();
-        qint64 size = mipMaps.write(buffer.readAll().data(), header.mipMapSize[k]);
-
         result = result.scaled(width /=2, height /= 2);
     }
 
-    mipMaps.close();
+    cutJPEGHeader(/*blp, */data);
+    fillOffsets(blp, data);
 
     // Write image to device()
     QDataStream s(device());
     s.setByteOrder(QDataStream::LittleEndian);
 
-    writeHeader(s, header);
-    s << JpegHeaderSize;
-    for (quint32 i = 0; i < JpegHeaderSize; i++) {
-        s << jpegHeader[i];
-    }
-    //  can't write whole QByteArray because it prepends it's size
-    for (int i = 0; i < mipMaps.data().size(); i++) {
-        s << (quint8)mipMaps.data().at(i);
-//    s << mipMaps.data();
-    }
-    qDebug() << "end writing JPEG BLP";
+    writeHeader(s, blp);
+    writeJPEGData(s, data);
 
     return true;
 }
