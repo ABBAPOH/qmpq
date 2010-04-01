@@ -49,6 +49,13 @@ struct BLPHeader
 
 };
 
+struct JPEGData
+{
+    quint32 jpegHeaderSize;
+    QByteArray jpegHeader;
+    QByteArray mipMap[16];
+};
+
 void readHeader(QDataStream & s, BLPHeader & head);
 void writeHeader(QDataStream & s, const BLPHeader & head);
 

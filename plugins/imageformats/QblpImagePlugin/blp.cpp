@@ -54,33 +54,32 @@ bool decompressImageJPEG(QByteArray & arr, QImage & image)
 // Applications/Warcraft III/war3.mpq/UI/Console/Human/HumanUITile04.blp
 bool BLPHandler::loadJPEG(QDataStream & s, const BLPHeader & blp, QImage &img)
 {
-//    qDebug("BLPHandler::loadJPEG");
+    JPEGData data;
     quint32 offset = 0;
     quint32 size = 0;
+    quint8 byte;
 
-    quint32 JpegHeaderSize;
-    s >> JpegHeaderSize;
-
-    quint8 JpegHeader[JpegHeaderSize];
-    QByteArray arr;
-    //      Reads JPEG header and data
-    for (unsigned i = 0; i < JpegHeaderSize; i++) {
-        s >> JpegHeader[i];
-        arr.append(JpegHeader[i]);
+    s >> data.jpegHeaderSize;
+    //  Reads JPEG header
+    for (unsigned i = 0; i < data.jpegHeaderSize; i++) {
+        s >> byte;
+        data.jpegHeader[i] = byte;
     }
 
     offset = blp.mipMapOffset[0];
     size = blp.mipMapSize[0];
 
-    quint8 jpegData[size];
     s.device()->seek(offset);
+    //  Reads JPEG data (without header)
     for (unsigned i = 0; i < size; i++) {
-        s >> jpegData[i];
-        arr.append(jpegData[i]);
+        s >> byte;
+        data.mipMap[0][i] = byte;
     }
 
-    //      Reads JPEG from QByteArray to QImage
-    if (!decompressImageJPEG(arr, img))
+    //  Merges header and data
+    data.mipMap[0].prepend(data.jpegHeader);
+
+    if (!decompressImageJPEG(data.mipMap[0], img))
         return false;
 
     ARGB2BGRA(img);
@@ -89,7 +88,7 @@ bool BLPHandler::loadJPEG(QDataStream & s, const BLPHeader & blp, QImage &img)
 
 bool BLPHandler::loadPalletted( QDataStream & s, const BLPHeader & blp, QImage &img )
 {
-    qDebug("BLPHandler::loadPalletted");
+//    qDebug("BLPHandler::loadPalletted");
 
     bool hasAplha = blp.flags == 0x8;
     quint32 offset = blp.mipMapOffset[0];
@@ -142,7 +141,6 @@ bool BLPHandler::loadPalletted( QDataStream & s, const BLPHeader & blp, QImage &
 bool BLPHandler::readData( QDataStream & s, const BLPHeader & blp, QImage &img )
 {
     // Create image.
-//    qDebug() << blp.width << blp.height;
     img = QImage(blp.width, blp.height, QImage::Format_ARGB32);
 
     if (blp.blpType() == 1) {
@@ -191,8 +189,6 @@ bool BLPHandler::readData( QDataStream & s, const BLPHeader & blp, QImage &img )
 
 bool BLPHandler::read(QImage *outImage)
 {
-//    qDebug() << "Loading BLP file!";
-
     QDataStream s(device());
     s.setByteOrder(QDataStream::LittleEndian);
 
@@ -233,17 +229,6 @@ QByteArray compressImageJPEG(const QImage &image, int quality)
     buffer.close();
     return buffer.data();
 }
-
-struct JPEGData
-{
-    quint32 jpegHeaderSize;
-    QByteArray jpegHeader;
-    QByteArray mipMap[16];
-//    struct MipMap
-//    {
-//        QByteArray data;
-//    } mipMap[16];
-};
 
 void cutJPEGHeader(/*BLPHeader & blp, */JPEGData & data)
 {
@@ -307,7 +292,6 @@ int calcMipMapsNumber(int width, int height)
 
 bool BLPHandler::writeJPEG(const QImage &image)
 {
-    qDebug() << "BLPHandler::writeJPEG";
     QImage result = image;
     result = result.convertToFormat(QImage::Format_ARGB32_Premultiplied);
     BLPHeader blp;
@@ -349,8 +333,6 @@ bool BLPHandler::writeJPEG(const QImage &image)
 bool BLPHandler::write(const QImage &image)
 {
     QByteArray format = this->format();
-//    qDebug() << format;
-    qDebug() << image.format();
     if (format == "blp")
         format = "blp1jpeg";
     if (format == "blp1jpeg")
