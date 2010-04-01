@@ -216,6 +216,7 @@ bool BLPHandler::writeJPEG(const QImage &image)
 {
     qDebug() << "BLPHandler::writeJPEG";
     QImage result = image;
+    result = result.convertToFormat(QImage::Format_ARGB32_Premultiplied);
     ARGB2BGRA(result); // Changes colors in source image
     BLPHeader header;
     int width = result.width();
@@ -246,13 +247,19 @@ bool BLPHandler::writeJPEG(const QImage &image)
     quint32 JpegHeaderSize = 2;
     quint8 jpegHeader[JpegHeaderSize];
 
-    quint32 headerOffset = sizeof(header) + sizeof(JpegHeaderSize) + sizeof(jpegHeader);
+
+    const int headerSize = sizeof(header) - 4; // we do not need to count BLP2 field within structure
+    qDebug() << "header size" << headerSize;
+    qDebug() << "JpegHeaderSize size" << sizeof(JpegHeaderSize);
+    qDebug() << "jpegHeader size" << sizeof(jpegHeader);
     quint32 offset = 0;
 
     QByteArray paddingArr(0, (char)0); // Creates padding between jpeg images
     QBuffer mipMaps;
     mipMaps.open(QBuffer::WriteOnly);
+    quint32 headerOffset = headerSize + sizeof(JpegHeaderSize) + sizeof(jpegHeader) + paddingArr.size();
 
+    mipMaps.write(paddingArr);
     for (int k = 0; k < 1 && !result.isNull(); k++) {
 //        qDebug() << result.width() << result.height();
 
@@ -272,11 +279,10 @@ bool BLPHandler::writeJPEG(const QImage &image)
              jpegHeader[i] = jpegHeaderArr.at(i);
         }
 
-        mipMaps.write(paddingArr);
         offset = mipMaps.pos() + headerOffset;
         header.mipMapOffset[k] = offset;
         header.mipMapSize[k] = buffer.size();
-        qint64 size = mipMaps.write(buffer.readAll());
+        qint64 size = mipMaps.write(buffer.readAll().data(), header.mipMapSize[k]);
 
         result = result.scaled(width /=2, height /= 2);
     }
@@ -292,7 +298,11 @@ bool BLPHandler::writeJPEG(const QImage &image)
     for (quint32 i = 0; i < JpegHeaderSize; i++) {
         s << jpegHeader[i];
     }
-    s << mipMaps.data();
+    //  can't write whole QByteArray because it prepends it's size
+    for (int i = 0; i < mipMaps.data().size(); i++) {
+        s << (quint8)mipMaps.data().at(i);
+//    s << mipMaps.data();
+    }
     qDebug() << "end writing JPEG BLP";
 
     return true;
@@ -301,7 +311,8 @@ bool BLPHandler::writeJPEG(const QImage &image)
 bool BLPHandler::write(const QImage &image)
 {
     QByteArray format = this->format();
-    qDebug() << format;
+//    qDebug() << format;
+    qDebug() << image.format();
     if (format == "blp")
         format = "blp1jpeg";
     if (format == "blp1jpeg")

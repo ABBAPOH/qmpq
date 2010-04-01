@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'imageviewer.ui'
 **
-** Created: Tue Mar 30 20:31:22 2010
+** Created: Thu Apr 1 16:26:48 2010
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!

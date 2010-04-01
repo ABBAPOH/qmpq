@@ -91,7 +91,7 @@ bool QMPQFileEngine::close()
 
 bool QMPQFileEngine::copy(const QString & newName)
 {
-    qDebug() << "QMPQFileEngine::copy" << newName;
+//    qDebug() << "QMPQFileEngine::copy" << newName;
     open(QIODevice::ReadOnly);
     QFile newFile(newName);
     newFile.open(QFile::WriteOnly);
@@ -218,7 +218,7 @@ qint64 QMPQFileEngine::pos() const
 
 bool QMPQFileEngine::seek(qint64 offset)
 {
-    qDebug() << "QMPQFileEngine::seek";
+//    qDebug() << "QMPQFileEngine::seek";
     Q_D(QMPQFileEngine);
     if (d->offset < size())
         d->offset = offset;

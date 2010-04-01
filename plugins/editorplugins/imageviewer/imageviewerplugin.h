@@ -38,7 +38,7 @@ public:
     IEditor * createEditor(QWidget * parent);
     void shutdown();
     bool canHandle(const QString &file) const;
-    virtual QString saveFilter() const { return tr("Images ("/**.blp */"*.bmp *.tga *.png *.xpm *.jpg)"); }
+    virtual QString saveFilter() const { return tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)"); }
 
     ImageViewerFactory();
 };

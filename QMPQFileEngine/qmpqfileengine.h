@@ -16,7 +16,7 @@ public:
     QMPQFileEngineStringParser(const QString & fileName, const QStringList suffixes)
     {
         m_found = false;
-        qDebug() << fileName;
+//        qDebug() << fileName;
         const QStringList & names = fileName.split('/');
         //    foreach (const QString & name, names) {
         for (int i = names.count() - 1; i >= 0; i--) { // iterates list in a reverse order to support nested archives
