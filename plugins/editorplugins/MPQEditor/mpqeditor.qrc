@@ -8,10 +8,6 @@
         <file>images/list.png</file>
         <file>images/table.png</file>
         <file>images/treeview.png</file>
-        <file>images/icons2.png</file>
-        <file>images/list2.png</file>
-        <file>images/column2.png</file>
-        <file>images/table2.png</file>
-        <file>images/treeview2.png</file>
+        <file>images/rename.png</file>
     </qresource>
 </RCC>

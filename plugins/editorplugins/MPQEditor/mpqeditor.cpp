@@ -50,6 +50,7 @@ MPQEditor::MPQEditor(QWidget *parent) :
         m_model->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
         m_model->setSorting(QDir::DirsFirst);
     }
+
     for (int i = 0; i < MaxViews; i++) {
         views[i]->setEditTriggers(QAbstractItemView::SelectedClicked);
         views[i]->setModel(m_model);
@@ -65,6 +66,9 @@ MPQEditor::MPQEditor(QWidget *parent) :
 #warning TODO: remove after writing new model
         views[i]->setRootIndex(m_model->index(QDesktopServices::storageLocation(QDesktopServices::HomeLocation)));
     }
+    tableView->setColumnWidth(0, 300);
+    tableView->setColumnWidth(3, 125);
+    treeView->setColumnWidth(0, 300);
 
     setViewMode(ListView);
 }
