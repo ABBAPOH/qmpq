@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Thu Apr 1 16:27:09 2010
+** Created: Fri Apr 2 00:14:44 2010
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -191,7 +191,7 @@ public:
         actionBack->setText(QApplication::translate("MainWindow", "Back", 0, QApplication::UnicodeUTF8));
         actionBack->setShortcut(QApplication::translate("MainWindow", "Ctrl+[", 0, QApplication::UnicodeUTF8));
         actionForward->setText(QApplication::translate("MainWindow", "Forward", 0, QApplication::UnicodeUTF8));
-        actionForward->setShortcut(QApplication::translate("MainWindow", "Ctrl+], Return", 0, QApplication::UnicodeUTF8));
+        actionForward->setShortcut(QApplication::translate("MainWindow", "Ctrl+]", 0, QApplication::UnicodeUTF8));
         actionUp_one_level->setText(QApplication::translate("MainWindow", "Up one level", 0, QApplication::UnicodeUTF8));
         actionUp_one_level->setShortcut(QApplication::translate("MainWindow", "Ctrl+Up", 0, QApplication::UnicodeUTF8));
         actionCopy->setText(QApplication::translate("MainWindow", "Copy", 0, QApplication::UnicodeUTF8));

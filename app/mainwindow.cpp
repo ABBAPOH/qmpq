@@ -29,10 +29,18 @@ MainWindow::MainWindow(QWidget *parent) :
     setUnifiedTitleAndToolBarOnMac(true);
     addressBar = new QLineEdit(this);
     ui->toolBar->addWidget(addressBar);
+    initActions();
     initConnections();
 
     previousWidget = 0;
     ui->tabWidget->newTab();
+}
+
+void MainWindow::initActions()
+{
+#ifdef Q_OS_WIN
+    ui->actionUp_one_level->setShortcut(Qt::Key_Backspace);
+#endif
 }
 
 MainWindow::~MainWindow()

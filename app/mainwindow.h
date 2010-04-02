@@ -35,6 +35,7 @@ private:
     EditorView * m_editorView;
     QString m_saveExtensions;
 
+    void initActions();
     void initConnections();
     bool connectAction(QAction * sender, const char * signal, QObject * receiver, const char * member);
     void disconnectView(QWidget * view);

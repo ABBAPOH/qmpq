@@ -262,7 +262,7 @@ bool QMPQArchive::openArchive(const QString & name, QByteArray listfile)
 bool QMPQArchive::closeArchive()
 {
     Q_D(QMPQArchive);
-    qDebug("QMPQArchive::closeArchive");
+//    qDebug("QMPQArchive::closeArchive");
     if (d->m_updateOnClose)
         updateListFile();
     d->hash.clear();
