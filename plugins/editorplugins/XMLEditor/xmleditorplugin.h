@@ -1,18 +1,19 @@
 #ifndef MPQEDITORPLUGIN_H
 #define MPQEDITORPLUGIN_H
 
-#include "../../../app/ieditorfactory.h"
+#include <ieditorfactory.h>
+#include <iplugin.h>
 
 class QXMLViewer;
 class QSignalMapper;
 class QAction;
-class XMLEditorPlugin : public QObject, public IEditor
+class XMLEditorInterface : public IEditor
 {
     Q_OBJECT
-    Q_INTERFACES(IEditor)
 public:
-    XMLEditorPlugin(QXMLViewer * editor);
-    ~XMLEditorPlugin();
+    XMLEditorInterface(QXMLViewer * editor);
+    ~XMLEditorInterface();
+    virtual QString currentFile() { return m_currentFile; }
     virtual bool open(const QString &file);
 //    virtual void save(const QString &file);
     virtual void close();
@@ -40,6 +41,21 @@ public:
     bool canHandle(const QString &file) const;
 
     XMLEditorFactory();
+};
+
+class XMLEditorPlugin : public IPlugin
+{
+    Q_OBJECT
+
+public:
+    XMLEditorPlugin(QObject * parent = 0) : IPlugin(parent) {}
+    virtual ~XMLEditorPlugin() {}
+
+    virtual void initialize();
+    virtual void shutdown() {};
+    virtual QString name() { return "XML Editor Plugin"; }
+    virtual QString description() { return QString(); };
+
 };
 
 #endif // MPQEDITORPLUGIN_H

@@ -10,17 +10,21 @@
 
 #include "imageviewer.h"
 
+#include "../../../Core/icore.h"
+
 //================================== ImageViewerPlugin ==================================
 
-ImageViewerPlugin::ImageViewerPlugin(ImageViewer * editor)
+ImageViewerInterface::ImageViewerInterface(ImageViewer * editor)
 {
     m_editor = editor;
     m_toolBar = new QToolBar();
 
     initToolBar();
+    ICore * core = ICore::instance();
+    core->addObject(0);
 }
 
-void ImageViewerPlugin::initToolBar()
+void ImageViewerInterface::initToolBar()
 {
     m_toolBar->addAction(QIcon(":/icons/images/save.png"), "Save", this, SLOT(save()));
     m_toolBar->addSeparator();
@@ -32,11 +36,11 @@ void ImageViewerPlugin::initToolBar()
     m_toolBar->addAction(QIcon(":/icons/images/resetzoom.png"), "Reset Zoom", m_editor, SLOT(zoomReset()));
 }
 
-ImageViewerPlugin::~ImageViewerPlugin()
+ImageViewerInterface::~ImageViewerInterface()
 {
 }
 
-bool ImageViewerPlugin::open(const QString &file)
+bool ImageViewerInterface::open(const QString &file)
 {
     qDebug() << "ImageViewerPlugin::open" << file;
     if (!file.isEmpty()) {
@@ -50,22 +54,22 @@ bool ImageViewerPlugin::open(const QString &file)
     return true;
 }
 
-void ImageViewerPlugin::close()
+void ImageViewerInterface::close()
 {
     m_editor->clear();
 }
 
-QWidget * ImageViewerPlugin::widget()
+QWidget * ImageViewerInterface::widget()
 {
     return m_editor;
 }
 
-QToolBar * ImageViewerPlugin::toolBar ()
+QToolBar * ImageViewerInterface::toolBar ()
 {
     return m_toolBar;
 }
 
-void ImageViewerPlugin::save(const QString &file)
+void ImageViewerInterface::save(const QString &file)
 {
     QString path = file ==  "" ? m_currentFile : file;
 
@@ -94,7 +98,7 @@ ImageViewerFactory::ImageViewerFactory()
 IEditor * ImageViewerFactory::createEditor(QWidget * parent)
 {
     ImageViewer * editor = new ImageViewer(parent);
-    return new ImageViewerPlugin(editor);
+    return new ImageViewerInterface(editor);
 }
 
 void ImageViewerFactory::shutdown()
@@ -112,5 +116,12 @@ bool ImageViewerFactory::canHandle(const QString &file) const
     return false;
 }
 
-Q_EXPORT_PLUGIN2(image_viewer_factory, ImageViewerFactory)
+//================================== ImageViewerPlugin ==================================
 
+void ImageViewerPlugin::initialize()
+{
+    ICore::instance()->editorFactoryManager()->addFactory(new ImageViewerFactory);
+}
+
+//Q_EXPORT_PLUGIN2(image_viewer_factory, ImageViewerFactory)
+Q_EXPORT_PLUGIN(ImageViewerPlugin)

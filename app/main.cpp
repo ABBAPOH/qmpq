@@ -4,8 +4,11 @@
 #include "pluginmanager.h"
 #include <qmpqfileenginehandler.h>
 #include <QDebug>
+#include <core.h>
+#include "filemanager.h"
+#include "mainwindowplugin.h"
 
-Q_IMPORT_PLUGIN(mpq_editor_factory)
+Q_IMPORT_PLUGIN(MPQEditorPlugin)
 
 class EventFilter : public QObject
 {
@@ -18,6 +21,8 @@ class EventFilter : public QObject
     }
 };
 
+#include "historymanager.h"
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -25,12 +30,17 @@ int main(int argc, char *argv[])
     app.setOrganizationName("QMPQ");
     Q_INIT_RESOURCE(mpqeditor);
 
+    Core core;
+    MainWindowPlugin plugin;
+    plugin.initialize();
+//    app.processEvents();
+
     QMPQFileEngineHandler h;
-    MainWindow * w = new MainWindow();
-    w->show();
+//    MainWindow * w = new MainWindow();
+//    w->show();
 
     int code = app.exec();
-    delete w;
-    PluginManager::shutdown();
+//    delete w;
+//    PluginManager::shutdown();
     return code;
 }

@@ -1,167 +1,30 @@
 #include "editorview.h"
 
-#include "editormanager.h"
-#include "ieditor.h"
-#include "ieditorfactory.h"
-
-#include <QtGui/QApplication>
-#include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
-#include <QtCore/QFileInfo>
-#include <QtCore/QDir>
-#include <QtCore/QSet>
-#include <QtCore/QVariant>
-
-#include <QDebug>
+#include <QtGui/QToolBar>
+#include <ieditor.h>
 
 EditorView::EditorView(QWidget *parent) :
-    QStackedWidget(parent), editorManager(new EditorManager(this)), m_centralWidget(0), historyPos(-1)
+    QWidget(parent)
 {
-//    openUrl("");
-}
-
-QString EditorView::saveFilter() const
-{
-    return m_editor->factory()->saveFilter();
-}
-
-EditorView::~EditorView()
-{
-//    foreach (IEditor * editor, m_editors.values().toSet()) {
-////        qDebug() << "deleting " << (long long)editor;
-//        editor->close();
-//        delete editor;
-//    }
-//    m_editors.clear();
-#warning check deletion
-    delete editorManager;
-}
-
-QWidget * EditorView::createWidgetForEditor(IEditor * editor)
-{
-//    qDebug() << "EditorView::createWidgetForEditor" << (long long)editor;
     QWidget * widget = new QWidget();
-    QVBoxLayout * lay = new QVBoxLayout();
-    lay->setContentsMargins(0,0,0,0);
-    lay->setSpacing(0);
-    if (editor->toolBar()) {
-        lay->addWidget(editor->toolBar());
-    }
-    editor->toolBar()->setMaximumHeight(24);
-    lay->addWidget(editor->widget());
-    widget->setLayout(lay);
-    return widget;
+    layout = new QVBoxLayout();
+    layout->setContentsMargins(0,0,0,0);
+    layout->setSpacing(0);
+    this->setLayout(layout);
 }
 
-void EditorView::back()
+void EditorView::setEditor(IEditor * editor)
 {
-//    qDebug("EditorView::back");
-//    qDebug() << m_history << historyPos;
-    if (historyPos == 0)
-        return;
-    historyPos--;
-    setPath(m_history.at(historyPos));
-}
-
-void EditorView::forward()
-{
-//    qDebug("EditorView::forward");
-//    qDebug() << m_history << historyPos;
-    if (historyPos == m_history.count() - 1)
-        return;
-    historyPos++;
-    setPath(m_history.at(historyPos));
-}
-
-void EditorView::up()
-{
-    QFileInfo info(m_path);
-    if (info.isRoot())
-        setPath("");
-    else
-        setPath(info.dir().path());
-}
-
-//cleans all history from start to end of list
-void EditorView::cleanHistory(int start)
-{
-//    qDebug("EditorView::cleanHistory");
-    for (int i = start, end = m_history.count(); i < end; i++) {
-        QString path = m_history.at(start);
-
-        // if trying to go manually to some place in removing part, do not try to release editor
-        if (path != m_path) {
-            IEditor * editor = editorManager->editor(path);
-//            if (!editor->widget()->property("modified").isValid()) {
-//                qWarning() << "MODIFIED!!!";
-//            }
-            editorManager->close(path);
-            if (!editorManager->isOpened(editor)) {
-                delete m_widgets.value(editor);
-                m_widgets.remove(editor);
-            }
-        }
-        m_history.removeAt(start);
-    }
-    historyPos = start - 1;
-//    qDebug() << m_history;
-}
-
-bool EditorView::openUrl(const QString & url)
-{
-//    if (m_current.right(1) == "/")
-//        m_current = m_current.left(m_current.length() - 1);
-    IEditor * editor = editorManager->open(url);
-    if (!editor)
-        return false;
-    m_path = url;
     m_editor = editor;
-
-    if (historyPos == -1) {
-        m_history.append(url);
-        historyPos++;
-    } else if (url != m_history.at(historyPos)) {
-        cleanHistory(historyPos + 1);
-        m_history.append(url);
-        historyPos++;
+    QLayoutItem * child = 0;
+    while ((child = layout->takeAt(0)) != 0) {
+        child->widget()->hide();
     }
-
-//    if (!m_editors.contains(url))
-//        m_editors.insert(url, editor);
-    QWidget * widget;
-    if (m_widgets.contains(editor)) {
-        widget = m_widgets.value(editor);
-    } else {
-        widget = createWidgetForEditor(editor);
-        m_widgets.insert(editor, widget);
-        addWidget(widget);
-        connect(editor->widget(), SIGNAL(currentChanged(const QString &)), SLOT(setPath(const QString &)));
-    }
-    setCurrentWidget(widget);
-    setCentralWidget(editor->widget());
-    return true;
+    layout->addWidget(m_editor->toolBar());
+    layout->addWidget(m_editor->widget());
+    m_editor->toolBar()->show();
+    m_editor->widget()->show();
+    m_editor->toolBar()->setMaximumHeight(24);
 }
 
-void EditorView::setCentralWidget(QWidget * widget)
-{
-    if (m_centralWidget != widget) {
-        if (m_centralWidget)
-            m_centralWidget->clearFocus();
-        m_centralWidget = widget;
-        emit centralWidgetChanged(widget);
-    }
-}
-
-void EditorView::setPath(const QString & url)
-{
-    if (QFileInfo(m_path) == QFileInfo(url)) // ignores / in the end of the path
-        return;
-
-    if (openUrl(url))
-        emit pathChanged(url);
-}
-
-void EditorView::save(const QString & path)
-{
-    m_editor->save(path);
-}

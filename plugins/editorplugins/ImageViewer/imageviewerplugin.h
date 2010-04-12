@@ -1,18 +1,19 @@
 #ifndef MPQEDITORPLUGIN_H
 #define MPQEDITORPLUGIN_H
 
-#include "../../../app/ieditorfactory.h"
+#include <ieditorfactory.h>
+#include <iplugin.h>
 
 class ImageViewer;
 class QSignalMapper;
 class QAction;
-class ImageViewerPlugin : public QObject, public IEditor
+class ImageViewerInterface : public IEditor
 {
     Q_OBJECT
-    Q_INTERFACES(IEditor)
 public:
-    ImageViewerPlugin(ImageViewer * editor);
-    ~ImageViewerPlugin();
+    ImageViewerInterface(ImageViewer * editor);
+    ~ImageViewerInterface();
+    virtual QString currentFile() { return m_currentFile; }
     virtual bool open(const QString & file);
     virtual QWidget * widget();
     virtual QToolBar * toolBar ();
@@ -41,6 +42,20 @@ public:
     virtual QString saveFilter() const { return tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)"); }
 
     ImageViewerFactory();
+};
+
+class ImageViewerPlugin : public IPlugin
+{
+    Q_OBJECT
+public:
+    ImageViewerPlugin(QObject * parent = 0) : IPlugin(parent) {}
+    virtual ~ImageViewerPlugin() {}
+
+    virtual void initialize();
+    virtual void shutdown() {};
+    virtual QString name() { return "Image Viewer Plugin"; }
+    virtual QString description() { return QString(); };
+
 };
 
 #endif // MPQEDITORPLUGIN_H

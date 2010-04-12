@@ -3,6 +3,7 @@ SUBDIRS = \
     3rdParty \
     plugins/imageformats/QblpImagePlugin \
     plugins/imageformats/QtgaImagePlugin \
+    Core \
     QMPQFileEngine \
     plugins/editorplugins/MPQEditor \
     plugins/editorplugins/ImageViewer \

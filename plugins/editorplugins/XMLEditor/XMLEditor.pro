@@ -8,6 +8,9 @@ OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
 
+INCLUDEPATH += -I ../../../core/
+LIBS += -L../../../core/bin -lcore
+
 INCLUDEPATH += QXMLViewer/
 DEPENDPATH +=  QXMLViewer/
 include(QXMLViewer/QXMLViewer.pro)

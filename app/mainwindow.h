@@ -1,61 +1,107 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include <QtCore/QHash>
+#include <QtGui/QMainWindow>
+#include <QtGui/QLineEdit>
+#include <QtGui/QMenuBar>
+#include <QtGui/QToolBar>
+#include <QtGui/QAction>
 
 namespace Ui {
-    class MainWindow;
+    class MainWindow
+    {
+    public:
+        QLineEdit * lineEdit;
+        QMenuBar * menuBar;
+        QTabWidget * tabWidget;
+        QToolBar * toolBar;
+        QAction * actionBack;
+        QAction * actionForward;
+        QAction * actionUp;
+
+        void setupUi(QMainWindow * parent)
+        {
+            parent->resize(800, 600);
+
+            tabWidget = new QTabWidget(parent);
+            tabWidget->setDocumentMode(true);
+            tabWidget->setTabsClosable(true);
+
+            menuBar = new QMenuBar(parent);
+            parent->setMenuBar(menuBar);
+
+            lineEdit = new QLineEdit(parent);
+
+            actionBack = new QAction(parent);
+            actionBack->setObjectName(QString::fromUtf8("actionBack"));
+            actionBack->setEnabled(true);
+            QIcon icon2;
+            icon2.addFile(QString::fromUtf8(":/icons/images/back.png"), QSize(), QIcon::Normal, QIcon::Off);
+            actionBack->setIcon(icon2);
+
+            actionForward = new QAction(parent);
+            actionForward->setObjectName(QString::fromUtf8("actionForward"));
+            actionForward->setEnabled(true);
+            QIcon icon3;
+            icon3.addFile(QString::fromUtf8(":/icons/images/forward.png"), QSize(), QIcon::Normal, QIcon::Off);
+            actionForward->setIcon(icon3);
+
+            actionUp = new QAction(parent);
+            actionUp->setObjectName(QString::fromUtf8("actionUp"));
+            actionUp->setEnabled(true);
+            QIcon icon4;
+            icon4.addFile(QString::fromUtf8(":/icons/images/up.png"), QSize(), QIcon::Normal, QIcon::Off);
+            actionUp->setIcon(icon4);
+
+            toolBar = new QToolBar(parent);
+
+            toolBar->addAction(actionBack);
+            toolBar->addAction(actionForward);
+            toolBar->addSeparator();
+            toolBar->addAction(actionUp);
+            toolBar->addWidget(lineEdit);
+
+            parent->addToolBar(toolBar);
+            parent->setUnifiedTitleAndToolBarOnMac(true);
+        }
+    };
 }
 
 class EditorView;
 class EditorManager;
 class QLabel;
 class QLineEdit;
+
+class QTabWidget;
+class TabManager;
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    bool open(const QString &);
+    bool save(const QString & path);
+    void newTab();
+    void closeCurrentTab();
+    void back();
+    void forward();
+    void up();
+
+private slots:
+    void openManual(const QString &);
+    void tabChanged(int index);
+    void closeTab(int index);
+//    void setCurrent(const QString &);
+
 protected:
     void changeEvent(QEvent *e);
 
 private:
-    Ui::MainWindow *ui;
-    EditorManager * core;
-    QString currentFile;
-//    QStringList currentFiles;
-    QHash<QWidget*, QString> currentFiles;
-//    QHash<QString, IEditor*> files;
-    QLabel * title;
-    QLineEdit * addressBar;
-    QWidget * previousWidget;
-    QWidget * m_editor;
-    EditorView * m_editorView;
-    QString m_saveExtensions;
-
-    void initActions();
-    void initConnections();
-    bool connectAction(QAction * sender, const char * signal, QObject * receiver, const char * member);
-    void disconnectView(QWidget * view);
-    void disconnectEditor(QWidget * editor);
-
-    bool hasSignal(QObject * obj, const char * slot);
-    bool hasSlot(QObject * obj, const char * slot);
-//    void parseFormats(QStringList formats);
-
-public slots:
-    void open(const QString & path = "");
-    void save_As();
-    void closeCurrent();
-    void setAddress(const QString & path);
-    void about();
-
-private slots:
-    void connectView(QWidget * view);
-    void connectEditor(QWidget * editor);
-    void setSavingEnabled(bool enable);
+    Ui::MainWindow * ui;
+    TabManager * tabManager;
 };
 
 #endif // MAINWINDOW_H

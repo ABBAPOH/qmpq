@@ -8,7 +8,7 @@
 
 //================================== XMLEditorPluginPlugin ==================================
 
-XMLEditorPlugin::XMLEditorPlugin(QXMLViewer * editor)
+XMLEditorInterface::XMLEditorInterface(QXMLViewer * editor)
 {
     m_editor = editor;
     m_toolBar = new QToolBar();
@@ -16,11 +16,11 @@ XMLEditorPlugin::XMLEditorPlugin(QXMLViewer * editor)
 //    initToolBar();
 }
 
-XMLEditorPlugin::~XMLEditorPlugin()
+XMLEditorInterface::~XMLEditorInterface()
 {
 }
 
-bool XMLEditorPlugin::open(const QString &filePath)
+bool XMLEditorInterface::open(const QString &filePath)
 {
     if (filePath == "")
         return false;
@@ -34,16 +34,16 @@ bool XMLEditorPlugin::open(const QString &filePath)
 //
 //}
 
-void XMLEditorPlugin::close()
+void XMLEditorInterface::close()
 {
 }
 
-QWidget * XMLEditorPlugin::widget()
+QWidget * XMLEditorInterface::widget()
 {
     return m_editor;
 }
 
-QToolBar * XMLEditorPlugin::toolBar ()
+QToolBar * XMLEditorInterface::toolBar ()
 {
     return m_toolBar;
 }
@@ -59,7 +59,7 @@ IEditor * XMLEditorFactory::createEditor(QWidget * parent)
 {
 //    qDebug("XMLEditorFactory::instance");
     QXMLViewer * editor = new QXMLViewer(parent);
-    return new XMLEditorPlugin(editor);
+    return new XMLEditorInterface(editor);
 }
 
 void XMLEditorFactory::shutdown()
@@ -79,5 +79,13 @@ bool XMLEditorFactory::canHandle(const QString &file) const
     return false;
 }
 
-Q_EXPORT_PLUGIN2(image_viewer_factory, XMLEditorFactory)
+//================================== XMLEditorPlugin ==================================
+
+void XMLEditorPlugin::initialize()
+{
+    ICore::instance()->editorFactoryManager()->addFactory(new XMLEditorFactory);
+}
+
+//Q_EXPORT_PLUGIN2(image_viewer_factory, XMLEditorFactory)
+Q_EXPORT_PLUGIN(XMLEditorPlugin)
 

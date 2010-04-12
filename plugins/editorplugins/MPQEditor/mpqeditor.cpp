@@ -312,7 +312,7 @@ void MPQEditor::onDoubleClick(const QModelIndex & index)
         open(m_model->filePath(index));
 //        emit currentChanged(m_model->filePath(index));
     } else {
-//        emit openRequested(m_model->filePath(index));
-        emit currentChanged(m_model->filePath(index));
+        emit openRequested(m_model->filePath(index));
+//        emit currentChanged(m_model->filePath(index));
     }
 }

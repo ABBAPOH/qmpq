@@ -11,14 +11,16 @@
 
 //================================== CodeEditorPluginPlugin ==================================
 
-CodeEditorPlugin::CodeEditorPlugin(CodeEditor * editor)
+CodeEditorInterface::CodeEditorInterface(CodeEditor * editor)
 {
     m_editor = editor;
     m_toolBar = new QToolBar();
     initToolBar();
+
+    connect(m_editor, SIGNAL(modificationChanged(bool)), SIGNAL(changed()));
 }
 
-void CodeEditorPlugin::initToolBar()
+void CodeEditorInterface::initToolBar()
 {
     m_toolBar->addAction(QIcon(":/icons/images/save.png"), "save", m_editor, SLOT(save()));
     m_toolBar->addSeparator();
@@ -30,11 +32,16 @@ void CodeEditorPlugin::initToolBar()
     m_toolBar->addAction(QIcon(":/icons/images/redo.png"), "redo", m_editor, SLOT(redo()));
 }
 
-CodeEditorPlugin::~CodeEditorPlugin()
+CodeEditorInterface::~CodeEditorInterface()
 {
 }
 
-bool CodeEditorPlugin::open(const QString &filePath)
+bool CodeEditorInterface::isModified()
+{
+    return m_editor->isModified();
+}
+
+bool CodeEditorInterface::open(const QString &filePath)
 {
     if (!filePath.isEmpty()) {
         m_currentFile = filePath;
@@ -49,7 +56,7 @@ bool CodeEditorPlugin::open(const QString &filePath)
     return true;
 }
 
-void CodeEditorPlugin::save(const QString &filePath)
+void CodeEditorInterface::save(const QString &filePath)
 {
     QFile file(filePath == "" ? m_currentFile : filePath);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
@@ -60,17 +67,17 @@ void CodeEditorPlugin::save(const QString &filePath)
     }
 }
 
-void CodeEditorPlugin::close()
+void CodeEditorInterface::close()
 {
     m_editor->clear();
 }
 
-QWidget * CodeEditorPlugin::widget()
+QWidget * CodeEditorInterface::widget()
 {
     return m_editor;
 }
 
-QToolBar * CodeEditorPlugin::toolBar()
+QToolBar * CodeEditorInterface::toolBar()
 {
     return m_toolBar;
 }
@@ -86,7 +93,7 @@ IEditor * CodeEditorFactory::createEditor(QWidget * parent)
 {
 //    qDebug("CodeEditorFactory::instance");
     CodeEditor * editor = new CodeEditor(parent);
-    return new CodeEditorPlugin(editor);
+    return new CodeEditorInterface(editor);
 }
 
 void CodeEditorFactory::shutdown()
@@ -107,5 +114,13 @@ bool CodeEditorFactory::canHandle(const QString &file) const
     return false;
 }
 
-Q_EXPORT_PLUGIN2(image_viewer_factory, CodeEditorFactory)
+//================================== CodeEditorPlugin ==================================
+
+void CodeEditorPlugin::initialize()
+{
+    ICore::instance()->editorFactoryManager()->addFactory(new CodeEditorFactory);
+}
+
+//Q_EXPORT_PLUGIN2(image_viewer_factory, CodeEditorFactory)
+Q_EXPORT_PLUGIN(CodeEditorPlugin)
 

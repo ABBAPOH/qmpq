@@ -23,6 +23,7 @@ public:
     enum ViewMode { ListView = 0, IconView, TableView, ColumnView, TreeView };
 
     bool canUp();
+    QString currentFile() { return m_currentFile; }
     static QAbstractItemModel * model();
     void showColumns(bool show);
 

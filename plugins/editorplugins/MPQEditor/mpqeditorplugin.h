@@ -1,20 +1,23 @@
 #ifndef MPQEDITORPLUGIN_H
 #define MPQEDITORPLUGIN_H
 
-#include "../../../app/ieditorfactory.h"
+#include <ieditorfactory.h>
+#include <iplugin.h>
 
 class MPQEditor;
 class QSignalMapper;
 class QAction;
 class QActionGroup;
 class QContextMenuEvent;
-class MPQEditorPlugin : public QObject, public IEditor
+class MPQEditorInterface : /*public QObject,*/ public IEditor
 {
     Q_OBJECT
-    Q_INTERFACES(IEditor)
+//    Q_INTERFACES(IEditor)
 public:
-    MPQEditorPlugin(MPQEditor * editor);
-    ~MPQEditorPlugin();
+    MPQEditorInterface(MPQEditor * editor);
+    ~MPQEditorInterface();
+    virtual bool canHandle(const QString & filePath);
+    virtual QString currentFile();
     virtual bool open(const QString &file);
     virtual QWidget * widget();
     virtual QToolBar * toolBar ();
@@ -35,6 +38,8 @@ public slots:
     void add();
     void extract();
     void setViewMode(int mode);
+    void openRequest(const QString &file);
+
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
     bool contextMenu(QContextMenuEvent *event);
@@ -52,6 +57,21 @@ public:
     bool canHandle(const QString &file) const;
 
     MPQEditorFactory();
+};
+
+class MPQEditorPlugin : public IPlugin
+{
+    Q_OBJECT
+public:
+    MPQEditorPlugin(QObject * parent = 0) : IPlugin(parent) {}
+    ~MPQEditorPlugin() {}
+
+    void initialize();
+    void shutdown() {};
+    QString name() { return "MPQ Editor plugin"; };
+    QString description() { return QString(); };
+
+    static bool canHandle(const QString &file);
 };
 
 #endif // MPQEDITORPLUGIN_H

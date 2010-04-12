@@ -1,18 +1,22 @@
 #ifndef MPQEDITORPLUGIN_H
 #define MPQEDITORPLUGIN_H
 
-#include "../../../app/ieditorfactory.h"
+#include <ieditorfactory.h>
+#include <iplugin.h>
 
 class CodeEditor;
 class QSignalMapper;
 class QAction;
-class CodeEditorPlugin : public QObject, public IEditor
+class CodeEditorInterface :/* public QObject,*/ public IEditor
 {
     Q_OBJECT
-    Q_INTERFACES(IEditor)
+//    Q_INTERFACES(IEditor)
 public:
-    CodeEditorPlugin(CodeEditor * editor);
-    ~CodeEditorPlugin();
+    CodeEditorInterface(CodeEditor * editor);
+    ~CodeEditorInterface();
+    virtual bool canSave() { return true; }
+    virtual QString currentFile() { return m_currentFile; }
+    virtual bool isModified();
     virtual bool open(const QString &filePath);
     virtual void save(const QString &filePath);
     virtual QWidget * widget();
@@ -40,6 +44,20 @@ public:
     bool canHandle(const QString &file) const;
 
     CodeEditorFactory();
+};
+
+class CodeEditorPlugin : public IPlugin
+{
+    Q_OBJECT
+
+public:
+    CodeEditorPlugin(QObject * parent = 0) : IPlugin(parent) {}
+    ~CodeEditorPlugin() {}
+
+    void initialize();
+    void shutdown() {};
+    QString name() { return "Code Editor plugin"; };
+    QString description() { return QString(); };
 };
 
 #endif // MPQEDITORPLUGIN_H

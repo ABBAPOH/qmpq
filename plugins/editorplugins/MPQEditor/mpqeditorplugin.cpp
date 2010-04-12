@@ -14,7 +14,7 @@
 
 //================================== MPQEditorPlugin ==================================
 
-MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
+MPQEditorInterface::MPQEditorInterface(MPQEditor * editor)
     : viewModeMapper(new QSignalMapper()),
     viewModeActionGroup(new QActionGroup(this))
 {
@@ -53,6 +53,9 @@ MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
     actionNew_Folder = new QAction("new Folder", this);
     connect(actionNew_Folder, SIGNAL(triggered()), m_editor, SLOT(newFolder()));
 
+    connect(m_editor, SIGNAL(openRequested(QString)), SLOT(openRequest(QString)));
+    connect(m_editor, SIGNAL(currentChanged(QString)), SLOT(openRequest(QString)));
+
 //    m_toolBar->addAction("listView", this, SLOT(setListViewMode()));
 //    m_toolBar->addAction("iconView", this, SLOT(setIconViewMode()));
 //    m_toolBar->addAction("columnView", this, SLOT(setColumnViewMode()));
@@ -60,54 +63,69 @@ MPQEditorPlugin::MPQEditorPlugin(MPQEditor * editor)
 //    m_toolBar->addAction("treeView", this, SLOT(setTreeViewMode()));
 }
 
-MPQEditorPlugin::~MPQEditorPlugin()
+MPQEditorInterface::~MPQEditorInterface()
 {
 //    qDebug("MPQEditorPlugin::~MPQEditorPlugin()");
 //    qDebug() << (long long)this;
     delete m_editor;
 }
 
-bool MPQEditorPlugin::open(const QString &file)
+bool MPQEditorInterface::canHandle(const QString & filePath)
+{
+    return MPQEditorPlugin::canHandle(filePath);
+}
+
+QString MPQEditorInterface::currentFile()
+{
+    return m_editor->currentFile();
+}
+
+bool MPQEditorInterface::open(const QString &file)
 {
     m_editor->open(file);
     return true;
 }
 
-void MPQEditorPlugin::close()
+void MPQEditorInterface::close()
 {
     m_editor->closeFile();
 }
 
-void MPQEditorPlugin::add()
+void MPQEditorInterface::add()
 {
     QStringList files = QFileDialog::getOpenFileNames(m_editor, tr("Select Files to add"));
     m_editor->add(files);
 }
 
-void MPQEditorPlugin::extract()
+void MPQEditorInterface::extract()
 {
     QString dir = QFileDialog::getExistingDirectory(m_editor, tr("Select Target Directory"));
     m_editor->extract(dir);
 }
 
-void MPQEditorPlugin::setViewMode(int mode)
+void MPQEditorInterface::setViewMode(int mode)
 {
 //    qDebug("MPQEditorPlugin::setViewMode");
     m_editor->setViewMode((MPQEditor::ViewMode)mode);
 
 }
 
-QWidget * MPQEditorPlugin::widget()
+void MPQEditorInterface::openRequest(const QString & path)
+{
+    ICore::instance()->windowManager()->open(path);
+}
+
+QWidget * MPQEditorInterface::widget()
 {
     return m_editor;
 }
 
-QToolBar * MPQEditorPlugin::toolBar ()
+QToolBar * MPQEditorInterface::toolBar ()
 {
     return m_toolBar;
 }
 
-bool MPQEditorPlugin::eventFilter(QObject *obj, QEvent *event)
+bool MPQEditorInterface::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::ContextMenu) {
 //        qDebug("context menu called");
@@ -116,7 +134,7 @@ bool MPQEditorPlugin::eventFilter(QObject *obj, QEvent *event)
     return QObject::eventFilter(obj, event);
 }
 
-bool MPQEditorPlugin::contextMenu(QContextMenuEvent *event)
+bool MPQEditorInterface::contextMenu(QContextMenuEvent *event)
 {
     QMenu menu;
 //    QList<QAction*> list;
@@ -142,7 +160,7 @@ IEditor * MPQEditorFactory::createEditor(QWidget * parent)
 {
 //    qDebug("MPQEditorFactory::instance");
     MPQEditor * editor = new MPQEditor(parent);
-    return new MPQEditorPlugin(editor);
+    return new MPQEditorInterface(editor);
 }
 
 void MPQEditorFactory::shutdown()
@@ -154,6 +172,18 @@ void MPQEditorFactory::shutdown()
 
 bool MPQEditorFactory::canHandle(const QString &file) const
 {
+    return MPQEditorPlugin::canHandle(file);
+}
+
+//================================== MPQEditorPlugin ==================================
+
+void MPQEditorPlugin::initialize()
+{
+    ICore::instance()->editorFactoryManager()->addFactory(new MPQEditorFactory);
+}
+
+bool MPQEditorPlugin::canHandle(const QString &file)
+{
 //    qDebug("MPQEditorFactory::canHandle");
     if (file == "" || QFileInfo(file).isDir())
         return true;
@@ -161,4 +191,5 @@ bool MPQEditorFactory::canHandle(const QString &file) const
         return false;
 }
 
-Q_EXPORT_PLUGIN2(mpq_editor_factory, MPQEditorFactory)
+//Q_EXPORT_PLUGIN2(mpq_editor_factory, MPQEditorFactory)
+Q_EXPORT_PLUGIN(MPQEditorPlugin)

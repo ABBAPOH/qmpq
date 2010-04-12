@@ -10,8 +10,8 @@
         <file>images/paste.png</file>
         <file>images/mpqin.png</file>
         <file>images/mpqout.png</file>
-        <file>images/next.png</file>
-        <file>images/prev.png</file>
         <file>images/up.png</file>
+        <file>images/back.png</file>
+        <file>images/forward.png</file>
     </qresource>
 </RCC>

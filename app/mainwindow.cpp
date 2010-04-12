@@ -1,223 +1,155 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+//#include "ui_mainwindow.h"
 
-#include <QtGui/QFileDialog>
+#include <QtCore/QFileInfo>
 #include <QtGui/QToolBar>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QDesktopServices>
-#include <QtGui/QMessageBox>
+#include <QtGui/QMenuBar>
 #include <QDebug>
 
-#include "editormanager.h"
-#include "editorview.h"
-#include "pluginmanager.h"
-#include "../plugins/editorplugins/MPQEditor/mpqeditor.h"
+//#include <qmpqfileenginehandler.h> // fix lock!!!!
 
-#include <qmpqfileenginehandler.h> // fix lock!!!!
+#include <icore.h>
+#include <ieditor.h>
+
+#include "editormanager.h"
+#include "tabcontext.h"
+#include "tabmanager.h"
+#include "historymanager.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    core(new EditorManager)
+    tabManager(new TabManager(this))
 {
     ui->setupUi(this);
-    title = new QLabel();
-                 title->setAlignment(Qt::AlignCenter);
-    title->setMinimumHeight(qApp->style()->pixelMetric(QStyle::PM_TabBarTabHSpace) - 1);
+    setCentralWidget(ui->tabWidget);
 
-    setUnifiedTitleAndToolBarOnMac(true);
-    addressBar = new QLineEdit(this);
-    ui->toolBar->addWidget(addressBar);
-    initActions();
-    initConnections();
+    QMenu * fileMenu = ICore::instance()->actionManager()->menu("FILE");
+    QMenu * editMenu = ICore::instance()->actionManager()->menu("EDIT");
+    QMenu * helpMenu = ICore::instance()->actionManager()->menu("HELP");
+    menuBar()->addAction(fileMenu->menuAction());
+    menuBar()->addAction(editMenu->menuAction());
+    menuBar()->addAction(helpMenu->menuAction());
 
-    previousWidget = 0;
-    ui->tabWidget->newTab();
-}
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)), tabManager, SLOT(changeCurrent(int)));
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)), Qt::QueuedConnection);
+    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 
-void MainWindow::initActions()
-{
-#ifdef Q_OS_WIN
-    ui->actionUp_one_level->setShortcut(Qt::Key_Backspace);
-#endif
+    connect(ui->lineEdit, SIGNAL(textEdited(QString)), SLOT(openManual(QString)));
+
+    connect(ui->actionBack, SIGNAL(triggered()), SLOT(back()));
+    connect(ui->actionForward, SIGNAL(triggered()), SLOT(forward()));
+    connect(ui->actionUp, SIGNAL(triggered()), SLOT(up()));
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
 }
 
 void MainWindow::changeEvent(QEvent *e)
 {
-    QMainWindow::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        ui->retranslateUi(this);
-        break;
-    default:
-        break;
-    }
+//    QMainWindow::changeEvent(e);
+//    switch (e->type()) {
+//    case QEvent::LanguageChange:
+//        ui->retranslateUi(this);
+//        break;
+//    default:
+//        break;
+//    }
 }
 
-void MainWindow::initConnections()
+bool MainWindow::open(const QString & path)
 {
-//  File menu
-    connect(ui->actionOpen, SIGNAL(triggered()), SLOT(open()));
-    connect(ui->actionClose, SIGNAL(triggered()), SLOT(closeCurrent()));
-    connect(ui->actionSave_As, SIGNAL(triggered()), SLOT(save_As()));
-
-//  Window menu
-    connect(ui->actionNew_Tab, SIGNAL(triggered()), ui->tabWidget, SLOT(newTab()));
-
-//  Help menu
-    connect(ui->actionAbout_QMPQ, SIGNAL(triggered()), SLOT(about()));
-    connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-
-    connect(ui->tabWidget, SIGNAL(currentChanged(QWidget *)), SLOT(connectView(QWidget *)));
-    connect(core, SIGNAL(openRequested(const QString &)), SLOT(open(const QString &)));
-}
-
-bool MainWindow::connectAction(QAction * sender, const char * signal, QObject * receiver, const char * member)
-{
-    if (!receiver || !sender)
+    ui->lineEdit->setText(path);
+    QFileInfo info(path);
+    if (!info.exists())
         return false;
-    if (receiver->metaObject()->indexOfSlot(member+1) == -1) {
-//        qDebug() << "can't connect: class "<< receiver->metaObject()->className() << "has no slot" << member+1;
-        sender->setEnabled(false);
+    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), info.fileName());
+    IEditor * editor = tabManager->context()->editorManager()->open(path);
+    if (!editor)
         return false;
-    } else {
-        sender->setEnabled(true);
-        connect(sender, signal, receiver, member);
-        return true;
-    }
+    tabManager->context()->setEditor(editor);
+    tabManager->context()->historyManager()->setPath(path);
+    ICore::instance()->editorFactoryManager()->setCurrentEditor(editor);
+//    editor->widget()->setFocus();
+
+    return true;
 }
 
-void MainWindow::open(const QString & path)
+bool MainWindow::save(const QString & path)
 {
-//    qDebug() << "open";
-    QString fileName = path;
-    if (fileName == "") {
-        QMPQFileEngineHandler::setLocked(true);
-        fileName = QFileDialog::getOpenFileName(this, tr("Select Archive File"));
-        QMPQFileEngineHandler::setLocked(false);
+    IEditor * editor = ICore::instance()->editorFactoryManager()->currentEditor();
+    if (editor) {
+        editor->save(path);
     }
-    if (fileName == "")
+    return true;
+}
+
+void MainWindow::newTab()
+{
+    TabContext * context = new TabContext();
+    int index = ui->tabWidget->addTab(context->widget(), "");
+    tabManager->addContext(index, context);
+    ui->tabWidget->setCurrentIndex(index);
+}
+
+void MainWindow::closeCurrentTab()
+{
+    closeTab(ui->tabWidget->currentIndex());
+}
+
+void MainWindow::back()
+{
+    TabContext * context = tabManager->context();
+    HistoryManager * manager = context->historyManager();
+    manager->back();
+    open(manager->path());
+}
+
+void MainWindow::forward()
+{
+    TabContext * context = tabManager->context();
+    HistoryManager * manager = context->historyManager();
+    manager->forward();
+    open(manager->path());
+}
+
+void MainWindow::up()
+{
+    TabContext * context = tabManager->context();
+    HistoryManager * manager = context->historyManager();
+    manager->up();
+    open(manager->path());
+}
+
+void MainWindow::openManual(const QString & path)
+{
+    ICore::instance()->windowManager()->open(path);
+}
+
+void MainWindow::tabChanged(int index)
+{
+    qDebug() << "MainWindow::tabChanged" << index;
+    TabContext * context = tabManager->context();
+    IEditor * editor = context->editor();
+    if (!editor)
         return;
-
-    title->setText(QFileInfo(fileName).fileName());
-//    setAddress(fileName);
-    m_editorView->setPath(fileName);
+    ICore::instance()->editorFactoryManager()->setCurrentEditor(editor);
+    ui->lineEdit->setText(context->editor()->currentFile());
 }
 
-void MainWindow::save_As()
+void MainWindow::closeTab(int index)
 {
-    QString saveFilter = m_editorView->saveFilter();//property("saveFilter").toString();
-    saveFilter += ";;" + tr("AllFiles (*.*)");
-    QString path = QFileDialog::getSaveFileName(m_editor, tr("Save As..."), m_editorView->property("path").toString(), saveFilter);
-    if (path == "")
+    qDebug() << "MainWindow::closeTab" << index;
+    if (ui->tabWidget->count() == 1)
         return;
-    m_editorView->save(path);
-}
+    TabContext * context = tabManager->context(index);
+    IEditor * editor = context->editor();
 
-void MainWindow::closeCurrent()
-{
-    if (ui->actionSave->isEnabled()) {
-        QMessageBox messageBox(this);
-        messageBox.setText("File " + m_editorView->path() + " has been modified. Save changes?");
-        messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        messageBox.setDefaultButton(QMessageBox::Save);
-        switch (messageBox.exec()) {
-        case QMessageBox::Save: m_editorView->save(); break;
-        case QMessageBox::Discard: break;
-        case QMessageBox::Cancel: return;
-        }
+    if (context->editorManager()->close(editor->currentFile())) {
+        tabManager->remove(index);
+        delete context;
+        ui->tabWidget->removeTab(index);
     }
-    ui->tabWidget->closeTab(ui->tabWidget->currentIndex());
-}
-
-void MainWindow::setAddress(const QString & path)
-{
-//    qDebug() << "MainWindow::setAddress" << path;
-    addressBar->setText(QDir::toNativeSeparators(path));
-    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), QFileInfo(path).fileName());
-}
-
-void MainWindow::about()
-{
-   QMessageBox::about(this, tr("About QMPQ"),
-            tr("<b>QMPQ 1.5d</b> a Qt-based program that allows to manipulate "
-               "with Blizzard's MPQ-archives. "
-               "Copyright 2009 Nevermore (N) aka ABBAPOH"));
-}
-
-void MainWindow::disconnectEditor(QWidget * editor)
-{
-    disconnect(ui->actionCut, 0, editor, 0);
-    disconnect(ui->actionCopy, 0, editor, 0);
-    disconnect(ui->actionPaste, 0, editor, 0);
-    disconnect(ui->actionSelect_All, 0, editor, 0);
-    disconnect(this, SLOT(setSavingEnabled(bool)));
-}
-
-void MainWindow::connectEditor(QWidget * editor)
-{
-    disconnectEditor(m_editor);
-    m_editor = editor;
-
-    connectAction(ui->actionCut, SIGNAL(triggered()), editor, SLOT(cut()));
-    connectAction(ui->actionCopy, SIGNAL(triggered()), editor, SLOT(copy()));
-    connectAction(ui->actionPaste, SIGNAL(triggered()), editor, SLOT(paste()));
-    connectAction(ui->actionSelect_All, SIGNAL(triggered()), editor, SLOT(selectAll()));
-
-    ui->actionSave->setEnabled(false);
-    if (hasSignal(editor, SIGNAL(modificationChanged(bool)))) {
-        ui->actionSave_As->setEnabled(true);
-        connect(editor, SIGNAL(modificationChanged(bool)), SLOT(setSavingEnabled(bool)));
-    } else {
-        ui->actionSave_As->setEnabled(false);
-    }
-}
-
-void MainWindow::connectView(QWidget * view)
-{
-    EditorView * editorView = qobject_cast<EditorView *>(view);
-    Q_ASSERT(editorView);
-    m_editorView = editorView;
-
-    disconnectView(ui->tabWidget->previousWidget());
-
-    connect(view, SIGNAL(pathChanged(const QString &)), this, SLOT(setAddress(const QString &)));
-    connect(view, SIGNAL(centralWidgetChanged(QWidget *)), this, SLOT(connectEditor(QWidget *)));
-    connect(addressBar, SIGNAL(textEdited(const QString &)), view, SLOT(setPath(const QString &)));
-    connect(ui->actionBack, SIGNAL(triggered()), view, SLOT(back()));
-    connect(ui->actionForward, SIGNAL(triggered()), view, SLOT(forward()));
-    connect(ui->actionUp_one_level, SIGNAL(triggered()), view, SLOT(up()));
-    connect(ui->actionSave, SIGNAL(triggered()), view, SLOT(save()));
-
-    QWidget * centralWidget = editorView->centralWidget();
-    connectEditor(centralWidget);
-
-    setAddress(editorView->path()); // changes current url
-}
-
-void MainWindow::disconnectView(QWidget * view)
-{
-    disconnect(view, 0, addressBar, 0);
-    disconnect(view, 0, this, 0);
-    disconnect(addressBar, 0, view, 0);
-    disconnect(ui->actionBack, 0, view, 0);
-    disconnect(ui->actionForward, 0, view, 0);
-    disconnect(ui->actionUp_one_level, 0, view, 0);
-    disconnect(ui->actionSave, 0, view, 0);
-}
-
-bool MainWindow::hasSignal(QObject * object, const char * slot)
-{
-    return object->metaObject()->indexOfSignal(slot+1) != -1;
-}
-
-void MainWindow::setSavingEnabled(bool enable)
-{
-    ui->actionSave->setEnabled(enable);
+//    context->editor()->close();
 }

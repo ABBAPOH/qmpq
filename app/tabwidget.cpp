@@ -21,7 +21,7 @@ QWidget * TabWidget::previousWidget()
 void TabWidget::newTab()
 {
     EditorView * view = new EditorView(this);
-    view->setPath(QDesktopServices::storageLocation(QDesktopServices::HomeLocation));
+//    view->setPath(QDesktopServices::storageLocation(QDesktopServices::HomeLocation));
     int index = addTab(view, "");
     setCurrentIndex(index);
 }

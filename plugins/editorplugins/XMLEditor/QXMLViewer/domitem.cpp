@@ -6,9 +6,9 @@ DomItem::DomItem(QDomNode & domNode, DomItem * parent, int row) :
         m_parent(parent),
         m_isPopulated(false),
         m_domNode(domNode),
-        m_row(row),
-        hasChildren(true)
+        m_row(row)
 {
+    hasChildren = true;
 }
 
 DomItem::~DomItem()
