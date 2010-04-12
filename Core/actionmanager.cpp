@@ -2,8 +2,8 @@
 
 #include <QtCore/QMetaMethod>
 #include <QtGui/QMenu>
-#include <icore.h>
-#include <ieditor.h>
+#include "icore.h"
+#include "ieditor.h"
 
 ActionManager::ActionManager(QObject *parent) :
     IActionManager(parent)

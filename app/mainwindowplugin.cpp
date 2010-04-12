@@ -5,6 +5,7 @@
 #include <QtGui/QMenu>
 #include <QtGui/QApplication>
 #include <QtGui/QMessageBox>
+#include <QtGui/QDesktopServices>
 
 #include "windowmanager.h"
 #include "mainwindow.h"
@@ -54,12 +55,12 @@ void MainWindowPlugin::save_As()
 
 void MainWindowPlugin::openFirstTab()
 {
-    ICore::instance()->windowManager()->open("/Users/arch");
+    ICore::instance()->windowManager()->open(QDesktopServices::storageLocation(QDesktopServices::HomeLocation));
 }
 
 void MainWindowPlugin::newTab()
 {
-    ICore::instance()->windowManager()->openInNewTab("/Users/arch");
+    ICore::instance()->windowManager()->openInNewTab(QDesktopServices::storageLocation(QDesktopServices::HomeLocation));
 }
 
 void MainWindowPlugin::closeTab()
