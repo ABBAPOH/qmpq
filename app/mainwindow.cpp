@@ -2,6 +2,7 @@
 //#include "ui_mainwindow.h"
 
 #include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 #include <QtGui/QToolBar>
 #include <QtGui/QMenuBar>
 #include <QDebug>
@@ -60,14 +61,15 @@ void MainWindow::changeEvent(QEvent *e)
 
 bool MainWindow::open(const QString & path)
 {
-    ui->lineEdit->setText(path);
     QFileInfo info(path);
-    if (!info.exists())
+    if (!(path == ""  || info.exists()))
         return false;
-    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), info.fileName());
     IEditor * editor = tabManager->context()->editorManager()->open(path);
     if (!editor)
         return false;
+    ui->lineEdit->setText(QDir::toNativeSeparators(path));
+    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), info.fileName());
+
     tabManager->context()->setEditor(editor);
     tabManager->context()->historyManager()->setPath(path);
     ICore::instance()->editorFactoryManager()->setCurrentEditor(editor);
@@ -124,7 +126,7 @@ void MainWindow::up()
 
 void MainWindow::openManual(const QString & path)
 {
-    ICore::instance()->windowManager()->open(path);
+    ICore::instance()->windowManager()->open(QDir::fromNativeSeparators(path));
 }
 
 void MainWindow::tabChanged(int index)
