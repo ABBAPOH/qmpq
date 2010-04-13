@@ -10,6 +10,9 @@ OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
 
+LIBS += -L../QMPQFileEngine/bin \
+    -lQMPQFileEngine
+
 HEADERS += icore.h \
     icontext.h \
     ipluginmanager.h \
