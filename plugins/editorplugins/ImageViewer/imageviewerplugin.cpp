@@ -121,6 +121,7 @@ bool ImageViewerFactory::canHandle(const QString &file) const
 void ImageViewerPlugin::initialize()
 {
     ICore::instance()->editorFactoryManager()->addFactory(new ImageViewerFactory);
+    ICore::instance()->fileManager()->registerExtensionString("Image Files (*.blp *.tga *.jpg *.bmp *.png)");
 }
 
 //Q_EXPORT_PLUGIN2(image_viewer_factory, ImageViewerFactory)

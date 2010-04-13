@@ -180,6 +180,9 @@ bool MPQEditorFactory::canHandle(const QString &file) const
 void MPQEditorPlugin::initialize()
 {
     ICore::instance()->editorFactoryManager()->addFactory(new MPQEditorFactory);
+    ICore::instance()->fileManager()->registerExtensionString(
+            "MPQ Archives (*.mpq *.w3x *.w3m *.s2ma *.SC2Data *.SC2Archive *.SC2Assets *.SC2Replay *.scx *.w3n *.snp *.sv *.hsv)"
+            );
 }
 
 bool MPQEditorPlugin::canHandle(const QString &file)

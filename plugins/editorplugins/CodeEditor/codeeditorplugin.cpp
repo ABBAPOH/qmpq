@@ -119,6 +119,7 @@ bool CodeEditorFactory::canHandle(const QString &file) const
 void CodeEditorPlugin::initialize()
 {
     ICore::instance()->editorFactoryManager()->addFactory(new CodeEditorFactory);
+    ICore::instance()->fileManager()->registerExtensionString("Text Files (*.txt *.j *.ai *.wts *.galaxy)");
 }
 
 //Q_EXPORT_PLUGIN2(image_viewer_factory, CodeEditorFactory)

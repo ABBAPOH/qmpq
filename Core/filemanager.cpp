@@ -9,13 +9,14 @@
 FileManager::FileManager(QObject *parent) :
     QObject(parent)
 {
+    m_extensionString = tr("All Files (*.*)");
 }
 
 QStringList FileManager::getOpenFileNames()
 {
 
     QMPQFileEngineHandler::setLocked(true);
-    QStringList result = QFileDialog::getOpenFileNames();
+    QStringList result = QFileDialog::getOpenFileNames((QWidget*)0, tr("Select File"), "", m_extensionString);
     //        fileName = QFileDialog::getOpenFileName(this, tr("Select Archive File"));
     QMPQFileEngineHandler::setLocked(false);
 
@@ -24,7 +25,7 @@ QStringList FileManager::getOpenFileNames()
 
 QString FileManager::getSaveFileName()
 {
-    QString result = QFileDialog::getSaveFileName();
+    QString result = QFileDialog::getSaveFileName((QWidget*)0, tr("Save As"), "", m_extensionString);
     return result;
 }
 
@@ -37,3 +38,13 @@ int FileManager::confirmClose(const QString & file)
     return messageBox.exec();
 }
 
+void FileManager::registerExtensionString(const QString & extensionString)
+{
+    m_registeredExtensionStrings.append(extensionString);
+    m_extensionString = "";
+    foreach (QString extension, m_registeredExtensionStrings) {
+      m_extensionString.append(extension + ";;");
+    }
+    m_extensionString.append("All Files (*.*)");
+//    m_extensionString.prepend(extensionString + ";;");
+}

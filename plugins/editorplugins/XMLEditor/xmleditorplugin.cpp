@@ -84,6 +84,7 @@ bool XMLEditorFactory::canHandle(const QString &file) const
 void XMLEditorPlugin::initialize()
 {
     ICore::instance()->editorFactoryManager()->addFactory(new XMLEditorFactory);
+    ICore::instance()->fileManager()->registerExtensionString("XML Files (*.xml *.ui)");
 }
 
 //Q_EXPORT_PLUGIN2(image_viewer_factory, XMLEditorFactory)
