@@ -39,7 +39,9 @@ void MainWindowPlugin::initialize()
 void MainWindowPlugin::open()
 {
     QStringList files = ICore::instance()->fileManager()->getOpenFileNames();
-    ICore::instance()->windowManager()->open(files.first());
+    if (!files.isEmpty()) {
+        ICore::instance()->windowManager()->open(files.first());
+    }
 }
 
 void MainWindowPlugin::save()
@@ -50,7 +52,9 @@ void MainWindowPlugin::save()
 void MainWindowPlugin::save_As()
 {
     QString saveName = ICore::instance()->fileManager()->getSaveFileName();
-    ICore::instance()->windowManager()->save(saveName);
+    if (!saveName.isEmpty()) {
+        ICore::instance()->windowManager()->save(saveName);
+    }
 }
 
 void MainWindowPlugin::openFirstTab()
