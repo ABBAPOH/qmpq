@@ -25,7 +25,9 @@ SOURCES += qmpqfileengine.cpp \
     treeitem.cpp \
     qmpqerror.cpp \
     qmpqarchive.cpp \
-    sharedmpqarchive.cpp
+    sharedmpqarchive.cpp \
+    objectcache.cpp
+
 HEADERS += qmpqfileengine.h \
     QMPQFileEngine_global.h \
     qmpqfileenginehandler.h \
@@ -35,4 +37,5 @@ HEADERS += qmpqfileengine.h \
     qmpqarchive.h \
     qmpqarchive_p.h \
     sharedmpqarchive.h \
-    qmpqfileengine_p.h
+    qmpqfileengine_p.h \
+    objectcache.h

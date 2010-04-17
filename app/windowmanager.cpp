@@ -13,7 +13,9 @@ bool WindowManager::open(const QString path)
 {
     ICore * core = ICore::instance();
     MainWindow * window = qobject_cast<MainWindow *>(core->context()->mainWindow());
-    window->open(path);
+    Q_ASSERT(window);
+    if (window)
+        window->open(path);
 }
 
 bool WindowManager::openInNewTab(const QString path)
