@@ -8,7 +8,7 @@
 #include "filemanager.h"
 #include "mainwindowplugin.h"
 
-#include "../QMPQFileEngine/objectcache.h"
+#include "../QMPQFileEngine/mpqarchive.h"
 
 Q_IMPORT_PLUGIN(MPQEditorPlugin)
 
@@ -30,10 +30,11 @@ int main(int argc, char *argv[])
     app.setOrganizationName("QMPQ");
     Q_INIT_RESOURCE(mpqeditor);
 
-//    Core core;
-//    MainWindowPlugin plugin;
-//    plugin.initialize();
+    Core core;
+    MainWindowPlugin plugin;
+    plugin.initialize();
 
+    MPQArchive a;
 
     QMPQFileEngineHandler h;
 

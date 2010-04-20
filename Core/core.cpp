@@ -33,6 +33,13 @@ Core::Core()
     connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), SLOT(onFocusChange(QWidget *, QWidget *)));
 }
 
+Core::~Core()
+{
+    foreach (IPlugin * plugin, pluginManager()->plugins()) {
+        plugin->shutdown();
+    }
+}
+
 bool Core::addObject(QObject * object)
 {
     qDebug("Core::addObject");

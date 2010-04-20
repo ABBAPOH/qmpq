@@ -17,8 +17,10 @@ public:
     bool newArchive(const QString & name);
     bool openArchive(const QString & name/*, QByteArray listfile = QByteArray()*/);
     bool closeArchive();
-    void getListFile(QStringList listfile);
-    int getFileInfo(const char * fileName, quint32 searchScope= 0);
+    void clear();
+    void initialize(QStringList listfile);
+    void initFile(const QString & file);
+    void initFile(const char * fileName, quint32 searchScope= 0);
     QByteArray readFile(const QString &file);
     bool addLocalFile(const QString &localFile, const QString &file);
     bool remove(const QString &file);

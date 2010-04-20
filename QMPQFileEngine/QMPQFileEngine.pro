@@ -4,19 +4,17 @@
 QT -= gui
 TARGET = QMPQFileEngine
 TEMPLATE = lib
-#TEMPLATE = app
 
+# TEMPLATE = app
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
-
 LIBS += -lStorm
 INCLUDEPATH += ../3rdParty
 
-#mac: target.path += ../app/bin/QMPQ.app/Contents/Frameworks
-win32: target.path += ../app/bin/
+# mac: target.path += ../app/bin/QMPQ.app/Contents/Frameworks
+win32:target.path += ../app/bin/
 INSTALLS += target
-
 DEFINES += QMPQFILEENGINE_LIBRARY
 SOURCES += qmpqfileengine.cpp \
     main.cpp \
@@ -26,8 +24,9 @@ SOURCES += qmpqfileengine.cpp \
     qmpqerror.cpp \
     qmpqarchive.cpp \
     sharedmpqarchive.cpp \
-    objectcache.cpp
-
+    objectcache.cpp \
+    mpqarchive.cpp \
+    qmpqarchivecache.cpp
 HEADERS += qmpqfileengine.h \
     QMPQFileEngine_global.h \
     qmpqfileenginehandler.h \
@@ -38,4 +37,7 @@ HEADERS += qmpqfileengine.h \
     qmpqarchive_p.h \
     sharedmpqarchive.h \
     qmpqfileengine_p.h \
-    objectcache.h
+    objectcache.h \
+    mpqarchive.h \
+    mpqarchive_p.h \
+    qmpqarchivecache.h

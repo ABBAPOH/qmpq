@@ -185,6 +185,11 @@ void MPQEditorPlugin::initialize()
             );
 }
 
+void MPQEditorPlugin::shutdown()
+{
+    delete MPQEditor::model();
+}
+
 bool MPQEditorPlugin::canHandle(const QString &file)
 {
 //    qDebug("MPQEditorFactory::canHandle");

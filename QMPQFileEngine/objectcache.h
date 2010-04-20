@@ -15,22 +15,34 @@ class ObjectCache : public QObject
     class ObjectData
     {
     public:
-        ObjectData() : object(0), ttl(0), m_ttlIndex(1) {}
+        ObjectData() :
+                object(0),
+                ttl(0),
+                refCount(0),
+                m_ttlIndex(1)
+        {}
+
         ObjectData(QObject * object, int ttl)
         {
+            refCount = 0;
             this->object = object;
             this->ttl = ttl;
             m_ttlIndex = 1;
         }
-        QObject * object;
-        int ttl;
+
         void incTtlIndex()
         {
             if (m_ttlIndex < 10)
                 m_ttlIndex++;
             ttl = 0;
         }
+
         int ttlIndex() { return m_ttlIndex; }
+
+        QObject * object;
+        int ttl;
+        int refCount;
+
     private:
         int m_ttlIndex;
     };
@@ -48,9 +60,12 @@ protected:
 signals:
 
 private slots:
+    void clear();
     void timeout();
 
 private:
+    void deleteData(ObjectCache::ObjectData * data);
+
     QHash<QVariant, ObjectData *> objects;
     QHash<QVariant, ObjectData *> disposedObjects;
     QTimer * timer;

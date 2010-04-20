@@ -67,7 +67,7 @@ public:
     ~MPQEditorPlugin() {}
 
     void initialize();
-    void shutdown() {};
+    void shutdown();
     QString name() { return "MPQ Editor plugin"; };
     QString description() { return QString(); };
 

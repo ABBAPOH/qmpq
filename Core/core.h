@@ -9,6 +9,7 @@ class Core : public ICore
 Q_OBJECT
 public:
     explicit Core();
+    ~Core();
 
     bool addObject(QObject * object);
 
