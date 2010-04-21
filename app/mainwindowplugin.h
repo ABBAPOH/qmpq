@@ -26,6 +26,7 @@ private slots:
     void closeTab();
 
     void about();
+    void newArchive();
 
 private:
     void initializeMenus();

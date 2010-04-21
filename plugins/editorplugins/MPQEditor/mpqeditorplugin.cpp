@@ -187,7 +187,7 @@ void MPQEditorPlugin::initialize()
 
 void MPQEditorPlugin::shutdown()
 {
-    delete MPQEditor::model();
+//    delete MPQEditor::model();
 }
 
 bool MPQEditorPlugin::canHandle(const QString &file)

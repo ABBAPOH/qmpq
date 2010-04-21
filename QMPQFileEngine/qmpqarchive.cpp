@@ -23,6 +23,21 @@ QMPQArchivePrivate::~QMPQArchivePrivate()
     delete m_rootItem;
 }
 
+bool QMPQArchivePrivate::newArchive(const QString & name, int flags, int maximumFilesInArchive)
+{
+    void * mpq = 0;
+    if (!SFileCreateArchiveEx(name.toLocal8Bit().data(), CREATE_ALWAYS | flags, maximumFilesInArchive, &mpq)) {
+        //  always returns that file not exists... look why!!
+        m_lastError = GetLastError();
+        qWarning() << "can't create archive: "<< m_lastError.errorMessage();
+        return false;
+    }
+    SFileCloseArchive(mpq);
+    mpq = 0;
+
+    return true;
+}
+
 bool QMPQArchivePrivate::openArchive(const QString & name/*, QByteArray listfile*/)
 {
     if (mpq) {
@@ -231,29 +246,17 @@ QMPQArchive::~QMPQArchive()
     delete d_ptr;
 }
 
-//bool QMPQArchive::newArchive(const QString & name, int flags, int maximumFilesInArchive)
-//{
-//    Q_D(QMPQArchive);
+bool QMPQArchive::newArchive(const QString & name, int flags, int maximumFilesInArchive)
+{
+    Q_D(QMPQArchive);
 //    qDebug() << "newArchive " << name;
 //    closeArchive();
-//    d->newArchive(name.toLocal8Bit().data());
-////    QFile file(name);
-////    file.open(QFile::WriteOnly);
-////    file.close();
-//
-////    if ( (int)(mpq = MpqOpenArchiveForUpdate(name.toLocal8Bit().data(), MOAU_CREATE_NEW, maximumFilesInArchive)) == -1 ) {
-//    if (SFileCreateArchiveEx(name.toLocal8Bit().data(), CREATE_ALWAYS | flags, maximumFilesInArchive, &mpq)) {
-//        //  always returns that file not exists... look why!!
-//        m_lastError = GetLastError();
-//        qDebug() << "can't create archive: "<< m_lastError.errorMessage();
-////        return false;
-//    }
-//    SFileCloseArchive(mpq);
-//    mpq = 0;
+
+    d->newArchive(name, flags, maximumFilesInArchive);
 //
 //    openArchive(name);
-//    return true;
-//}
+    return true;
+}
 
 bool QMPQArchive::openArchive(const QString & name, QByteArray listfile)
 {

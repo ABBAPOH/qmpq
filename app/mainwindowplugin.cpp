@@ -9,6 +9,9 @@
 
 #include "windowmanager.h"
 #include "mainwindow.h"
+#include "createarchivedialog.h"
+
+#include "../QMPQFileEngine/qmpqarchive.h"
 
 MainWindowPlugin::MainWindowPlugin(QObject *parent) :
     IPlugin(parent)
@@ -34,6 +37,27 @@ void MainWindowPlugin::initialize()
 
     QTimer t;
     t.singleShot(0, this, SLOT(openFirstTab()));
+}
+
+void MainWindowPlugin::newArchive()
+{
+    QString file = ICore::instance()->fileManager()->getSaveFileName("", "MPQ Archives (*.mpq *.w3x *.w3m *.s2ma *.SC2Data *.SC2Archive *.SC2Assets *.SC2Replay *.scx *.w3n *.snp *.sv *.hsv)");
+    if (!file.isEmpty()) {
+        CreateArchiveDialog dialog;
+        if (dialog.exec()) {
+            int flags = 0, maxFiles = 1024;
+            int version = dialog.archiveVersion();
+            flags |= (version == 1) ? QMPQArchive::CreateArchiveV1 : 0;
+            flags |= (version == 2) ? QMPQArchive::CreateArchiveV2 : 0;
+            flags |= dialog.addAttributes() ? QMPQArchive::CreateAttributes : 0;
+            maxFiles = dialog.maxFiles();
+            QMPQArchive arch;
+            arch.newArchive(file, flags, maxFiles);
+            arch.closeArchive();
+            ICore::instance()->windowManager()->open(file);
+        }
+    }
+
 }
 
 void MainWindowPlugin::open()
@@ -87,10 +111,16 @@ void MainWindowPlugin::initializeMenus()
     QMenu * fileMenu = core->actionManager()->createMenu("FILE");
     fileMenu->setTitle("File");
     
+    QAction * newArchiveAction = fileMenu->addAction("New Archive");
+    connect(newArchiveAction, SIGNAL(triggered()), SLOT(newArchive()));
+    newArchiveAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+N", 0, QApplication::UnicodeUTF8));
+    newArchiveAction->setIcon(QIcon(":/icons/images/filenew.png"));
+    core->actionManager()->registerAction(newArchiveAction, "NEWARCH");
+
     QAction * openAction = fileMenu->addAction("Open");
     connect(openAction, SIGNAL(triggered()), SLOT(open()));
     openAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+O", 0, QApplication::UnicodeUTF8));
-    openAction->setIcon(QIcon(":/icons/images/copy.png"));
+    openAction->setIcon(QIcon(":/icons/images/fileopen.png"));
     core->actionManager()->registerAction(openAction, "OPEN");
 
     QAction * saveAction = fileMenu->addAction("Save");

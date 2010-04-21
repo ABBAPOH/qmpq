@@ -23,9 +23,9 @@ QStringList FileManager::getOpenFileNames()
     return result;
 }
 
-QString FileManager::getSaveFileName()
+QString FileManager::getSaveFileName(const QString & dir, const QString & filter)
 {
-    QString result = QFileDialog::getSaveFileName((QWidget*)0, tr("Save As"), "", m_extensionString);
+    QString result = QFileDialog::getSaveFileName((QWidget*)0, tr("Save As"), dir, (filter == "") ? m_extensionString : filter);
     return result;
 }
 

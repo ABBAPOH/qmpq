@@ -14,7 +14,7 @@ class QMPQArchivePrivate
 public:
     QMPQArchivePrivate(QMPQArchive * q);
     ~QMPQArchivePrivate();
-    bool newArchive(const QString & name);
+    bool newArchive(const QString & name, int flags, int maximumFilesInArchive);
     bool openArchive(const QString & name/*, QByteArray listfile = QByteArray()*/);
     bool closeArchive();
     void clear();

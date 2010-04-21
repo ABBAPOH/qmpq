@@ -10,7 +10,7 @@ Q_OBJECT
 public:
     explicit FileManager(QObject *parent = 0);
     QStringList getOpenFileNames();
-    QString getSaveFileName();
+    QString getSaveFileName(const QString & dir = "", const QString & filter = "");
     int confirmClose(const QString & file);
     void registerExtensionString(const QString & extensionString);
 
