@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QtCore/QHash>
+#include <QtGui/QApplication>
 #include <QtGui/QMainWindow>
 #include <QtGui/QLineEdit>
 #include <QtGui/QMenuBar>
@@ -36,6 +37,7 @@ namespace Ui {
             actionBack = new QAction(parent);
             actionBack->setObjectName(QString::fromUtf8("actionBack"));
             actionBack->setEnabled(true);
+            actionBack->setShortcut(QKeySequence::Back);
             QIcon icon2;
             icon2.addFile(QString::fromUtf8(":/icons/images/back.png"), QSize(), QIcon::Normal, QIcon::Off);
             actionBack->setIcon(icon2);
@@ -43,6 +45,7 @@ namespace Ui {
             actionForward = new QAction(parent);
             actionForward->setObjectName(QString::fromUtf8("actionForward"));
             actionForward->setEnabled(true);
+            actionForward->setShortcut(QKeySequence::Forward);
             QIcon icon3;
             icon3.addFile(QString::fromUtf8(":/icons/images/forward.png"), QSize(), QIcon::Normal, QIcon::Off);
             actionForward->setIcon(icon3);
@@ -50,6 +53,7 @@ namespace Ui {
             actionUp = new QAction(parent);
             actionUp->setObjectName(QString::fromUtf8("actionUp"));
             actionUp->setEnabled(true);
+            actionUp->setShortcut(QApplication::translate("MainWindow", "Ctrl+Up", 0, QApplication::UnicodeUTF8));
             QIcon icon4;
             icon4.addFile(QString::fromUtf8(":/icons/images/up.png"), QSize(), QIcon::Normal, QIcon::Off);
             actionUp->setIcon(icon4);

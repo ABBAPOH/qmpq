@@ -1,14 +1,14 @@
 #include <QtGui/QApplication>
 #include <QtCore/QtPlugin>
+#include <QTranslator>
 #include "mainwindow.h"
 #include "pluginmanager.h"
-#include <qmpqfileenginehandler.h>
-#include <QDebug>
-#include <core.h>
 #include "filemanager.h"
 #include "mainwindowplugin.h"
 
-#include "../QMPQFileEngine/mpqarchive.h"
+#include <qmpqfileenginehandler.h>
+#include <QDebug>
+#include <core.h>
 
 Q_IMPORT_PLUGIN(MPQEditorPlugin)
 
@@ -30,11 +30,15 @@ int main(int argc, char *argv[])
     app.setOrganizationName("QMPQ");
     Q_INIT_RESOURCE(mpqeditor);
 
+    QString locale = QLocale::system().name();
+
+    QTranslator translator;
+    translator.load(QString("qmpq_") + locale);
+    app.installTranslator(&translator);
+
     Core core;
     MainWindowPlugin plugin;
     plugin.initialize();
-
-    MPQArchive a;
 
     QMPQFileEngineHandler h;
 

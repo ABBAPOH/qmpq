@@ -99,9 +99,9 @@ void MainWindowPlugin::closeTab()
 void MainWindowPlugin::about()
 {
     QMessageBox::about(0, tr("About QMPQ"),
-             tr("<b>QMPQ 1.6</b> a Qt-based program that allows to manipulate "
+             tr("<b>QMPQ 1.6</b> is a Qt-based program that allows to manipulate "
                 "with Blizzard's MPQ-archives. "
-                "Copyright 2009 Nevermore (N) aka ABBAPOH"));
+                "Copyright 2010 Nevermore (N) aka ABBAPOH"));
 }
 
 void MainWindowPlugin::initializeMenus()
@@ -109,27 +109,27 @@ void MainWindowPlugin::initializeMenus()
     ICore * core = ICore::instance();
 
     QMenu * fileMenu = core->actionManager()->createMenu("FILE");
-    fileMenu->setTitle("File");
+    fileMenu->setTitle(tr("File"));
     
-    QAction * newArchiveAction = fileMenu->addAction("New Archive");
+    QAction * newArchiveAction = fileMenu->addAction(tr("New Archive"));
     connect(newArchiveAction, SIGNAL(triggered()), SLOT(newArchive()));
     newArchiveAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+N", 0, QApplication::UnicodeUTF8));
     newArchiveAction->setIcon(QIcon(":/icons/images/filenew.png"));
     core->actionManager()->registerAction(newArchiveAction, "NEWARCH");
 
-    QAction * openAction = fileMenu->addAction("Open");
+    QAction * openAction = fileMenu->addAction(tr("Open"));
     connect(openAction, SIGNAL(triggered()), SLOT(open()));
     openAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+O", 0, QApplication::UnicodeUTF8));
     openAction->setIcon(QIcon(":/icons/images/fileopen.png"));
     core->actionManager()->registerAction(openAction, "OPEN");
 
-    QAction * saveAction = fileMenu->addAction("Save");
+    QAction * saveAction = fileMenu->addAction(tr("Save"));
     connect(saveAction, SIGNAL(triggered()), SLOT(save()));
     saveAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", 0, QApplication::UnicodeUTF8));
     saveAction->setIcon(QIcon(":/icons/images/save.png"));
     core->actionManager()->registerAction(saveAction, "SAVE");
 
-    QAction * save_AsAction = fileMenu->addAction("Save As...");
+    QAction * save_AsAction = fileMenu->addAction(tr("Save As..."));
     connect(save_AsAction, SIGNAL(triggered()), SLOT(save_As()));
     save_AsAction->setIcon(QIcon(":/icons/images/save.png"));
 //    save_AsAction->setShortcut(QApplication::translate("MainWindow", "", 0, QApplication::UnicodeUTF8));
@@ -137,45 +137,45 @@ void MainWindowPlugin::initializeMenus()
 
     fileMenu->addSeparator();
 
-    QAction * newTabAction = fileMenu->addAction("New Tab");
+    QAction * newTabAction = fileMenu->addAction(tr("New Tab"));
     connect(newTabAction, SIGNAL(triggered()), SLOT(newTab()));
     newTabAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+T", 0, QApplication::UnicodeUTF8));
     core->actionManager()->registerAction(newTabAction, "NEW TAB");
 
-    QAction * closeTabAction = fileMenu->addAction("Close Tab");
+    QAction * closeTabAction = fileMenu->addAction(tr("Close Tab"));
     connect(closeTabAction, SIGNAL(triggered()), SLOT(closeTab()));
     closeTabAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+W", 0, QApplication::UnicodeUTF8));
     core->actionManager()->registerAction(closeTabAction, "CLOSE TAB");
 
     QMenu * editMenu = core->actionManager()->createMenu("EDIT");
-    editMenu->setTitle("Edit");
+    editMenu->setTitle(tr("Edit"));
 
-    QAction * cutAction = editMenu->addAction("Cut");
+    QAction * cutAction = editMenu->addAction(tr("Cut"));
     connect(cutAction, SIGNAL(triggered()), core->actionManager(), SLOT(cut()));
     cutAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+X", 0, QApplication::UnicodeUTF8));
     cutAction->setIcon(QIcon(":/icons/images/cut.png"));
     core->actionManager()->registerAction(cutAction, "CUT");
 
-    QAction * copyAction = editMenu->addAction("Copy");
+    QAction * copyAction = editMenu->addAction(tr("Copy"));
     connect(copyAction, SIGNAL(triggered()), core->actionManager(), SLOT(copy()));
     copyAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+C", 0, QApplication::UnicodeUTF8));
     copyAction->setIcon(QIcon(":/icons/images/copy.png"));
     core->actionManager()->registerAction(copyAction, "COPY");
 
-    QAction * pasteAction = editMenu->addAction("Paste");
+    QAction * pasteAction = editMenu->addAction(tr("Paste"));
     connect(pasteAction, SIGNAL(triggered()), core->actionManager(), SLOT(paste()));
     pasteAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+V", 0, QApplication::UnicodeUTF8));
     pasteAction->setIcon(QIcon(":/icons/images/paste.png"));
     core->actionManager()->registerAction(pasteAction, "PASTE");
 
     QMenu * helpMenu = core->actionManager()->createMenu("HELP");
-    helpMenu->setTitle("Help");
+    helpMenu->setTitle(tr("Help"));
 
-    QAction * aboutAction = helpMenu->addAction("About");
+    QAction * aboutAction = helpMenu->addAction(tr("About"));
     connect(aboutAction, SIGNAL(triggered()), SLOT(about()));
     core->actionManager()->registerAction(aboutAction, "ABOUT");
 
-    QAction * aboutQtAction = helpMenu->addAction("About Qt");
+    QAction * aboutQtAction = helpMenu->addAction(tr("About Qt"));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     core->actionManager()->registerAction(aboutQtAction, "ABOUT QT");
 }

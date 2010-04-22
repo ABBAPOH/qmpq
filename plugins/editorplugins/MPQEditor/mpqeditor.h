@@ -40,6 +40,10 @@ private:
     ViewMode m_viewMode;
     QStackedLayout * layout;
     static QDirModel * m_model;
+    QAction * openAction;
+
+    void initModel();
+    void initViews();
     QModelIndexList selectedIndexes();
     QString selectedDir();
     void extract(const QString & path, const QString & destDir);
@@ -62,6 +66,7 @@ public slots:
 //    void remove();
 private slots:
     void onDoubleClick(const QModelIndex & index);
+    void onOpenRequest();
 };
 
 #endif // MPQEDITOR_H

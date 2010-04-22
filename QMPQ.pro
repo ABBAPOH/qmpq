@@ -10,3 +10,5 @@ SUBDIRS = \
     plugins/editorplugins/CodeEditor \
     plugins/editorplugins/XMLEditor \
     app
+
+TRANSLATIONS    = qmpq_ru.ts \

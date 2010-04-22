@@ -1,6 +1,7 @@
 #include "mpqeditorplugin.h"
 
 #include <QtCore/QtPlugin>
+#include <QtGui/QApplication>
 #include <QtGui/QToolBar>
 #include <QtGui/QFileDialog>
 #include <QtCore/QSignalMapper>
@@ -27,6 +28,7 @@ MPQEditorInterface::MPQEditorInterface(MPQEditor * editor)
 //    m_toolBar->addAction(QIcon(":/icons/images/next.png"), "forward", this, SLOT(forward()));
 //    m_toolBar->addAction(QIcon(":/icons/images/up.png"), "up", m_editor, SLOT(up()));
 //    m_toolBar->addSeparator();
+
     actionAdd = m_toolBar->addAction(QIcon(":/icons/images/add.png"), "Add", this, SLOT(add()));
     actionExtract = m_toolBar->addAction(QIcon(":/icons/images/extract.png"), "Extract", this, SLOT(extract()));
     actionRename = new QAction(QIcon(":/icons/images/rename.png"), "Rename", m_toolBar);
@@ -107,7 +109,6 @@ void MPQEditorInterface::setViewMode(int mode)
 {
 //    qDebug("MPQEditorPlugin::setViewMode");
     m_editor->setViewMode((MPQEditor::ViewMode)mode);
-
 }
 
 void MPQEditorInterface::openRequest(const QString & path)

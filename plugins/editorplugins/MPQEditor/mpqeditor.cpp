@@ -10,8 +10,12 @@
 #include <QtCore/QAbstractItemModel>
 #include <QtGui/QMessageBox>
 #include <QtGui/QDesktopServices>
+#include <QtGui/QAction>
 
 #include <QDebug>
+
+#include <icore.h>
+#include <QMenu>
 
 QDirModel * MPQEditor::m_model = 0;
 
@@ -26,6 +30,7 @@ MPQEditor::MPQEditor(QWidget *parent) :
 {
 //    QHBoxLayout * layout = new QHBoxLayout(this);
     layout = new QStackedLayout(this);
+    initViews();
     views[ListView] = listView;
     views[IconView] = iconView;
     views[TableView] = tableView;
@@ -71,10 +76,30 @@ MPQEditor::MPQEditor(QWidget *parent) :
     treeView->setColumnWidth(0, 300);
 
     setViewMode(ListView);
+
+    openAction = new QAction("open", this);
+//#ifdef Q_OS_WIN
+    openAction->setShortcut(tr("Return"));
+//#endif
+//#ifdef Q_OS_MAC
+//    openAction->setShortcut(tr("Ctrl+O"));
+//#endif
+    openAction->setShortcutContext(Qt::ApplicationShortcut);
+    connect(openAction, SIGNAL(triggered()), SLOT(onOpenRequest()));
+    addAction(openAction);
 }
 
 MPQEditor::~MPQEditor()
 {
+}
+
+void MPQEditor::initModel()
+{
+}
+
+void MPQEditor::initViews()
+{
+
 }
 
 QModelIndexList MPQEditor::selectedIndexes()
@@ -143,7 +168,7 @@ void MPQEditor::add(const QStringList & files)
     QString dir = selectedDir();
 //    QModelIndexList list = selectedIndexes();
     if (dir == "") {
-        QMessageBox box(QMessageBox::Information, "Warning", "Select exactly one file or folder", QMessageBox::Ok);
+        QMessageBox box(QMessageBox::Information, tr("Warning"), tr("Select exactly one file or folder"), QMessageBox::Ok);
         box.exec();
         return;
     } else {
@@ -168,7 +193,7 @@ void MPQEditor::add(const QStringList & files)
 
             m_model->refresh(m_model->index(info.absolutePath()));
             if (!result) {
-                QMessageBox box(QMessageBox::Critical, "Critical Error", "Can't add files: "+ targetFile.errorString(), QMessageBox::Ok, this);
+                QMessageBox box(QMessageBox::Critical, tr("Critical Error"), tr("Can't add files: ") + targetFile.errorString(), QMessageBox::Ok, this);
                 box.exec();
                 return;
             }
@@ -204,7 +229,7 @@ void MPQEditor::extract(const QString & destDir)
         bool result = file.copy(destDir + "/" + info.fileName());
 //        bool result = model->extract(index, path);
         if (!result) {
-            QMessageBox box(QMessageBox::Critical, "Critical Error", "Can't extract file "
+            QMessageBox box(QMessageBox::Critical, tr("Critical Error"), tr("Can't extract file ")
                             + index.data(Qt::DisplayRole).toString() + ": "+ file.errorString(), QMessageBox::Ok);
             box.exec();
             return;
@@ -297,7 +322,7 @@ void MPQEditor::newFolder(const QString & name)
     } else {
         QString folderName = name;
         if (folderName == "")
-            folderName = "New Folder";
+            folderName = tr("New Folder");
         QModelIndex index = m_model->mkdir(m_model->index(dir), folderName);
 
         if (index.isValid())
@@ -316,3 +341,12 @@ void MPQEditor::onDoubleClick(const QModelIndex & index)
 //        emit currentChanged(m_model->filePath(index));
     }
 }
+
+void MPQEditor::onOpenRequest()
+{
+    QModelIndexList list = selectedIndexes();
+    if (list.isEmpty())
+        return;
+    emit openRequested(m_model->filePath(list.first()));
+}
+
