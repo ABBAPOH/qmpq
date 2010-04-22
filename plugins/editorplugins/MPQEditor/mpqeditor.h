@@ -44,6 +44,7 @@ private:
 
     void initModel();
     void initViews();
+    void initActions();
     QModelIndexList selectedIndexes();
     QString selectedDir();
     void extract(const QString & path, const QString & destDir);

@@ -26,11 +26,47 @@ MPQEditor::MPQEditor(QWidget *parent) :
     columnView(new QColumnView(this)),
     tableView(new QTableView(this)),
     treeView(new QTreeView(this)),
-    currentView(0)
+    currentView(0),
+    layout(new QStackedLayout(this))
 {
-//    QHBoxLayout * layout = new QHBoxLayout(this);
-    layout = new QStackedLayout(this);
+    initModel();
     initViews();
+
+    setViewMode(ListView);
+
+    initActions();
+}
+
+MPQEditor::~MPQEditor()
+{
+}
+
+void MPQEditor::initModel()
+{
+    if (!m_model) {
+        m_model = new QDirModel;
+        m_model->setReadOnly(false);
+        m_model->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
+        m_model->setSorting(QDir::DirsFirst);
+    }
+}
+
+void MPQEditor::initActions()
+{
+    openAction = new QAction("open", this);
+//#ifdef Q_OS_WIN
+    openAction->setShortcut(tr("Return"));
+//#endif
+//#ifdef Q_OS_MAC
+//    openAction->setShortcut(tr("Ctrl+O"));
+//#endif
+    openAction->setShortcutContext(Qt::ApplicationShortcut);
+    connect(openAction, SIGNAL(triggered()), SLOT(onOpenRequest()));
+    addAction(openAction);
+}
+
+void MPQEditor::initViews()
+{
     views[ListView] = listView;
     views[IconView] = iconView;
     views[TableView] = tableView;
@@ -40,7 +76,6 @@ MPQEditor::MPQEditor(QWidget *parent) :
     for (int i = 0; i < MaxViews; i++)
         layout->addWidget(views[i]);
     layout->setContentsMargins(0, 0, 0, 0);
-//    layout->setMargin(0);
     setLayout(layout);
 
     listView->setUniformItemSizes(true);
@@ -48,13 +83,6 @@ MPQEditor::MPQEditor(QWidget *parent) :
     iconView->setViewMode(QListView::IconMode);
     iconView->setSpacing(24);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-
-    if (!m_model) {
-        m_model = new QDirModel;
-        m_model->setReadOnly(false);
-        m_model->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
-        m_model->setSorting(QDir::DirsFirst);
-    }
 
     for (int i = 0; i < MaxViews; i++) {
         views[i]->setEditTriggers(QAbstractItemView::SelectedClicked);
@@ -74,32 +102,6 @@ MPQEditor::MPQEditor(QWidget *parent) :
     tableView->setColumnWidth(0, 300);
     tableView->setColumnWidth(3, 125);
     treeView->setColumnWidth(0, 300);
-
-    setViewMode(ListView);
-
-    openAction = new QAction("open", this);
-//#ifdef Q_OS_WIN
-    openAction->setShortcut(tr("Return"));
-//#endif
-//#ifdef Q_OS_MAC
-//    openAction->setShortcut(tr("Ctrl+O"));
-//#endif
-    openAction->setShortcutContext(Qt::ApplicationShortcut);
-    connect(openAction, SIGNAL(triggered()), SLOT(onOpenRequest()));
-    addAction(openAction);
-}
-
-MPQEditor::~MPQEditor()
-{
-}
-
-void MPQEditor::initModel()
-{
-}
-
-void MPQEditor::initViews()
-{
-
 }
 
 QModelIndexList MPQEditor::selectedIndexes()
@@ -112,7 +114,6 @@ QModelIndexList MPQEditor::selectedIndexes()
 
 void MPQEditor::setViewMode(ViewMode mode)
 {
-//    qDebug() << "MPQEditor::setViewMode" << mode;
     layout->setCurrentIndex(mode);
 
     if (mode < 3)
