@@ -4,17 +4,15 @@
 QT -= gui
 TARGET = QMPQFileEngine
 TEMPLATE = lib
-
 # TEMPLATE = app
+
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
-LIBS += -lStorm
-INCLUDEPATH += ../3rdParty
 
-# mac: target.path += ../app/bin/QMPQ.app/Contents/Frameworks
-win32:target.path += ../app/bin/
-INSTALLS += target
+INCLUDEPATH += ../3rdParty
+LIBS += -lStorm
+
 DEFINES += QMPQFILEENGINE_LIBRARY
 SOURCES += qmpqfileengine.cpp \
     main.cpp \
@@ -38,3 +36,8 @@ HEADERS += qmpqfileengine.h \
     qmpqfileengine_p.h \
     objectcache.h \
     qmpqarchivecache.h
+
+mac: target.path += ../app/bin/QMPQ.app/Contents/MacOS
+win32:target.path += ../app/bin/
+
+INSTALLS += target

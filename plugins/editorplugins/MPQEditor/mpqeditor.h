@@ -6,6 +6,18 @@
 
 #define MaxViews 5
 
+class MPQEditorError
+{
+public:
+    QString errorString() const { return m_errorString; }
+    void addSubError(const MPQEditorError &error) { m_suberrors.append( error); }
+    QList<MPQEditorError> subErrors() const { return m_suberrors; }
+
+private:
+    QString m_errorString;
+    QList<MPQEditorError> m_suberrors;
+};
+
 class QAbstractItemView;
 class QListView;
 class QColumnView;
@@ -17,6 +29,7 @@ class QStackedLayout;
 class MPQEditor : public QWidget
 {
     Q_OBJECT
+    Q_ENUMS(ViewMode)
 public:
     explicit MPQEditor(QWidget *parent = 0);
     ~MPQEditor();

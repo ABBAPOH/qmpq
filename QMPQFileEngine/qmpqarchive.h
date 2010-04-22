@@ -54,6 +54,7 @@ public:
 
 //private:
     TreeItem * mkfile(const QString & path);
+    TreeItem * mkfile(const QString & path, qlonglong size, qlonglong compressedSize);
     TreeItem * treeItem(const QString & path) const;
     TreeItem * rootItem();// { return m_rootItem; }
     bool extract(TreeItem * item, const QString & path);

@@ -32,9 +32,11 @@ int main(int argc, char *argv[])
 
     QString locale = QLocale::system().name();
 
-    QTranslator translator;
+    QTranslator translator, qtTranslator;
     translator.load(QString("qmpq_") + locale);
+    qtTranslator.load(QString("qt_") + locale);
     app.installTranslator(&translator);
+    app.installTranslator(&qtTranslator);
 
     Core core;
     MainWindowPlugin plugin;

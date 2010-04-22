@@ -154,11 +154,9 @@ void QMPQArchivePrivate::initFile(const char * fileName, quint32 searchScope)
         if (name != "") {
             m_listFile << name;
 
-            TreeItem * item = q->mkfile(name);
             qlonglong fileSize = SFileGetFileInfo(hFile, SFILE_INFO_FILE_SIZE);
             qlonglong compressedSize = SFileGetFileInfo(hFile, SFILE_INFO_COMPRESSED_SIZE);
-            item->setData(QMPQArchive::FullSize, QVariant(fileSize));
-            item->setData(QMPQArchive::CompressedSize, QVariant(compressedSize));
+            TreeItem * item = q->mkfile(name, fileSize, compressedSize);
 
             indexHash.insert(name, index);
             if (searchScope == SFILE_OPEN_BY_INDEX)
@@ -457,27 +455,23 @@ bool QMPQArchive::rename(TreeItem * item, const QString & newName)
     } else {
         name = newName;
     }
-//    qDebug() << "path: " << path << "name: " << name;
-        TreeItem * oldParent = item->parent();
-        oldParent->deleteChild(item);
-        if (isDir) {
-            mkdir(newName, true);
-            item = this->treeItem(newName);
-        } else
-            item = mkfile(newName);
-        d->hash.remove(oldName);
-        item->setData(FullPath, newName);
-        item->setData(Name, newName.split('\\').last());
-        d->m_listFile.removeAll(oldName);
-        d->m_listFile.append(newName);
+    //    qDebug() << "path: " << path << "name: " << name;
+    TreeItem * oldParent = item->parent();
+    oldParent->deleteChild(item);
+    d->hash.remove(oldName);
 
-        if (!isDir) {
-            bool res = d->rename(oldName, newName);
-            d->initFile(newName);
+    d->m_listFile.removeAll(oldName);
+    d->m_listFile.append(newName);
+    if (isDir) {
+        mkdir(newName, true);
+        item = this->treeItem(newName);
+    } else {
+        bool res = d->rename(oldName, newName);
+        d->initFile(newName);
 
-            return res;
-        }
-        return true;
+        return res;
+    }
+    return true;
 }
 
 bool QMPQArchive::remove(TreeItem * item)
@@ -606,6 +600,14 @@ TreeItem * QMPQArchive::mkfile(const QString & path)
         parent->appendChild(item);
         return item;
     }
+}
+
+TreeItem * QMPQArchive::mkfile(const QString & path, qlonglong size, qlonglong compressedSize)
+{
+    TreeItem * item = mkfile(path);
+    item->setData(QMPQArchive::FullSize, QVariant(size));
+    item->setData(QMPQArchive::CompressedSize, QVariant(compressedSize));
+    return item;
 }
 
 TreeItem * QMPQArchive::treeItem(const QString & path) const

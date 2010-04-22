@@ -48,7 +48,8 @@ MPQEditorInterface::MPQEditorInterface(MPQEditor * editor)
         viewModeActions[i]->setCheckable(true);
         viewModeActionGroup->addAction(viewModeActions[i]);
     }
-    #warning TODO: why uses SLOT in this class instead of slot in MPQEditor
+
+    // i use slot in this class because moc can't convert
     connect(viewModeMapper, SIGNAL(mapped(int)), this, SLOT(setViewMode(int)));
     viewModeActions[0]->trigger();
 

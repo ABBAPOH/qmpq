@@ -39,6 +39,7 @@ MPQEditor::MPQEditor(QWidget *parent) :
 
 MPQEditor::~MPQEditor()
 {
+    MPQEditorError error;
 }
 
 void MPQEditor::initModel()
