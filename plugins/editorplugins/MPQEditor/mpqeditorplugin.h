@@ -22,7 +22,10 @@ public:
     virtual QWidget * widget();
     virtual QToolBar * toolBar ();
     virtual void close();
+
 private:
+    void initActions();
+
     MPQEditor * m_editor;
     QToolBar * m_toolBar;
     QSignalMapper * viewModeMapper;

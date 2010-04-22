@@ -1,6 +1,6 @@
 #include <QtGui/QApplication>
 #include <QtCore/QtPlugin>
-#include <QTranslator>
+#include <QtCore/QTranslator>
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "filemanager.h"
