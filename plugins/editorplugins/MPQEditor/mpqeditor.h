@@ -26,6 +26,7 @@ class QTreeView;
 class QDirModel;
 class QAbstractItemModel;
 class QStackedLayout;
+class QMPQFileEngine;
 class MPQEditor : public QWidget
 {
     Q_OBJECT
@@ -39,6 +40,8 @@ public:
     QString currentFile() { return m_currentFile; }
     static QAbstractItemModel * model();
     void showColumns(bool show);
+    bool isMPQArchive();
+
 
 private:
 //    const int test = 5;
@@ -58,6 +61,7 @@ private:
     void initModel();
     void initViews();
     void initActions();
+    QMPQFileEngine * getIndexMPQEngine(const QModelIndex & index);
     QModelIndexList selectedIndexes();
     QString selectedDir();
     void extract(const QString & path, const QString & destDir);
@@ -69,6 +73,7 @@ signals:
 
 public slots:
     void open(const QString &file);
+    void reopenUsingListfile(const QByteArray &listfile);
     void closeFile();
     void add(const QStringList & files);
     void extract(const QString & destDir);

@@ -11,11 +11,14 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QDesktopServices>
 #include <QtGui/QAction>
+#include <QtGui/QMenu>
 
 #include <QDebug>
 
 #include <icore.h>
-#include <QMenu>
+
+#include "../../../../QMPQFileEngine/qmpqfileengine.h"
+#include "../../../../QMPQFileEngine/qmpqarchive.h"
 
 QDirModel * MPQEditor::m_model = 0;
 
@@ -132,6 +135,27 @@ void MPQEditor::open(const QString &file)
         m_currentFile = file;
         currentView->setRootIndex(m_model->index(file));
         emit currentChanged(file);
+    }
+}
+
+void MPQEditor::reopenUsingListfile(const QByteArray &listfile)
+{
+    QModelIndexList list = selectedIndexes();
+    if (list.isEmpty())
+        return;
+    QString filePath = m_model->filePath(list.first());
+    QFile file(filePath);
+    //  if we can cat file then we're in mpq archive
+    QMPQFileEngine * engine = dynamic_cast<QMPQFileEngine *>(file.fileEngine());
+    if (engine) {
+        QMPQArchive * archive = engine->archive();
+        if (archive) {
+            QString archivePath = archive->file();
+            archive->closeArchive();
+            archive->openArchive(archivePath, listfile);
+            currentView->update(m_model->index(archivePath));
+
+        }
     }
 }
 
@@ -307,6 +331,29 @@ void MPQEditor::showColumns(bool show)
         tableView->setColumnHidden(2, true);
         tableView->setColumnHidden(3, true);
     }
+}
+
+#warning do not use
+QMPQFileEngine * MPQEditor::getIndexMPQEngine(const QModelIndex & index)
+{
+//    QString path = m_model->filePath(index);
+//    QFile file(path);
+//    //  if we can cat file then we're in mpq archive
+//    return dynamic_cast<QMPQFileEngine *>(file.fileEngine());
+}
+
+bool MPQEditor::isMPQArchive()
+{
+    QModelIndexList list = selectedIndexes();
+    if (list.isEmpty())
+        return false;
+    //  if we can cat file then we're in mpq archive
+    QMPQFileEngine * engine = getIndexMPQEngine(list.first());
+    if (engine) {
+        qDebug("archive!");
+        return true;
+    }
+    return engine;
 }
 
 void MPQEditor::up()

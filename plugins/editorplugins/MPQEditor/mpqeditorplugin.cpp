@@ -64,6 +64,9 @@ void MPQEditorInterface::initActions()
 
     actionNew_Folder = new QAction(tr("New Folder"), this);
     connect(actionNew_Folder, SIGNAL(triggered()), m_editor, SLOT(newFolder()));
+
+    actionReopen = new QAction(tr("Reopen using listfile..."), this);
+    connect(actionReopen, SIGNAL(triggered()), this, SLOT(reopen()));
 }
 
 bool MPQEditorInterface::canHandle(const QString & filePath)
@@ -101,13 +104,23 @@ void MPQEditorInterface::extract()
 
 void MPQEditorInterface::setViewMode(int mode)
 {
-//    qDebug("MPQEditorPlugin::setViewMode");
     m_editor->setViewMode((MPQEditor::ViewMode)mode);
 }
 
 void MPQEditorInterface::openRequest(const QString & path)
 {
     ICore::instance()->windowManager()->open(path);
+}
+
+void MPQEditorInterface::reopen()
+{
+    QString filePath = QFileDialog::getOpenFileName(m_editor, tr("Select listfile"));
+    if (filePath.isEmpty())
+        return;
+    QFile file(filePath);
+    file.open(QFile::ReadOnly);
+    m_editor->reopenUsingListfile(file.readAll());
+    file.close();
 }
 
 QWidget * MPQEditorInterface::widget()
@@ -123,7 +136,6 @@ QToolBar * MPQEditorInterface::toolBar ()
 bool MPQEditorInterface::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::ContextMenu) {
-//        qDebug("context menu called");
         return contextMenu(static_cast<QContextMenuEvent*>(event));
     }
     return QObject::eventFilter(obj, event);
@@ -132,8 +144,10 @@ bool MPQEditorInterface::eventFilter(QObject *obj, QEvent *event)
 bool MPQEditorInterface::contextMenu(QContextMenuEvent *event)
 {
     QMenu menu;
-//    QList<QAction*> list;
     menu.addAction(actionNew_Folder);
+    menu.addSeparator();
+    menu.addAction(actionReopen);
+    actionReopen->setEnabled(false);
     menu.addSeparator();
     menu.addAction(actionAdd);
     menu.addAction(actionExtract);

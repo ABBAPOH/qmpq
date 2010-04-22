@@ -36,12 +36,14 @@ private:
     QAction * actionRename;
     QAction * actionRemove;
     QAction * actionNew_Folder;
+    QAction * actionReopen;
 
 public slots:
     void add();
     void extract();
     void setViewMode(int mode);
     void openRequest(const QString &file);
+    void reopen();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

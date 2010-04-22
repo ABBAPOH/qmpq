@@ -39,6 +39,7 @@ public:
     QString suffix() { return m_suffix; }
 };
 
+class QMPQArchive;
 class QMPQFileEnginePrivate;
 class QMPQFILEENGINESHARED_EXPORT QMPQFileEngine : public QAbstractFileEngine
 {
@@ -48,6 +49,7 @@ public:
     QMPQFileEngine(const QString & file);
     ~QMPQFileEngine();
 
+    QMPQArchive * archive();
     Iterator * beginEntryList(QDir::Filters filters, const QStringList & filterNames);
     bool caseSensitive () const;
     bool close();

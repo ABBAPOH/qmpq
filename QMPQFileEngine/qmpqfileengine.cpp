@@ -33,6 +33,11 @@ QMPQFileEngine::~QMPQFileEngine()
     QMPQArchiveCache::instance()->remove(d->archiveFilePath);
 }
 
+QMPQArchive * QMPQFileEngine::archive()
+{
+    return d_func()->archive;
+}
+
 QAbstractFileEngine::Iterator * QMPQFileEngine::beginEntryList(QDir::Filters filters, const QStringList & filterNames)
 {
     Q_D(QMPQFileEngine);

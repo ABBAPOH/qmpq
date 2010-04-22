@@ -80,6 +80,8 @@ void QMPQArchivePrivate::clear()
     hash.insert("", m_rootItem);
     qDeleteAll(m_rootItem->childItems);
     m_rootItem->childItems.clear();
+    indexHash.clear();
+    m_listFile.clear();
 }
 
 void QMPQArchivePrivate::initialize(QStringList listfile)
@@ -95,14 +97,12 @@ void QMPQArchivePrivate::initialize(QStringList listfile)
         bool bFound = true;
 
         hFind = SFileFindFirstFile(mpq, "*", &sf, 0);
-        if (!hFind)
-            return;
-//        Q_ASSERT(hFind);
-
-        while (hFind != 0 && bFound != false)
-        {
-            listfile << sf.cFileName;
-            bFound = SFileFindNextFile(hFind, &sf);
+        if (hFind) {
+            while (hFind != 0 && bFound != false)
+            {
+                listfile << sf.cFileName;
+                bFound = SFileFindNextFile(hFind, &sf);
+            }
         }
     }
 
@@ -174,7 +174,7 @@ QByteArray QMPQArchivePrivate::readFile(const QString &file)
     bool result = SFileOpenFileEx(mpq, (const char*)indexHash.value(file), SFILE_OPEN_BY_INDEX, &filePointer);
     if (!result) {
         m_lastError = GetLastError();
-        qWarning() << "can't extract file: errcode = " << m_lastError.errorCode() << m_lastError.errorMessage();
+        qWarning() << "can't open file: errcode = " << m_lastError.errorCode() << m_lastError.errorMessage();
         return QByteArray();
     }
     unsigned size = SFileGetFileSize(filePointer, 0);
@@ -251,7 +251,6 @@ bool QMPQArchive::newArchive(const QString & name, int flags, int maximumFilesIn
 //    closeArchive();
 
     d->newArchive(name, flags, maximumFilesInArchive);
-//
 //    openArchive(name);
     return true;
 }
@@ -259,12 +258,12 @@ bool QMPQArchive::newArchive(const QString & name, int flags, int maximumFilesIn
 bool QMPQArchive::openArchive(const QString & name, QByteArray listfile)
 {
     Q_D(QMPQArchive);
-//    qDebug() << "QMPQArchive::openArchive" << name;
+    qDebug() << "QMPQArchive::openArchive" << name;
     if (isOpened())
         closeArchive();
     bool result = d->openArchive(name/*, listfile*/);
     d->m_file = name;
-    d->initialize(QString(listfile).split("\n"));
+    d->initialize(QString(listfile).split("\r\n"));
 
     return result;
 }
@@ -278,7 +277,6 @@ bool QMPQArchive::closeArchive()
 
     d->clear();
     bool result = d->closeArchive();
-    d->m_listFile.clear();
     return result;
 }
 
