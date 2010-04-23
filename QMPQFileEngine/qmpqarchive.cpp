@@ -96,14 +96,19 @@ void QMPQArchivePrivate::initialize(QStringList listfile)
         void * hFind;
         bool bFound = true;
 
-        hFind = SFileFindFirstFile(mpq, "*", &sf, 0);
+//        hFind = SFileFindFirstFile(mpq, "*", &sf, 0);
+        hFind = SListFileFindFirstFile(mpq, 0, "*", &sf);
+
         if (hFind) {
             while (hFind != 0 && bFound != false)
             {
                 listfile << sf.cFileName;
-                bFound = SFileFindNextFile(hFind, &sf);
+//                bFound = SFileFindNextFile(hFind, &sf);
+                bFound = SListFileFindNextFile(hFind, &sf);
             }
         }
+//        SFileFindClose(hFind);
+        SListFileFindClose(hFind);
     }
 
     listfile << "(listfile)" << "(attributes)";
@@ -178,14 +183,16 @@ QByteArray QMPQArchivePrivate::readFile(const QString &file)
         return QByteArray();
     }
     unsigned size = SFileGetFileSize(filePointer, 0);
-    char buffer[size];
+    char * buffer = new char[size];
     result = SFileReadFile(filePointer, buffer, size, 0, 0);
     if (!result) {
         m_lastError = GetLastError();
         qWarning() << "SFileReadFile failed" << m_lastError.errorMessage();
         return QByteArray();
     }
-    return QByteArray(buffer, size);
+    QByteArray arr(buffer, size);
+    delete [] buffer;
+    return arr;
 }
 
 bool QMPQArchivePrivate::addLocalFile(const QString &localFile, const QString &file)

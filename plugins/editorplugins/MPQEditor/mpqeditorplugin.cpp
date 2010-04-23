@@ -59,14 +59,25 @@ void MPQEditorInterface::initActions()
     }
 
     // i use slot in this class because moc can't convert int to enum
-    connect(viewModeMapper, SIGNAL(mapped(int)), this, SLOT(setViewMode(int)));
+    connect(viewModeMapper, SIGNAL(mapped(int)), SLOT(setViewMode(int)));
     viewModeActions[0]->trigger();
+
+    actionOpen = new QAction(tr("Open"), this);
+    actionOpen->setShortcut(tr("Return"));
+    connect(actionOpen, SIGNAL(triggered()), SLOT(open()));
+    m_editor->addAction(actionOpen);
+
+    actionOpenInNewTab = new QAction(tr("Open in New Tab"), this);
+    actionOpenInNewTab->setShortcut(tr("Ctrl+Return"));
+    connect(actionOpenInNewTab, SIGNAL(triggered()), SLOT(openInNewTab()));
+    m_editor->addAction(actionOpenInNewTab);
+
+    actionReopen = new QAction(tr("Reopen using listfile..."), this);
+    connect(actionReopen, SIGNAL(triggered()), SLOT(reopen()));
 
     actionNew_Folder = new QAction(tr("New Folder"), this);
     connect(actionNew_Folder, SIGNAL(triggered()), m_editor, SLOT(newFolder()));
 
-    actionReopen = new QAction(tr("Reopen using listfile..."), this);
-    connect(actionReopen, SIGNAL(triggered()), this, SLOT(reopen()));
 }
 
 bool MPQEditorInterface::canHandle(const QString & filePath)
@@ -112,6 +123,25 @@ void MPQEditorInterface::openRequest(const QString & path)
     ICore::instance()->windowManager()->open(path);
 }
 
+void MPQEditorInterface::open()
+{
+    QStringList paths = m_editor->selectedPaths();
+    if (paths.isEmpty())
+        return;
+    ICore::instance()->windowManager()->open(paths.first());
+    for (int i = 1; i < paths.count(); i++) {
+        ICore::instance()->windowManager()->openInNewTab(paths.at(i));
+    }
+}
+
+void MPQEditorInterface::openInNewTab()
+{
+    QStringList paths = m_editor->selectedPaths();
+    for (int i = 0; i < paths.count(); i++) {
+        ICore::instance()->windowManager()->openInNewTab(paths.at(i));
+    }
+}
+
 void MPQEditorInterface::reopen()
 {
     QString filePath = QFileDialog::getOpenFileName(m_editor, tr("Select listfile"));
@@ -144,10 +174,12 @@ bool MPQEditorInterface::eventFilter(QObject *obj, QEvent *event)
 bool MPQEditorInterface::contextMenu(QContextMenuEvent *event)
 {
     QMenu menu;
-    menu.addAction(actionNew_Folder);
-    menu.addSeparator();
+    menu.addAction(actionOpen);
+    menu.addAction(actionOpenInNewTab);
     menu.addAction(actionReopen);
     actionReopen->setEnabled(false);
+    menu.addSeparator();
+    menu.addAction(actionNew_Folder);
     menu.addSeparator();
     menu.addAction(actionAdd);
     menu.addAction(actionExtract);

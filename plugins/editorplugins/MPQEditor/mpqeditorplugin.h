@@ -31,19 +31,24 @@ private:
     QSignalMapper * viewModeMapper;
     QActionGroup * viewModeActionGroup;
     QAction * viewModeActions[5];
+    QAction * actionOpen;
+    QAction * actionOpenInNewTab;
+    QAction * actionReopen;
+    QAction * actionNew_Folder;
     QAction * actionAdd;
     QAction * actionExtract;
     QAction * actionRename;
     QAction * actionRemove;
-    QAction * actionNew_Folder;
-    QAction * actionReopen;
 
 public slots:
+    void open();
+    void openInNewTab();
+    void reopen();
+
     void add();
     void extract();
     void setViewMode(int mode);
     void openRequest(const QString &file);
-    void reopen();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

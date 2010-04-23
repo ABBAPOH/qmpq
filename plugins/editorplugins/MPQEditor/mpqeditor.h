@@ -39,6 +39,7 @@ public:
     bool canUp();
     QString currentFile() { return m_currentFile; }
     static QAbstractItemModel * model();
+    QStringList selectedPaths();
     void showColumns(bool show);
     bool isMPQArchive();
 

@@ -57,16 +57,16 @@ void MPQEditor::initModel()
 
 void MPQEditor::initActions()
 {
-    openAction = new QAction("open", this);
+//    openAction = new QAction("open", this);
 //#ifdef Q_OS_WIN
-    openAction->setShortcut(tr("Return"));
+//    openAction->setShortcut(tr("Return"));
 //#endif
 //#ifdef Q_OS_MAC
 //    openAction->setShortcut(tr("Ctrl+O"));
 //#endif
-    openAction->setShortcutContext(Qt::ApplicationShortcut);
-    connect(openAction, SIGNAL(triggered()), SLOT(onOpenRequest()));
-    addAction(openAction);
+//    openAction->setShortcutContext(Qt::ApplicationShortcut);
+//    connect(openAction, SIGNAL(triggered()), SLOT(onOpenRequest()));
+//    addAction(openAction);
 }
 
 void MPQEditor::initViews()
@@ -312,6 +312,17 @@ bool MPQEditor::canUp()
 QAbstractItemModel * MPQEditor::model()
 {
     return m_model;
+}
+
+QStringList MPQEditor::selectedPaths()
+{
+    QStringList result;
+    QModelIndexList list = selectedIndexes();
+
+    foreach (QModelIndex index, list) {
+        result.append(m_model->filePath(index));
+    }
+    return result;
 }
 
 void MPQEditor::showColumns(bool show)

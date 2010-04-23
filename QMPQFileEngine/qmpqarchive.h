@@ -1,6 +1,8 @@
 #ifndef QMPQARCHIVE_H
 #define QMPQARCHIVE_H
 
+#include "QMPQFileEngine_global.h"
+
 #include <QMap>
 #include <QStringList>
 
@@ -13,7 +15,7 @@ class TreeItem;
 //#define MPQ_CREATE_ATTRIBUTES   0x00100000  // Also add the (attributes) file
 
 class QMPQArchivePrivate;
-class QMPQArchive
+class QMPQFILEENGINESHARED_EXPORT QMPQArchive
 {
     Q_DECLARE_PRIVATE(QMPQArchive);
     friend class QMPQModel;
