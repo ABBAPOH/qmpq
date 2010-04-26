@@ -5,6 +5,7 @@
 #include "pluginmanager.h"
 #include "filemanager.h"
 #include "mainwindowplugin.h"
+#include "../QMPQFileEngine/qmpqarchivecache.h"
 
 #include <qmpqfileenginehandler.h>
 #include <QDebug>
@@ -29,6 +30,8 @@ int main(int argc, char *argv[])
     app.setApplicationName("QMPQ");
     app.setOrganizationName("QMPQ");
     Q_INIT_RESOURCE(mpqeditor);
+
+    QMPQArchiveCache::init();
 
     QString locale = QLocale::system().name();
 

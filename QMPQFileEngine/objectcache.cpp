@@ -80,6 +80,7 @@ void ObjectCache::deleteData(ObjectCache::ObjectData * data)
 
 void ObjectCache::clear()
 {
+    qDebug("ObjectCache::clear()");
     mutex.lock();
     foreach (QVariant key, objects.keys()) {
         deleteData(objects.take(key));

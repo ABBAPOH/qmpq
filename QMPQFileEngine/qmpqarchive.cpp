@@ -253,7 +253,7 @@ bool QMPQArchive::newArchive(const QString & name, int flags, int maximumFilesIn
 bool QMPQArchive::openArchive(const QString & name, QByteArray listfile)
 {
     Q_D(QMPQArchive);
-    qDebug() << "QMPQArchive::openArchive" << name;
+//    qDebug() << "QMPQArchive::openArchive" << name;
     if (isOpened())
         closeArchive();
     bool result = d->openArchive(name/*, listfile*/);
@@ -542,10 +542,8 @@ qint64 QMPQArchive::size(const QString &file) const
 void QMPQArchive::updateListFile()
 {
     Q_D(QMPQArchive);
-    qDebug("test");
-//    return;
     bool ok = true;
-    qDebug("QMPQArchive::updateListFile");
+//    qDebug("QMPQArchive::updateListFile");
     QString path = QDir::tempPath();
     path += "/(listfile)";
     QFile file(path);

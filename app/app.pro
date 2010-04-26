@@ -11,6 +11,8 @@ RCC_DIR = build
 
 LIBS += -L../QMPQFileEngine/bin \
     -lQMPQFileEngine
+LIBS += -L../3rdParty/FileSystemModel \
+    -lFileSystemModel
 LIBS += -L../plugins/editorplugins/MPQEditor/bin/ \
     -lMPQEditor
 LIBS += -L../Core/bin/ \

@@ -29,10 +29,14 @@ SharedMPQArchive * QMPQArchiveCache::value(QString key)
     return ObjectCache::value<SharedMPQArchive>(key);
 }
 
-QMPQArchiveCache * QMPQArchiveCache::instance()
+void QMPQArchiveCache::init()
 {
     if (m_instance == 0)
         m_instance = new QMPQArchiveCache(qApp);
+}
+
+QMPQArchiveCache * QMPQArchiveCache::instance()
+{
     return m_instance;
 }
 

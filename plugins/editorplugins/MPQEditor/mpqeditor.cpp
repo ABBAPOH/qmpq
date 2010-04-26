@@ -5,7 +5,7 @@
 #include <QtGui/QTableView>
 #include <QtGui/QTreeView>
 #include <QtGui/QStackedLayout>
-#include <QtGui/QDirModel>
+//#include <QtGui/QDirModel>
 #include <QtGui/QApplication>
 #include <QtCore/QAbstractItemModel>
 #include <QtGui/QMessageBox>
@@ -19,8 +19,10 @@
 
 #include "../../../../QMPQFileEngine/qmpqfileengine.h"
 #include "../../../../QMPQFileEngine/qmpqarchive.h"
+#include "../../../../3rdParty/FileSystemModel/filesystemmodel.h"
 
-QDirModel * MPQEditor::m_model = 0;
+//QDirModel * MPQEditor::m_model = 0;
+FileSystemModel * MPQEditor::m_model = 0;
 
 MPQEditor::MPQEditor(QWidget *parent) :
     QWidget(parent),
@@ -48,10 +50,12 @@ MPQEditor::~MPQEditor()
 void MPQEditor::initModel()
 {
     if (!m_model) {
-        m_model = new QDirModel;
+//        m_model = new QDirModel;
+        m_model = new FileSystemModel;
         m_model->setReadOnly(false);
         m_model->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
-        m_model->setSorting(QDir::DirsFirst);
+        m_model->setRootPath("");
+//        m_model->setSorting(QDir::DirsFirst);
     }
 }
 
@@ -164,7 +168,7 @@ void MPQEditor::closeFile()
     m_currentFile = "";
     if (isVisible())
         currentView->setRootIndex(QModelIndex());
-    m_model->refresh(QModelIndex());
+//    m_model->refresh(QModelIndex());
 }
 
 QString MPQEditor::selectedDir()
@@ -217,7 +221,7 @@ void MPQEditor::add(const QStringList & files)
             file.close();
             targetFile.close();
 
-            m_model->refresh(m_model->index(info.absolutePath()));
+//            m_model->refresh(m_model->index(info.absolutePath()));
             if (!result) {
                 QMessageBox box(QMessageBox::Critical, tr("Critical Error"), tr("Can't add files: ") + targetFile.errorString(), QMessageBox::Ok, this);
                 box.exec();

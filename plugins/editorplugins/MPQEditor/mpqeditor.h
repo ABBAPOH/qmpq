@@ -24,6 +24,7 @@ class QColumnView;
 class QTableView;
 class QTreeView;
 class QDirModel;
+class FileSystemModel;
 class QAbstractItemModel;
 class QStackedLayout;
 class QMPQFileEngine;
@@ -56,7 +57,8 @@ private:
     QAbstractItemView * currentView;
     ViewMode m_viewMode;
     QStackedLayout * layout;
-    static QDirModel * m_model;
+//    static QDirModel * m_model;
+    static FileSystemModel * m_model;
     QAction * openAction;
 
     void initModel();
