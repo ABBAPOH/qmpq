@@ -177,7 +177,14 @@ bool MPQEditorInterface::contextMenu(QContextMenuEvent *event)
     menu.addAction(actionOpen);
     menu.addAction(actionOpenInNewTab);
     menu.addAction(actionReopen);
-    actionReopen->setEnabled(false);
+    QStringList paths = m_editor->selectedPaths();
+
+    if (!paths.isEmpty() && m_editor->isMPQArchive(paths.first())) {
+        actionReopen->setEnabled(true);
+    } else {
+        actionReopen->setEnabled(false);
+    }
+
     menu.addSeparator();
     menu.addAction(actionNew_Folder);
     menu.addSeparator();

@@ -43,6 +43,7 @@ public:
     QStringList selectedPaths();
     void showColumns(bool show);
     bool isMPQArchive();
+    bool isMPQArchive(const QString & file);
 
 
 private:

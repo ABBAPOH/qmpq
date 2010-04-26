@@ -157,8 +157,8 @@ void MPQEditor::reopenUsingListfile(const QByteArray &listfile)
             QString archivePath = archive->file();
             archive->closeArchive();
             archive->openArchive(archivePath, listfile);
-            currentView->update(m_model->index(archivePath));
-
+//            currentView->update(m_model->index(archivePath));
+            m_model->update(archivePath);
         }
     }
 }
@@ -370,6 +370,17 @@ bool MPQEditor::isMPQArchive()
     }
     return engine;
 }
+
+bool MPQEditor::isMPQArchive(const QString & file)
+{
+    QMPQFileEngine * engine = dynamic_cast<QMPQFileEngine*>(QFile(file).fileEngine());
+    if (engine) {
+        qDebug("archive!");
+        return true;
+    }
+    return false;
+}
+
 
 void MPQEditor::up()
 {
