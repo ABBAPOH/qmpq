@@ -1,9 +1,17 @@
 #ifndef FILESYSTEMMODEL_H
 #define FILESYSTEMMODEL_H
 
+#include <QtCore/qglobal.h>
+
+#if defined(FILESYSTEMMODEL_LIBRARY)
+#  define FILESYSTEMMODELSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define FILESYSTEMMODELSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
 #include <QFileSystemModel>
 
-class FileSystemModel : public QFileSystemModel
+class FILESYSTEMMODELSHARED_EXPORT FileSystemModel : public QFileSystemModel
 {
 Q_OBJECT
 public:

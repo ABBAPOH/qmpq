@@ -9,12 +9,12 @@ OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
 
-LIBS += -L../QMPQFileEngine/bin \
-    -lQMPQFileEngine
-LIBS += -L../3rdParty/FileSystemModel \
-    -lFileSystemModel
 LIBS += -L../plugins/editorplugins/MPQEditor/bin/ \
     -lMPQEditor
+LIBS += -L../QMPQFileEngine/bin \
+    -lQMPQFileEngine
+LIBS += -L../3rdParty/FileSystemModel/bin \
+    -lFileSystemModel
 LIBS += -L../Core/bin/ \
     -lCore
 

@@ -1,10 +1,12 @@
 #ifndef QMPQARCHIVECACHE_H
 #define QMPQARCHIVECACHE_H
 
+#include "QMPQFileEngine_global.h"
+
 #include "objectcache.h"
 
 class SharedMPQArchive;
-class QMPQArchiveCache : public ObjectCache
+class QMPQFILEENGINESHARED_EXPORT QMPQArchiveCache : public ObjectCache
 {
 Q_OBJECT
 public:
