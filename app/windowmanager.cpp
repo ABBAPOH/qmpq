@@ -1,5 +1,11 @@
 #include "windowmanager.h"
 
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QUuid>
+#include <QtCore/QUrl>
+#include <QtGui/QDesktopServices>
+
 #include <icore.h>
 
 #include "mainwindow.h"
@@ -24,6 +30,16 @@ bool WindowManager::openInNewTab(const QString path)
     MainWindow * window = qobject_cast<MainWindow *>(core->context()->mainWindow());
     window->newTab();
     window->open(path);
+}
+
+bool WindowManager::openExternally(const QString path)
+{
+    QFile file(path);
+    QString temp = QDesktopServices::storageLocation(QDesktopServices::TempLocation);
+//    QUuid uid = QUuid::createUuid();
+    QString targetPath = temp + '/' + /*uid.toString() + '/' + */QFileInfo(path).fileName();
+    file.copy(targetPath);
+    QDesktopServices::openUrl(QUrl::fromLocalFile(targetPath));
 }
 
 bool WindowManager::save(const QString path)

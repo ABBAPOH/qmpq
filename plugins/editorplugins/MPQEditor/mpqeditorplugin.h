@@ -33,7 +33,10 @@ private:
     QAction * viewModeActions[5];
     QAction * actionOpen;
     QAction * actionOpenInNewTab;
+    QAction * actionOpenInNewWindow;
+    QAction * actionOpenExternally;
     QAction * actionReopen;
+    QAction * actionApply;
     QAction * actionNew_Folder;
     QAction * actionAdd;
     QAction * actionExtract;
@@ -43,6 +46,8 @@ private:
 public slots:
     void open();
     void openInNewTab();
+    void openExternally();
+
     void reopen();
 
     void add();

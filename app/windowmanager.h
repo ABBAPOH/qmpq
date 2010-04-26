@@ -12,6 +12,7 @@ public:
     bool open(const QString path);
     bool openInNewTab(const QString path);
     bool openInNewWindow(const QString path) {};
+    bool openExternally(const QString path);
     bool save(const QString path = "");
     bool close();
 

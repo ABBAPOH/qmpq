@@ -72,8 +72,21 @@ void MPQEditorInterface::initActions()
     connect(actionOpenInNewTab, SIGNAL(triggered()), SLOT(openInNewTab()));
     m_editor->addAction(actionOpenInNewTab);
 
+    actionOpenInNewWindow = new QAction(tr("Open in New Window"), this);
+    actionOpenInNewWindow->setShortcut(tr("Shift+Return"));
+    connect(actionOpenInNewWindow, SIGNAL(triggered()), SLOT(openInNewWindow()));
+    m_editor->addAction(actionOpenInNewWindow);
+
+    actionOpenExternally = new QAction(tr("Open in External Program"), this);
+    actionOpenExternally->setShortcut(tr("Meta+Return"));
+    connect(actionOpenExternally, SIGNAL(triggered()), SLOT(openExternally()));
+    m_editor->addAction(actionOpenExternally);
+
     actionReopen = new QAction(tr("Reopen using listfile..."), this);
     connect(actionReopen, SIGNAL(triggered()), SLOT(reopen()));
+
+    actionApply = new QAction(tr("Apply changes to archive"), this);
+    connect(actionApply, SIGNAL(triggered()), SLOT(submit()));
 
     actionNew_Folder = new QAction(tr("New Folder"), this);
     connect(actionNew_Folder, SIGNAL(triggered()), m_editor, SLOT(newFolder()));
@@ -142,6 +155,14 @@ void MPQEditorInterface::openInNewTab()
     }
 }
 
+void MPQEditorInterface::openExternally()
+{
+    QStringList paths = m_editor->selectedPaths();
+    for (int i = 0; i < paths.count(); i++) {
+        ICore::instance()->windowManager()->openExternally(paths.at(i));
+    }
+}
+
 void MPQEditorInterface::reopen()
 {
     QString filePath = QFileDialog::getOpenFileName(m_editor, tr("Select listfile"));
@@ -176,17 +197,29 @@ bool MPQEditorInterface::contextMenu(QContextMenuEvent *event)
     QMenu menu;
     menu.addAction(actionOpen);
     menu.addAction(actionOpenInNewTab);
-    menu.addAction(actionReopen);
-    QStringList paths = m_editor->selectedPaths();
+    menu.addAction(actionOpenInNewWindow);
+    menu.addAction(actionOpenExternally);
+    actionOpenInNewWindow->setEnabled(false);
+//    actionOpenExternally->setEnabled(false);
+    menu.addSeparator();
 
+    menu.addAction(actionNew_Folder);
+    menu.addSeparator();
+
+    QMenu mpqMenu;
+    mpqMenu.setTitle("MPQ");
+    mpqMenu.addAction(actionReopen);
+    mpqMenu.addAction(actionApply);
+
+    QStringList paths = m_editor->selectedPaths();
     if (!paths.isEmpty() && m_editor->isMPQArchive(paths.first())) {
         actionReopen->setEnabled(true);
     } else {
         actionReopen->setEnabled(false);
     }
+    actionApply->setEnabled(false);
 
-    menu.addSeparator();
-    menu.addAction(actionNew_Folder);
+    menu.addMenu(&mpqMenu);
     menu.addSeparator();
     menu.addAction(actionAdd);
     menu.addAction(actionExtract);

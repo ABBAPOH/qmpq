@@ -13,6 +13,7 @@ public:
     virtual bool open(const QString path) = 0;
     virtual bool openInNewTab(const QString path) = 0;
     virtual bool openInNewWindow(const QString path) = 0;
+    virtual bool openExternally(const QString path) = 0;
     virtual bool save(const QString path = "") = 0;
     virtual bool close() = 0;
 };
