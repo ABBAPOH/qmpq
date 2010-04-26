@@ -88,32 +88,15 @@ void QMPQArchivePrivate::initialize(QStringList listfile)
 {
 //    qDebug() << "QMPQArchive::getListFile()";
     QList<int> indexes;
-    int nError = ERROR_SUCCESS;
-
-    if (nError == ERROR_SUCCESS)
-    {
-        SFILE_FIND_DATA sf;
-        void * hFind;
-        bool bFound = true;
-
-//        hFind = SFileFindFirstFile(mpq, "*", &sf, 0);
-        hFind = SListFileFindFirstFile(mpq, 0, "*", &sf);
-
-        if (hFind) {
-            while (hFind != 0 && bFound != false)
-            {
-                listfile << sf.cFileName;
-//                bFound = SFileFindNextFile(hFind, &sf);
-                bFound = SListFileFindNextFile(hFind, &sf);
-            }
-        }
-//        SFileFindClose(hFind);
-        SListFileFindClose(hFind);
-    }
 
     listfile << "(listfile)" << "(attributes)";
 
-    foreach(const QString &file, listfile) {
+    QString listfileString = readFile("(listfile)");
+    if (!listfileString.isEmpty()) {
+        listfile.append(listfileString.split("\r\n"));
+    }
+
+    foreach (const QString &file, listfile) {
         initFile(file);
         int index = indexHash.value(file, -1);
         if (index != -1) {
@@ -176,7 +159,12 @@ QByteArray QMPQArchivePrivate::readFile(const QString &file)
 {
 //    qDebug() << "QMPQArchivePrivate::readFile" << file;
     void * filePointer = 0;
-    bool result = SFileOpenFileEx(mpq, (const char*)indexHash.value(file), SFILE_OPEN_BY_INDEX, &filePointer);
+    bool result;
+    if (file == "(listfile)")  // i have to read listfile before index hash is filled :(
+        result = SFileOpenFileEx(mpq, "(listfile)", 0, &filePointer);
+    else
+        result = SFileOpenFileEx(mpq, (const char*)indexHash.value(file), SFILE_OPEN_BY_INDEX, &filePointer);
+
     if (!result) {
         m_lastError = GetLastError();
         qWarning() << "can't open file: errcode = " << m_lastError.errorCode() << m_lastError.errorMessage();
@@ -554,8 +542,10 @@ qint64 QMPQArchive::size(const QString &file) const
 void QMPQArchive::updateListFile()
 {
     Q_D(QMPQArchive);
+    qDebug("test");
+//    return;
     bool ok = true;
-//    qDebug("QMPQArchive::updateListFile");
+    qDebug("QMPQArchive::updateListFile");
     QString path = QDir::tempPath();
     path += "/(listfile)";
     QFile file(path);

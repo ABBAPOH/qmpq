@@ -21,3 +21,4 @@ SOURCES += codeeditor.cpp \
 RESOURCES += codeeditor.qrc
 target.path += ../../../app/bin/plugins
 INSTALLS += target
+OTHER_FILES += 
