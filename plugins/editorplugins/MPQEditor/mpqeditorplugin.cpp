@@ -155,6 +155,14 @@ void MPQEditorInterface::openInNewTab()
     }
 }
 
+void MPQEditorInterface::openInNewWindow()
+{
+    QStringList paths = m_editor->selectedPaths();
+    for (int i = 0; i < paths.count(); i++) {
+        ICore::instance()->windowManager()->openInNewWindow(paths.at(i));
+    }
+}
+
 void MPQEditorInterface::openExternally()
 {
     QStringList paths = m_editor->selectedPaths();
@@ -199,8 +207,6 @@ bool MPQEditorInterface::contextMenu(QContextMenuEvent *event)
     menu.addAction(actionOpenInNewTab);
     menu.addAction(actionOpenInNewWindow);
     menu.addAction(actionOpenExternally);
-    actionOpenInNewWindow->setEnabled(false);
-//    actionOpenExternally->setEnabled(false);
     menu.addSeparator();
 
     menu.addAction(actionNew_Folder);

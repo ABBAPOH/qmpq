@@ -46,6 +46,7 @@ private:
 public slots:
     void open();
     void openInNewTab();
+    void openInNewWindow();
     void openExternally();
 
     void reopen();

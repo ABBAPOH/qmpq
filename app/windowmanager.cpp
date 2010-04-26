@@ -32,6 +32,14 @@ bool WindowManager::openInNewTab(const QString path)
     window->open(path);
 }
 
+bool WindowManager::openInNewWindow(const QString path)
+{
+    MainWindow * window = new MainWindow();
+    window->show();
+    window->newTab();
+    window->open(path);
+}
+
 bool WindowManager::openExternally(const QString path)
 {
     QFile file(path);
