@@ -12,13 +12,13 @@ bool FileSystemModel::rmdir(const QModelIndex &aindex) const
 {
 //    Q_D(const QFileSystemModel);
 //    reinterpret_cast<QFileSystemModelPrivate*>(qGetPtrHelper(d_ptr))->fileInfoGatherer.updateFile(filePath(aindex));
-    update(filePath(aindex));
+    update(filePath(aindex.parent()));
     return QFileSystemModel::rmdir(aindex);
 }
 
 bool FileSystemModel::remove(const QModelIndex &aindex) const
 {
-    update(filePath(aindex));
+    update(filePath(aindex.parent()));
     return QFileSystemModel::remove(aindex);
 }
 
