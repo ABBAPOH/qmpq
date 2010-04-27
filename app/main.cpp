@@ -34,11 +34,6 @@ int main(int argc, char *argv[])
     app.setOrganizationName("QMPQ");
     Q_INIT_RESOURCE(mpqeditor);
 
-    QDirModel model(":/");
-    QTreeView view;
-    view.setModel(&model);
-    view.show();
-
     QMPQArchiveCache::init();
 
     QString locale = QLocale::system().name();
@@ -49,11 +44,19 @@ int main(int argc, char *argv[])
     app.installTranslator(&translator);
     app.installTranslator(&qtTranslator);
 
-    Core core;
-    MainWindowPlugin plugin;
-    plugin.initialize();
+//    Core core;
+//    MainWindowPlugin plugin;
+//    plugin.initialize();
 
     QMPQFileEngineHandler h;
+
+    QDirModel model("mpq:/Users/arch/TheGame LAST!.w3x");
+    QTreeView view;
+    view.setModel(&model);
+    view.show();
+
+    QDir d("mpq:/Users/arch/TheGame LAST!.w3x/TheGame");
+    qDebug() << d.entryList();
 
     int code = app.exec();
     return code;

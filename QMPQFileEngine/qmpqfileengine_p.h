@@ -8,11 +8,13 @@ class QMPQFileEnginePrivate
 {
     Q_DECLARE_PUBLIC(QMPQFileEngine)
 
-    QString filePath;
-    QString fileName;
-    QString baseName;
-    QString archiveFilePath;
-    QString innerPath;
+    QString archiveFilePath; // Path to archive itself
+    QString innerPath; // Path within the archive
+
+    QString fileName; // The same filename that was passed to the QAbstractFileEngine.
+//    QString filePath; // The path to the file excluding the base name.
+    QString filePath; // The path to the file including the base name.
+    QString baseName; // The name of the file excluding the path.
     SharedMPQArchive * archive;
 //    QBuffer buffer;
     QIODevice::OpenMode openMode;

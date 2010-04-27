@@ -17,7 +17,8 @@ QAbstractFileEngine *QMPQFileEngineHandler::create(const QString &fileName) cons
         return 0;
     QStringList suffixes = QMPQFileEngine::supportedFormats();
 
-    if (QMPQFileEngineStringParser(fileName, suffixes).isFound()) {
+//    if (QMPQFileEngineStringParser(fileName, suffixes).isFound()) {
+    if (fileName.startsWith("mpq:")) {
         QMPQFileEngine * engine = new QMPQFileEngine;
         engine->setFileName(fileName);
         if (!engine->isCreated()) {

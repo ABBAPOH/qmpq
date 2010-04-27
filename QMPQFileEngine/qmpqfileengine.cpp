@@ -260,7 +260,7 @@ bool QMPQFileEngine::rmdir(const QString & dirName, bool recurseParentDirectorie
 void QMPQFileEngine::initArchive()
 {
     Q_D(QMPQFileEngine);
-    QString archiveFilePath = d->filePath;
+    QString archiveFilePath = d->filePath.mid(4);
     while (1) {
         archiveFilePath = d->getArchiveFilePath(archiveFilePath);
         d->archive = QMPQArchiveCache::instance()->value(archiveFilePath);
@@ -279,6 +279,7 @@ void QMPQFileEngine::initArchive()
             archiveFilePath = "";
     }
     d->archiveFilePath = archiveFilePath;
+    qDebug() << "d->archiveFilePath" << d->archiveFilePath;
 }
 
 void QMPQFileEngine::setFileName(const QString & fileName)
@@ -288,11 +289,13 @@ void QMPQFileEngine::setFileName(const QString & fileName)
     const QString file = QDir::fromNativeSeparators(fileName);
     if (d->filePath == file)
         return;
+    qDebug() << "QMPQFileEngine::setFileName" << file;
     QMPQArchiveCache::instance()->remove(d->archiveFilePath);
+//    d->filePath = file.mid(0, file.lastIndexOf('/')+1);
     d->filePath = file;
     initArchive();
     d->baseName = file.mid(file.lastIndexOf('/') + 1);
-    d->innerPath = file.mid(d->archiveFilePath.length() + 1);
+    d->innerPath = file.mid(4 + d->archiveFilePath.length() + 1);
     d->innerPath = d->innerPath.replace("/", "\\");
 
 }
