@@ -35,9 +35,6 @@ Core::Core()
 
 Core::~Core()
 {
-    foreach (IPlugin * plugin, pluginManager()->plugins()) {
-        plugin->shutdown();
-    }
 }
 
 bool Core::addObject(QObject * object)

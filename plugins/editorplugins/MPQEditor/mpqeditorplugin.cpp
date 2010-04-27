@@ -252,8 +252,8 @@ IEditor * MPQEditorFactory::createEditor(QWidget * parent)
 
 void MPQEditorFactory::shutdown()
 {
-    qDebug("MPQEditorFactory::shutdown");
-    delete MPQEditor::model();
+//    qDebug("MPQEditorFactory::shutdown");
+//    delete MPQEditor::model();
 //    MPQEditor::model()->deleteLater();;
 }
 
@@ -274,7 +274,8 @@ void MPQEditorPlugin::initialize()
 
 void MPQEditorPlugin::shutdown()
 {
-//    delete MPQEditor::model();
+    qDebug("MPQEditorPlugin::shutdown");
+    delete MPQEditor::model();
 }
 
 bool MPQEditorPlugin::canHandle(const QString &file)

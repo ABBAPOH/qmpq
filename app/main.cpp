@@ -1,11 +1,14 @@
 #include <QtGui/QApplication>
 #include <QtCore/QtPlugin>
 #include <QtCore/QTranslator>
+#include <QtGui/QTreeView>
+
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "filemanager.h"
 #include "mainwindowplugin.h"
 #include "../QMPQFileEngine/qmpqarchivecache.h"
+#include "../3rdParty/QDirModel/qdirmodel.h"
 
 #include <qmpqfileenginehandler.h>
 #include <QDebug>
@@ -30,6 +33,11 @@ int main(int argc, char *argv[])
     app.setApplicationName("QMPQ");
     app.setOrganizationName("QMPQ");
     Q_INIT_RESOURCE(mpqeditor);
+
+    QDirModel model(":/");
+    QTreeView view;
+    view.setModel(&model);
+    view.show();
 
     QMPQArchiveCache::init();
 
