@@ -8,6 +8,8 @@
 #include "../../../3rdParty/QDirModel/qdirmodel.h"
 #include <QtGui/QFileSystemModel>
 
+#include <QDebug>
+
 class QAbstractItemModel;
 class QDirModel;
 class QFileSystemModel;
@@ -45,7 +47,7 @@ public:
     FileSystemModelWrapper();
     ~FileSystemModelWrapper() { }
 	virtual QAbstractItemModel * model() { return m_model; }
-	virtual QModelIndex index(const QString & path, int column = 0) const { return m_model->index(path, column); }
+    virtual QModelIndex index(const QString & path, int column = 0) const { return m_model->index(path, column); }
 	virtual bool isDir(const QModelIndex & index) const { return m_model->isDir(index); }
     virtual QString filePath(const QModelIndex & index) const { return m_model->filePath(index); }
     virtual QModelIndex mkdir(const QModelIndex & parent, const QString & name) { return m_model->mkdir(parent, name); }

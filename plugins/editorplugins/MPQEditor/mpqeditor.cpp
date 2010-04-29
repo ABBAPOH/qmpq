@@ -75,9 +75,9 @@ bool canModelHandle(const IDirModel * model, const QModelIndex & index)
 
 void MPQEditor::initModel(const QString & path)
 {
-    QModelIndex index;
-    if (m_model)
-        index = m_model->index(path);
+//    QModelIndex index;
+//    if (m_model)
+//        index = m_model->index(path);
 //    if (!canModelHandle(m_model, index))
     {
         // we have to try to switch model
@@ -139,6 +139,7 @@ void MPQEditor::open(const QString &file)
         m_currentFile = file;
         initModel(file);
         m_view->setRootIndex(m_model->index(file));
+        qDebug("test");
         emit currentChanged(file);
     }
 
