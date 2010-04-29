@@ -116,6 +116,8 @@ QAbstractFileEngine::FileFlags QMPQFileEngine::fileFlags(FileFlags type) const
     result |= QAbstractFileEngine::WriteGroupPerm;
     result |= QAbstractFileEngine::ReadOtherPerm;
     result |= QAbstractFileEngine::WriteOtherPerm;
+    if (d->innerPath == "")
+        result |= QAbstractFileEngine::RootFlag;
     return result;
 }
 
@@ -279,7 +281,7 @@ void QMPQFileEngine::initArchive()
             archiveFilePath = "";
     }
     d->archiveFilePath = archiveFilePath;
-    qDebug() << "d->archiveFilePath" << d->archiveFilePath;
+//    qDebug() << "d->archiveFilePath" << d->archiveFilePath;
 }
 
 void QMPQFileEngine::setFileName(const QString & fileName)
@@ -289,7 +291,7 @@ void QMPQFileEngine::setFileName(const QString & fileName)
     const QString file = QDir::fromNativeSeparators(fileName);
     if (d->filePath == file)
         return;
-    qDebug() << "QMPQFileEngine::setFileName" << file;
+//    qDebug() << "QMPQFileEngine::setFileName" << file;
     QMPQArchiveCache::instance()->remove(d->archiveFilePath);
 //    d->filePath = file.mid(0, file.lastIndexOf('/')+1);
     d->filePath = file;

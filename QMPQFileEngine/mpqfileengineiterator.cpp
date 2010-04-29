@@ -37,7 +37,7 @@ QString MPQFileEngineIterator::next()
     if (!hasNext())
        return QString();
    ++index;
-//   qDebug() << currentFilePath();
+//   qDebug() << "MPQFileEngineIterator::next" << currentFilePath();
    return currentFileName();
 }
 

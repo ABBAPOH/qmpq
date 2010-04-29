@@ -44,19 +44,26 @@ int main(int argc, char *argv[])
     app.installTranslator(&translator);
     app.installTranslator(&qtTranslator);
 
-//    Core core;
-//    MainWindowPlugin plugin;
-//    plugin.initialize();
+    Core core;
+    MainWindowPlugin plugin;
+    plugin.initialize();
 
     QMPQFileEngineHandler h;
 
-    QDirModel model("mpq:/Users/arch/TheGame LAST!.w3x");
-    QTreeView view;
-    view.setModel(&model);
-    view.show();
-
-    QDir d("mpq:/Users/arch/TheGame LAST!.w3x/TheGame");
-    qDebug() << d.entryList();
+//    QDirModel model("mpq:/Users/arch/TheGame LAST!.w3x");
+//    QDirModel model(":/");
+//    QDirModel model("");
+//    QModelIndex index = model.index("/Applications");
+//    QModelIndex index = model.index("mpq:/Users/arch/TheGame LAST!.w3x/ReplaceableTextures/CommandButtons/BTNBowEluna.blp");
+//    QModelIndex index = model.index("mpq:/Users/arch/TheGame LAST!.w3x");
+//    qDebug() << index;
+//    qDebug() << model.filePath(index);
+//    QTreeView view;
+//    view.setModel(&model);
+//    view.show();
+//
+//    QDir d("mpq:/Users/arch/TheGame LAST!.w3x");
+//    qDebug() << d.entryList();
 
     int code = app.exec();
     return code;

@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 //    w.show();
     w.showMaximized();
     w.open("/Users/arch");
-    w.setViewMode(MPQEditor::ColumnView);
+//    w.setViewMode(MPQEditor::ColumnView);
     QTimer tim;
     tim.singleShot(10000, &w, SLOT(newFolder()));
 //    w.newFolder();

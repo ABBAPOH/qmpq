@@ -4,6 +4,8 @@
 #include <QtGui/QWidget>
 #include <QtCore/QModelIndex>
 
+#include "universalview.h"
+
 #define MaxViews 5
 
 class MPQEditorError
@@ -28,6 +30,10 @@ class FileSystemModel;
 class QAbstractItemModel;
 class QStackedLayout;
 class QMPQFileEngine;
+class UniversalView;
+class QHBoxLayout;
+class IDirModel;
+class ArchiveSuffixesManager;
 class MPQEditor : public QWidget
 {
     Q_OBJECT
@@ -35,7 +41,7 @@ class MPQEditor : public QWidget
 public:
     explicit MPQEditor(QWidget *parent = 0);
     ~MPQEditor();
-    enum ViewMode { ListView = 0, IconView, TableView, ColumnView, TreeView };
+//    enum ViewMode { ListView = 0, IconView, TableView, ColumnView, TreeView };
 
     bool canUp();
     QString currentFile() { return m_currentFile; }
@@ -47,21 +53,15 @@ public:
 
 
 private:
-//    const int test = 5;
+	UniversalView * m_view;
+    QHBoxLayout * m_layout;
     QString m_currentFile;
-    QListView * listView;
-    QListView * iconView;
-    QColumnView * columnView;
-    QTableView * tableView;
-    QTreeView * treeView;
-    QAbstractItemView * views[MaxViews];
-    QAbstractItemView * currentView;
-    ViewMode m_viewMode;
-    QStackedLayout * layout;
-//    static QDirModel * m_model;
-    static FileSystemModel * m_model;
+//    static FileSystemModel * m_model;
     QAction * openAction;
+	IDirModel * m_model;
+    ArchiveSuffixesManager * suffixesManager;
 
+    void initModel(const QString & path);
     void initModel();
     void initViews();
     void initActions();
@@ -83,7 +83,7 @@ public slots:
     void extract(const QString & destDir);
     void remove();
     void rename();
-    void setViewMode(ViewMode mode);
+    void setViewMode(UniversalView::ViewMode mode);
     void up();
     void newFolder(const QString & name = "");
 //    void remove();

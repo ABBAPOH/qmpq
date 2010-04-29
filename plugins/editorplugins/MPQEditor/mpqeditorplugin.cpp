@@ -128,7 +128,7 @@ void MPQEditorInterface::extract()
 
 void MPQEditorInterface::setViewMode(int mode)
 {
-    m_editor->setViewMode((MPQEditor::ViewMode)mode);
+    m_editor->setViewMode((UniversalView::ViewMode)mode);
 }
 
 void MPQEditorInterface::openRequest(const QString & path)
@@ -271,11 +271,12 @@ void MPQEditorPlugin::initialize()
             "MPQ Archives (*.mpq *.w3x *.w3m *.s2ma *.SC2Data *.SC2Archive *.SC2Assets *.SC2Replay *.scx *.w3n *.snp *.sv *.hsv)"
             );
 }
-
+#include "idirmodel.h"
 void MPQEditorPlugin::shutdown()
 {
     qDebug("MPQEditorPlugin::shutdown");
-    delete MPQEditor::model();
+//    delete MPQEditor::model();
+    delete FileSystemModelWrapper::modelInstance();
 }
 
 bool MPQEditorPlugin::canHandle(const QString &file)

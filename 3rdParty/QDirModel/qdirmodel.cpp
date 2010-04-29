@@ -255,7 +255,7 @@ QDirModel::QDirModel(const QString & rootPath, const QStringList &nameFilters,
     d->filters = filters;
     d->sort = sort;
     d->root.parent = 0;
-    d->root.info = QFileInfo();
+    d->root.info = d->rootPath != "" ? QFileInfo(d->rootPath) : QFileInfo();
     d->clear(&d->root);
 }
 
@@ -266,6 +266,7 @@ QDirModel::QDirModel(const QString & rootPath, QObject *parent)
 
     d->init();
     d->rootPath = rootPath;
+    d->root.info = d->rootPath != "" ? QFileInfo(d->rootPath) : QFileInfo();
 }
 
 /*!
@@ -882,6 +883,7 @@ QModelIndex QDirModel::index(const QString &path, int column) const
         return QModelIndex();
 
     QString absolutePath = QDir(path).absolutePath();
+    absolutePath.remove(d->rootPath);
 #if (defined(Q_OS_WIN) && !defined(Q_OS_WINCE)) || defined(Q_OS_SYMBIAN)
     absolutePath = absolutePath.toLower();
 #endif
@@ -932,8 +934,10 @@ QModelIndex QDirModel::index(const QString &path, int column) const
         pathElements[0] += QLatin1Char('/');
     }
 #else
-    // add the "/" item, since it is a valid path element on unix
-    pathElements.prepend(QLatin1String("/"));
+//    if (path.startsWith('/'))
+    if (d->rootPath == "")
+        // add the "/" item, since it is a valid path element on unix
+        pathElements.prepend(QLatin1String("/"));
 #endif
 
     for (int i = 0; i < pathElements.count(); ++i) {
@@ -973,6 +977,7 @@ QModelIndex QDirModel::index(const QString &path, int column) const
 #else
             QString newPath = parent->info.absoluteFilePath() + QLatin1Char('/') + element;
 #endif
+            QFileInfo info(newPath);
             if (!d->allowAppendChild || !QFileInfo(newPath).isDir())
                 return QModelIndex();
             d->appendChild(parent, newPath);
@@ -1123,7 +1128,7 @@ QString QDirModel::filePath(const QModelIndex &index) const
             fi = d->resolvedInfo(fi);
         return QDir::cleanPath(fi.absoluteFilePath());
     }
-    return QString(); // root path
+    return d->rootPath; // root path
 }
 
 /*!

@@ -1,7 +1,5 @@
 #include "sharedmpqarchive.h"
 
-#include "QTimer"
-
 #include <QDebug>
 
 SharedMPQArchive::SharedMPQArchive(const QString &file)

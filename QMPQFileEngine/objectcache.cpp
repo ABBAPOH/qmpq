@@ -27,7 +27,7 @@ void ObjectCache::remove(QVariant key)
     mutex.lock();
     ObjectData * data = objects.value(key);
     if(data)
-    qDebug() << "ObjectCache::remove" << key << data->refCount - 1;
+//    qDebug() << "ObjectCache::remove" << key << data->refCount - 1;
     if (data && ((data->refCount--) == 0)) {
 //        data->ttl += 1 << data->ttlIndex();
 //        qDebug() << "object will live " << data->ttl;
@@ -80,7 +80,7 @@ void ObjectCache::deleteData(ObjectCache::ObjectData * data)
 
 void ObjectCache::clear()
 {
-    qDebug("ObjectCache::clear()");
+//    qDebug("ObjectCache::clear()");
     mutex.lock();
     foreach (QVariant key, objects.keys()) {
         deleteData(objects.take(key));

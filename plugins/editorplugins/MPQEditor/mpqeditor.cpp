@@ -4,7 +4,7 @@
 #include <QtGui/QColumnView>
 #include <QtGui/QTableView>
 #include <QtGui/QTreeView>
-#include <QtGui/QStackedLayout>
+#include <QtGui/QHBoxLayout>
 //#include <QtGui/QDirModel>
 #include <QtGui/QApplication>
 #include <QtCore/QAbstractItemModel>
@@ -21,25 +21,34 @@
 #include "../../../../QMPQFileEngine/qmpqarchive.h"
 #include "../../../../3rdParty/FileSystemModel/filesystemmodel.h"
 
+#include "universalview.h"
+#include "idirmodel.h"
+#include "archivesuffixesmanager.h"
+
 //QDirModel * MPQEditor::m_model = 0;
-FileSystemModel * MPQEditor::m_model = 0;
 
 MPQEditor::MPQEditor(QWidget *parent) :
     QWidget(parent),
-    listView(new QListView),
-    iconView(new QListView),
-    columnView(new QColumnView(this)),
-    tableView(new QTableView(this)),
-    treeView(new QTreeView(this)),
-    currentView(0),
-    layout(new QStackedLayout(this))
+    m_view(new UniversalView(this)),
+    m_layout(new QHBoxLayout(this)),
+    m_model(0)
 {
     initModel();
     initViews();
 
-    setViewMode(ListView);
+    setViewMode(UniversalView::ListView);
 
     initActions();
+
+    m_layout->setContentsMargins(0, 0, 0, 0);
+    m_layout->addWidget(m_view);
+    setLayout(m_layout);
+
+    suffixesManager = new ArchiveSuffixesManager;
+    QStringList suffixes;
+    suffixes << "mpq" << "w3x" << "w3m" << "s2ma" << "SC2Data" << "SC2Archive" << "SC2Assets"
+            << "SC2Replay" << "scx" << "w3n" << "snp" << "sv" << "hsv";
+    suffixesManager->addSuffixes(suffixes, "mpq:");
 }
 
 MPQEditor::~MPQEditor()
@@ -49,13 +58,39 @@ MPQEditor::~MPQEditor()
 
 void MPQEditor::initModel()
 {
-    if (!m_model) {
-//        m_model = new QDirModel;
-        m_model = new FileSystemModel;
-        m_model->setReadOnly(false);
-        m_model->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
-        m_model->setRootPath("");
-//        m_model->setSorting(QDir::DirsFirst);
+//    if (!m_model) {
+////        m_model = new QDirModel;
+//        m_model = new FileSystemModel;
+//        m_model->setReadOnly(false);
+//        m_model->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
+//        m_model->Path("");
+////        m_model->setSorting(QDir::DirsFirst);
+//    }
+}
+
+bool canModelHandle(const IDirModel * model, const QModelIndex & index)
+{
+    return index.isValid() && model->isDir(index);
+}
+
+void MPQEditor::initModel(const QString & path)
+{
+    QModelIndex index;
+    if (m_model)
+        index = m_model->index(path);
+//    if (!canModelHandle(m_model, index))
+    {
+        // we have to try to switch model
+        delete m_model;
+        m_model = 0;
+        if (path.startsWith("mpq:"))
+            m_model = new DirModelWrapper(path);
+        if (path.startsWith(":/"))
+            m_model = new DirModelWrapper(path);
+        if (!m_model)
+            m_model = new FileSystemModelWrapper;
+        m_view->setModel(m_model->model());
+        qDebug() << m_model->model()->metaObject()->className();
     }
 }
 
@@ -75,71 +110,38 @@ void MPQEditor::initActions()
 
 void MPQEditor::initViews()
 {
-    views[ListView] = listView;
-    views[IconView] = iconView;
-    views[TableView] = tableView;
-    views[ColumnView] = columnView;
-    views[TreeView] = treeView;
+    m_view->setEditTriggers(QAbstractItemView::SelectedClicked);
+    m_view->setDragDropMode(QAbstractItemView::DropOnly);
+    m_view->setAcceptDrops(true);
+    m_view->setDragDropOverwriteMode(false);
+    m_view->setDefaultDropAction(Qt::MoveAction);
+    m_view->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    for (int i = 0; i < MaxViews; i++)
-        layout->addWidget(views[i]);
-    layout->setContentsMargins(0, 0, 0, 0);
-    setLayout(layout);
-
-    listView->setUniformItemSizes(true);
-    iconView->setUniformItemSizes(true);
-    iconView->setViewMode(QListView::IconMode);
-    iconView->setSpacing(24);
-    tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-
-    for (int i = 0; i < MaxViews; i++) {
-        views[i]->setEditTriggers(QAbstractItemView::SelectedClicked);
-        views[i]->setModel(m_model);
-//        views[i]->setDragDropMode(QAbstractItemView::DragDrop);
-        views[i]->setDragDropMode(QAbstractItemView::DropOnly);
-//        views[i]->setDragEnabled(true);
-        views[i]->setAcceptDrops(true);
-        views[i]->setDragDropOverwriteMode(false);
-        views[i]->setDefaultDropAction(Qt::MoveAction);
-        views[i]->setSelectionMode(QAbstractItemView::ExtendedSelection);
-        connect(views[i], SIGNAL(doubleClicked(const QModelIndex &)), SLOT(onDoubleClick(const QModelIndex &)));
-//fixes slow initializing of view under windows
-#warning TODO: remove after writing new model
-        views[i]->setRootIndex(m_model->index(QDesktopServices::storageLocation(QDesktopServices::HomeLocation)));
-    }
-    tableView->setColumnWidth(0, 300);
-    tableView->setColumnWidth(3, 125);
-    treeView->setColumnWidth(0, 300);
+    connect(m_view, SIGNAL(doubleClicked(QModelIndex)), SLOT(onDoubleClick(QModelIndex))), Qt::QueuedConnection;
 }
 
 QModelIndexList MPQEditor::selectedIndexes()
 {
-    if (currentView == listView || currentView == columnView)
-        return currentView->selectionModel()->selectedIndexes();
+    if (m_view->viewMode() == UniversalView::ListView || m_view->viewMode() == UniversalView::ColumnView)
+        return m_view->selectionModel()->selectedIndexes();
     else
-        return currentView->selectionModel()->selectedRows();
+        return m_view->selectionModel()->selectedRows();
 }
 
-void MPQEditor::setViewMode(ViewMode mode)
+void MPQEditor::setViewMode(UniversalView::ViewMode mode)
 {
-    layout->setCurrentIndex(mode);
-
-    if (mode < 3)
-        views[mode]->setRootIndex(currentView ? currentView->rootIndex() : QModelIndex() ); //sets the same directory for list and table views
-    else
-        views[mode]->setRootIndex(m_model->index(m_currentFile));
-
-    m_viewMode = mode;
-    currentView = views[mode];
+    m_view->setViewMode(mode);
 }
 
 void MPQEditor::open(const QString &file)
 {
     if (m_currentFile != file) {
         m_currentFile = file;
-        currentView->setRootIndex(m_model->index(file));
+        initModel(file);
+        m_view->setRootIndex(m_model->index(file));
         emit currentChanged(file);
     }
+
 }
 
 void MPQEditor::reopenUsingListfile(const QByteArray &listfile)
@@ -158,7 +160,7 @@ void MPQEditor::reopenUsingListfile(const QByteArray &listfile)
             archive->closeArchive();
             archive->openArchive(archivePath, listfile);
 //            currentView->update(m_model->index(archivePath));
-            m_model->update(archivePath);
+//            m_model->update(archivePath);
         }
     }
 }
@@ -166,29 +168,29 @@ void MPQEditor::reopenUsingListfile(const QByteArray &listfile)
 void MPQEditor::closeFile()
 {
     m_currentFile = "";
-    if (isVisible())
-        currentView->setRootIndex(QModelIndex());
+//    if (isVisible())
+//        currentView->Index(QModelIndex());
 //    m_model->refresh(QModelIndex());
 }
 
 QString MPQEditor::selectedDir()
 {
-    if (m_viewMode != ColumnView)
-        return m_currentFile;
-
-    QModelIndexList list = selectedIndexes();
-    QString result;
-    if (list.count() == 0) {
-        result =  m_currentFile;
-    } else if (list.count() == 1) {
-        result =  m_model->filePath(list.first());
-    } else
-        return "";
-    QFileInfo info(result);
-    if (!info.isDir())
-        result = info.path();
-
-    return result;
+//    if (m_viewMode != ColumnView)
+//        return m_currentFile;
+//
+//    QModelIndexList list = selectedIndexes();
+//    QString result;
+//    if (list.count() == 0) {
+//        result =  m_currentFile;
+//    } else if (list.count() == 1) {
+//        result =  m_model->filePath(list.first());
+//    } else
+//        return "";
+//    QFileInfo info(result);
+//    if (!info.isDir())
+//        result = info.path();
+//
+//    return result;
 }
 
 void MPQEditor::add(const QStringList & files)
@@ -269,24 +271,24 @@ void MPQEditor::extract(const QString & destDir)
 
 void MPQEditor::remove(const QModelIndex & index)
 {
-qDebug() << m_model->filePath(index);
-
-    if (m_model->isDir(index)) { // recursively removes current dir
-        QDir dir(m_model->filePath(index));
-        foreach (QString child, dir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot)) {
-            remove(m_model->index(dir.filePath(child)));
-        }
-
-//        for (int row = 0, rows = m_model->rowCount(index); row < rows; row++) {
-//            remove(index.child(0, 0));
+//qDebug() << m_model->filePath(index);
+//
+//    if (m_model->isDir(index)) { // recursively removes current dir
+//        QDir dir(m_model->filePath(index));
+//        foreach (QString child, dir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot)) {
+//            remove(m_model->index(dir.filePath(child)));
 //        }
-//        m_model->in
-//        QApplication::processEvents();
-        bool result = m_model->rmdir(index);
-        qDebug() << result;
-    } else { // removes current file
-        bool result = m_model->remove(index);
-    }
+//
+////        for (int row = 0, rows = m_model->rowCount(index); row < rows; row++) {
+////            remove(index.child(0, 0));
+////        }
+////        m_model->in
+////        QApplication::processEvents();
+//        bool result = m_model->rmdir(index);
+//        qDebug() << result;
+//    } else { // removes current file
+//        bool result = m_model->remove(index);
+//    }
 }
 
 void MPQEditor::remove()
@@ -304,19 +306,19 @@ void MPQEditor::rename()
     if (indexes.count() != 1) {
 //        emit error();
     } else {
-        currentView->edit(indexes.first());
+        m_view->edit(indexes.first());
     }
 }
 
 bool MPQEditor::canUp()
 {
-    return m_model->filePath(currentView->rootIndex().parent()).startsWith(m_currentFile);
+//    return m_model->filePath(currentView->rootIndex().parent()).startsWith(m_currentFile);
 }
 
-QAbstractItemModel * MPQEditor::model()
-{
-    return m_model;
-}
+//QAbstractItemModel * MPQEditor::model()
+//{
+//    return m_model;
+//}
 
 QStringList MPQEditor::selectedPaths()
 {
@@ -331,21 +333,21 @@ QStringList MPQEditor::selectedPaths()
 
 void MPQEditor::showColumns(bool show)
 {
-    if (show) {
-        treeView->setColumnHidden(1, false);
-        treeView->setColumnHidden(2, false);
-        treeView->setColumnHidden(3, false);
-        tableView->setColumnHidden(1, false);
-        tableView->setColumnHidden(2, false);
-        tableView->setColumnHidden(3, false);
-    } else {
-        treeView->setColumnHidden(1, true);
-        treeView->setColumnHidden(2, true);
-        treeView->setColumnHidden(3, true);
-        tableView->setColumnHidden(1, true);
-        tableView->setColumnHidden(2, true);
-        tableView->setColumnHidden(3, true);
-    }
+//    if (show) {
+//        treeView->setColumnHidden(1, false);
+//        treeView->setColumnHidden(2, false);
+//        treeView->setColumnHidden(3, false);
+//        tableView->setColumnHidden(1, false);
+//        tableView->setColumnHidden(2, false);
+//        tableView->setColumnHidden(3, false);
+//    } else {
+//        treeView->setColumnHidden(1, true);
+//        treeView->setColumnHidden(2, true);
+//        treeView->setColumnHidden(3, true);
+//        tableView->setColumnHidden(1, true);
+//        tableView->setColumnHidden(2, true);
+//        tableView->setColumnHidden(3, true);
+//    }
 }
 
 #warning do not use
@@ -385,7 +387,7 @@ bool MPQEditor::isMPQArchive(const QString & file)
 void MPQEditor::up()
 {
     if (canUp())
-        currentView->setRootIndex(currentView->rootIndex().parent());
+        m_view->setRootIndex(m_view->rootIndex().parent());
 }
 
 void MPQEditor::newFolder(const QString & name)
@@ -401,18 +403,25 @@ void MPQEditor::newFolder(const QString & name)
         QModelIndex index = m_model->mkdir(m_model->index(dir), folderName);
 
         if (index.isValid())
-            currentView->edit(index);
+            m_view->edit(index);
     }
 }
 
 void MPQEditor::onDoubleClick(const QModelIndex & index)
 {
 //    qDebug() << "MPQEditor::onDoubleClick";
-    if (QFileInfo(m_model->filePath(index)).isDir()/* && m_viewMode < 3*/) {
-        open(m_model->filePath(index));
+    qDebug() << m_model->filePath(index);
+    QString path = m_model->filePath(index);
+    QFileInfo info(path);
+    if (info.isDir()/* && m_viewMode < 3*/) {
+        open(path);
 //        emit currentChanged(m_model->filePath(index));
     } else {
-        emit openRequested(m_model->filePath(index));
+        QString prefix = suffixesManager->mapFromPath(path);
+        if (prefix != "")
+            open(prefix + path);
+        else
+            emit openRequested(path);
 //        emit currentChanged(m_model->filePath(index));
     }
 }
