@@ -85,7 +85,7 @@ void MPQEditor::initModel(const QString & path)
         m_model = 0;
         if (path.startsWith("mpq:"))
             m_model = new DirModelWrapper(path);
-        if (path.startsWith(":/"))
+        if (path.startsWith(":"))
             m_model = new DirModelWrapper(path);
         if (!m_model)
             m_model = new FileSystemModelWrapper;
@@ -272,6 +272,7 @@ void MPQEditor::extract(const QString & destDir)
 
 void MPQEditor::remove(const QModelIndex & index)
 {
+    m_model->remove(index);
 //qDebug() << m_model->filePath(index);
 //
 //    if (m_model->isDir(index)) { // recursively removes current dir
@@ -416,7 +417,7 @@ void MPQEditor::onDoubleClick(const QModelIndex & index)
     QFileInfo info(path);
     if (info.isDir()/* && m_viewMode < 3*/) {
         open(path);
-//        emit currentChanged(m_model->filePath(index));
+        emit currentChanged(m_model->filePath(index));
     } else {
         QString prefix = suffixesManager->mapFromPath(path);
         if (prefix != "")

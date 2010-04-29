@@ -29,14 +29,14 @@ public:
 class DirModelWrapper : public IDirModel
 {
 public:
-    explicit DirModelWrapper(const QString & path) { m_model = new QDirModel(path); }
+    explicit DirModelWrapper(const QString & path);
     ~DirModelWrapper() { delete m_model; }
 	virtual QAbstractItemModel * model() { return m_model; }
 	virtual QModelIndex index(const QString & path, int column = 0) const { return m_model->index(path, column); }
 	virtual bool isDir(const QModelIndex & index) const { return m_model->isDir(index); }
     virtual QString filePath(const QModelIndex & index) const { return m_model->filePath(index); }
     virtual QModelIndex mkdir(const QModelIndex & parent, const QString & name) { return m_model->mkdir(parent, name); }
-	virtual bool remove(const QModelIndex & index) const { qDebug("DirModel"); }
+    virtual bool remove(const QModelIndex & index) const;
 private:
 	QDirModel * m_model;
 };

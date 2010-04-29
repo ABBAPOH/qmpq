@@ -151,8 +151,11 @@ void qt_setDirModelShouldNotStat(QDirModelPrivate *modelPrivate)
 
 QDirModelPrivate::QDirNode *QDirModelPrivate::node(const QModelIndex &index) const
 {
-    QDirModelPrivate::QDirNode *n =
-        static_cast<QDirModelPrivate::QDirNode*>(index.internalPointer());
+    QDirModelPrivate::QDirNode *n;
+    if (index.isValid()) {
+        n = static_cast<QDirModelPrivate::QDirNode*>(index.internalPointer());
+    } else
+        n = &root;
     Q_ASSERT(n);
     return n;
 }
@@ -1102,6 +1105,7 @@ bool QDirModel::remove(const QModelIndex &index)
         return false;
 
     QModelIndex par = parent(index);
+    qDebug() << par;
     QDirModelPrivate::QDirNode *p = d_func()->node(par);
     QDir dir = p->info.dir(); // parent dir
     QString path = n->info.absoluteFilePath();
