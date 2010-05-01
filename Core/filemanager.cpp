@@ -3,9 +3,6 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 
-#warning TODO: fix lock!!!!
-#include "../QMPQFileEngine/qmpqfileenginehandler.h"
-
 FileManager::FileManager(QObject *parent) :
     QObject(parent)
 {
@@ -15,10 +12,8 @@ FileManager::FileManager(QObject *parent) :
 QStringList FileManager::getOpenFileNames()
 {
 
-    QMPQFileEngineHandler::setLocked(true);
     QStringList result = QFileDialog::getOpenFileNames((QWidget*)0, tr("Select File"), "", m_extensionString);
     //        fileName = QFileDialog::getOpenFileName(this, tr("Select Archive File"));
-    QMPQFileEngineHandler::setLocked(false);
 
     return result;
 }
