@@ -117,7 +117,8 @@ void MPQEditor::initViews()
     m_view->setDefaultDropAction(Qt::MoveAction);
     m_view->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    connect(m_view, SIGNAL(doubleClicked(QModelIndex)), SLOT(onDoubleClick(QModelIndex))), Qt::QueuedConnection;
+    #warning TODO: see why signal emited before some actions
+    connect(m_view, SIGNAL(doubleClicked(QModelIndex)), SLOT(onDoubleClick(QModelIndex)), Qt::QueuedConnection);
 }
 
 QModelIndexList MPQEditor::selectedIndexes()
@@ -176,61 +177,54 @@ void MPQEditor::closeFile()
 
 QString MPQEditor::selectedDir()
 {
-//    if (m_viewMode != ColumnView)
-//        return m_currentFile;
-//
-//    QModelIndexList list = selectedIndexes();
-//    QString result;
-//    if (list.count() == 0) {
-//        result =  m_currentFile;
-//    } else if (list.count() == 1) {
-//        result =  m_model->filePath(list.first());
-//    } else
-//        return "";
-//    QFileInfo info(result);
-//    if (!info.isDir())
-//        result = info.path();
-//
-//    return result;
+    if (m_view->viewMode() != UniversalView::ColumnView)
+        return m_currentFile;
+
+    QModelIndexList list = selectedIndexes();
+    QString result;
+    if (list.count() == 0) {
+        result =  m_currentFile;
+    } else if (list.count() == 1) {
+        result =  m_model->filePath(list.first());
+    } else
+        return "";
+    QFileInfo info(result);
+    if (!info.isDir())
+        result = info.path();
+
+    return result;
 }
 
 void MPQEditor::add(const QStringList & files)
 {
+    bool ok = true;
+
     if (files.isEmpty())
         return;
     QString dir = selectedDir();
-//    QModelIndexList list = selectedIndexes();
-    if (dir == "") {
-        QMessageBox box(QMessageBox::Information, tr("Warning"), tr("Select exactly one file or folder"), QMessageBox::Ok);
-        box.exec();
-        return;
-    } else {
-//        model->add(files, list.count() == 0 ? QModelIndex() : list.first());
-//        bool result = true;
-        foreach (QString filePath, files) {
-            QFile file(filePath);
-            QFileInfo fileInfo(filePath);
-            QFileInfo info(dir);
+    m_lastError = MPQEditorError();
 
-            QString newPath = info.absoluteFilePath() + "/" + fileInfo.fileName();
-//            result = file.copy(newPath);
-            file.open(QFile::ReadOnly);
-            QFile targetFile(newPath);
-            targetFile.open(QFile::WriteOnly);
-            QByteArray arr = file.readAll();
-//                qDebug() << arr.size();
-//                qDebug() << targetFile.write(arr);
-            bool result = targetFile.write(arr) == arr.size();
-            file.close();
-            targetFile.close();
+    foreach (QString filePath, files) {
+        QFile file(filePath);
+        QFileInfo fileInfo(filePath);
+        QFileInfo info(dir);
 
-//            m_model->refresh(m_model->index(info.absolutePath()));
-            if (!result) {
-                QMessageBox box(QMessageBox::Critical, tr("Critical Error"), tr("Can't add files: ") + targetFile.errorString(), QMessageBox::Ok, this);
-                box.exec();
-                return;
-            }
+        QString newPath = info.absoluteFilePath() + "/" + fileInfo.fileName();
+        bool result = file.copy(newPath);
+        ok |= result;
+
+        //  we manually refresh model if it is QDirModel or it's subclass
+        QDirModel * model = qobject_cast<QDirModel *>(m_model->model());
+        if (model)
+            model->refresh(m_model->index(info.absolutePath()));
+        if (!result) {
+            m_lastError.addSubError(MPQEditorError(file.errorString()));
         }
+    }
+
+    if (!ok) {
+        m_lastError.setErrorString("Error while adding files:");
+        emit errorOccured(m_lastError);
     }
 }
 
@@ -247,26 +241,27 @@ void MPQEditor::extract(const QString & path, const QString & dest)
     } else { // copies current file
         QFile file(path);
         bool result = file.copy(destDir.filePath(info.fileName()));
+        if (!result) {
+            m_lastError.addSubError(MPQEditorError(file.errorString()));
+        }
     }
 }
 
+/*
+  \func void MPQEditor::extract(const QString & destDir)
+    extracts selected files and folders to \a destDir
+*/
 void MPQEditor::extract(const QString & destDir)
 {
+    m_lastError = MPQEditorError();
+
     foreach (QModelIndex index, selectedIndexes()) {
-//        index = proxy->mapToSource(index);
         extract(m_model->filePath(index), destDir);
-        continue;
-        QFile file(m_model->filePath(index));
-        QFileInfo info(m_model->filePath(index));
-//        qDebug() << file.fileName();
-        bool result = file.copy(destDir + "/" + info.fileName());
-//        bool result = model->extract(index, path);
-        if (!result) {
-            QMessageBox box(QMessageBox::Critical, tr("Critical Error"), tr("Can't extract file ")
-                            + index.data(Qt::DisplayRole).toString() + ": "+ file.errorString(), QMessageBox::Ok);
-            box.exec();
-            return;
-        }
+    }
+
+    if (!m_lastError.subErrors().isEmpty()) {
+        m_lastError.setErrorString("Error while extracting files:");
+        emit errorOccured(m_lastError);
     }
 }
 

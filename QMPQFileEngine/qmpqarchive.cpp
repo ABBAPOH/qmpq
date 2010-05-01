@@ -96,6 +96,29 @@ void QMPQArchivePrivate::initialize(QStringList listfile)
         listfile.append(listfileString.split("\r\n"));
     }
 
+//        int nError = ERROR_SUCCESS;
+//
+//        if (nError == ERROR_SUCCESS)
+//        {
+//            SFILE_FIND_DATA sf;
+//            void * hFind;
+//            bool bFound = true;
+//
+//            hFind = SFileFindFirstFile(mpq, "*", &sf, 0);
+////            hFind = SListFileFindFirstFile(mpq, 0, "*", &sf);
+//
+//            if (hFind) {
+//                while (hFind != 0 && bFound != false)
+//                {
+//                    listfile << sf.cFileName;
+//                    bFound = SFileFindNextFile(hFind, &sf);
+////                    bFound = SListFileFindNextFile(hFind, &sf);
+//                }
+//            }
+//            SFileFindClose(hFind);
+////            SListFileFindClose(hFind);
+//        }
+
     foreach (const QString &file, listfile) {
         initFile(file);
         int index = indexHash.value(file, -1);
@@ -202,7 +225,8 @@ bool QMPQArchivePrivate::remove(const QString &file)
 {
     setUpdateOnClose();
 
-    if (!SFileRemoveFile(mpq, (const char *)indexHash.value(file), SFILE_OPEN_BY_INDEX)) {
+//    if (!SFileRemoveFile(mpq, (const char *)indexHash.value(file), SFILE_OPEN_BY_INDEX)) {
+    if (!SFileRemoveFile(mpq, file.toAscii().data(), 0)) {
         m_lastError = GetLastError();
         qWarning()  << "can't remove file: " << m_lastError.errorMessage();
         return false;

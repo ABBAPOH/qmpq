@@ -11,7 +11,10 @@
 class MPQEditorError
 {
 public:
+    MPQEditorError() {}
+    explicit MPQEditorError(const QString errorString) { m_errorString = errorString; }
     QString errorString() const { return m_errorString; }
+    void setErrorString(const QString errorString) { m_errorString = errorString; }
     void addSubError(const MPQEditorError &error) { m_suberrors.append( error); }
     QList<MPQEditorError> subErrors() const { return m_suberrors; }
 
@@ -50,7 +53,7 @@ public:
     void showColumns(bool show);
     bool isMPQArchive();
     bool isMPQArchive(const QString & file);
-
+    const MPQEditorError & lastError() const { return m_lastError; }
 
 private:
 	UniversalView * m_view;
@@ -60,6 +63,7 @@ private:
     QAction * openAction;
 	IDirModel * m_model;
     ArchiveSuffixesManager * suffixesManager;
+    MPQEditorError m_lastError;
 
     void initModel(const QString & path);
     void initModel();
@@ -74,6 +78,7 @@ private:
 signals:
     void openRequested(const QString &file);
     void currentChanged(const QString &file);
+    void errorOccured(const MPQEditorError & error);
 
 public slots:
     void open(const QString &file);
