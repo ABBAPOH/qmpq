@@ -33,6 +33,8 @@ public:
 
     void edit(const QModelIndex & index);
 
+    void setColumnWidth(int column, int width);
+
     void setDefaultDropAction(Qt::DropAction dropAction);
     Qt::DropAction defaultDropAction() const;
 

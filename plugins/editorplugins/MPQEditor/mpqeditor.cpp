@@ -105,6 +105,7 @@ void MPQEditor::initModel(const QString & path)
             else if (newType == FileSystemModel)
                 m_model = new FileSystemModelWrapper;
             m_view->setModel(m_model->model());
+            resizeColumns();
         }
         qDebug() <<  m_model->model()->metaObject()->className();
         return;
@@ -146,6 +147,13 @@ void MPQEditor::initViews()
 
     #warning TODO: see why signal emited before some actions
     connect(m_view, SIGNAL(doubleClicked(QModelIndex)), SLOT(onDoubleClick(QModelIndex)), Qt::QueuedConnection);
+}
+
+void MPQEditor::resizeColumns()
+{
+    m_view->setColumnWidth(0, 300);
+    m_view->setColumnWidth(1, 100);
+    m_view->setColumnWidth(2, 100);
 }
 
 QModelIndexList MPQEditor::selectedIndexes()

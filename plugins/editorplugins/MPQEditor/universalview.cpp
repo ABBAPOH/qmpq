@@ -40,12 +40,9 @@ void UniversalView::setAcceptDrops(bool on)
     }
 }
 
-void UniversalView::setModel(QAbstractItemModel * model)
+void UniversalView::setColumnWidth(int column, int width)
 {
-    m_model = model;
-    for (int i = 0; i < MaxViews; i++) {
-        views[i]->setModel(model);
-    }
+    treeView->setColumnWidth(column, width);
 }
 
 void UniversalView::setEditTriggers(QAbstractItemView::EditTriggers triggers)
@@ -66,6 +63,14 @@ void UniversalView::setDragDropMode(QAbstractItemView::DragDropMode behavior)
 {
     for (int i = 0; i < MaxViews; i++) {
         views[i]->setDragDropMode(behavior);
+    }
+}
+
+void UniversalView::setModel(QAbstractItemModel * model)
+{
+    m_model = model;
+    for (int i = 0; i < MaxViews; i++) {
+        views[i]->setModel(model);
     }
 }
 

@@ -67,16 +67,17 @@ private:
     ArchiveSuffixesManager * suffixesManager;
     MPQEditorError m_lastError;
 
+    ModelType getModelType(const QString & path);
     void initModel(const QString & path);
     void initModel();
     void initViews();
     void initActions();
+    void resizeColumns();
     QMPQFileEngine * getIndexMPQEngine(const QModelIndex & index);
     QModelIndexList selectedIndexes();
     QString selectedDir();
     void extract(const QString & path, const QString & destDir);
     void remove(const QModelIndex & path);
-    ModelType getModelType(const QString & path);
 
 signals:
     void openRequested(const QString &file);
