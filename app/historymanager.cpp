@@ -34,8 +34,10 @@ void HistoryManager::up()
     QFileInfo info(m_path);
     if (info.isRoot())
         setPath("");
-    else
-        setPath(info.dir().path());
+    else {
+//        setPath(info.dir().path());
+        setPath(info.path());
+    }
 }
 
 //cleans all history from start to end of list

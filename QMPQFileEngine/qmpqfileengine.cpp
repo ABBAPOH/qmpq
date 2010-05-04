@@ -116,8 +116,8 @@ QAbstractFileEngine::FileFlags QMPQFileEngine::fileFlags(FileFlags type) const
     result |= QAbstractFileEngine::WriteGroupPerm;
     result |= QAbstractFileEngine::ReadOtherPerm;
     result |= QAbstractFileEngine::WriteOtherPerm;
-    if (d->innerPath == "")
-        result |= QAbstractFileEngine::RootFlag;
+//    if (d->innerPath == "")
+//        result |= QAbstractFileEngine::RootFlag;
     return result;
 }
 
@@ -130,8 +130,13 @@ QString QMPQFileEngine::fileName(FileName file) const
     if (file == QAbstractFileEngine::BaseName) {
         return d->baseName;
     }
-    if (file == QAbstractFileEngine::PathName)
-        return d->filePath.left(d->filePath.lastIndexOf('/')+1);
+    if (file == QAbstractFileEngine::PathName) {
+        qDebug("QMPQFileEngine::fileName");
+        if (d->innerPath != "")
+            return d->filePath.left(d->filePath.lastIndexOf('/') + 1);
+        else
+            return d->archiveFilePath.left(d->archiveFilePath.lastIndexOf('/') + 1);
+    }
     return d->filePath;
 }
 

@@ -68,6 +68,17 @@ void MPQEditor::initModel()
 //    }
 }
 
+MPQEditor::ModelType MPQEditor::getModelType(const QString & path)
+{
+    if (path.startsWith("mpq:"))
+        return DirModel;
+    if (path.startsWith(":"))
+        return DirModel;
+    else
+        return FileSystemModel;
+
+}
+
 bool canModelHandle(const IDirModel * model, const QModelIndex & index)
 {
     return index.isValid() && model->isDir(index);
@@ -75,12 +86,28 @@ bool canModelHandle(const IDirModel * model, const QModelIndex & index)
 
 void MPQEditor::initModel(const QString & path)
 {
+    qDebug("MPQEditor::initModel");
 //    QModelIndex index;
 //    if (m_model)
 //        index = m_model->index(path);
 //    if (!canModelHandle(m_model, index))
     {
         // we have to try to switch model
+        ModelType currentType = getModelType(m_currentFile);
+        ModelType newType = getModelType(path);
+        qDebug() << path << currentType << newType;
+        if (currentType != newType || m_model == 0)
+        {
+            delete m_model;
+            m_model = 0;
+            if (newType == DirModel)
+                m_model = new DirModelWrapper(path);
+            else if (newType == FileSystemModel)
+                m_model = new FileSystemModelWrapper;
+            m_view->setModel(m_model->model());
+        }
+        qDebug() <<  m_model->model()->metaObject()->className();
+        return;
         delete m_model;
         m_model = 0;
         if (path.startsWith("mpq:"))
@@ -137,8 +164,8 @@ void MPQEditor::setViewMode(UniversalView::ViewMode mode)
 void MPQEditor::open(const QString &file)
 {
     if (m_currentFile != file) {
-        m_currentFile = file;
         initModel(file);
+        m_currentFile = file;
         m_view->setRootIndex(m_model->index(file));
         qDebug("test");
         emit currentChanged(file);
@@ -412,7 +439,7 @@ void MPQEditor::onDoubleClick(const QModelIndex & index)
     QFileInfo info(path);
     if (info.isDir()/* && m_viewMode < 3*/) {
         open(path);
-        emit currentChanged(m_model->filePath(index));
+        emit currentChanged(path);
     } else {
         QString prefix = suffixesManager->mapFromPath(path);
         if (prefix != "")

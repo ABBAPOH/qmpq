@@ -40,7 +40,9 @@ class ArchiveSuffixesManager;
 class MPQEditor : public QWidget
 {
     Q_OBJECT
-    Q_ENUMS(ViewMode)
+//    Q_ENUMS(ViewMode)
+    enum ModelType{ Unknown, DirModel, FileSystemModel };
+
 public:
     explicit MPQEditor(QWidget *parent = 0);
     ~MPQEditor();
@@ -74,6 +76,7 @@ private:
     QString selectedDir();
     void extract(const QString & path, const QString & destDir);
     void remove(const QModelIndex & path);
+    ModelType getModelType(const QString & path);
 
 signals:
     void openRequested(const QString &file);

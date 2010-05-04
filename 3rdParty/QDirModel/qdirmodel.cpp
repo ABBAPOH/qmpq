@@ -957,7 +957,11 @@ QModelIndex QDirModel::index(const QString &path, int column) const
         for (int j = parent->children.count() - 1; j >= 0; --j) {
             const QFileInfo& fi = parent->children.at(j).info;
             QString childFileName;
-            childFileName = idx.isValid() ? fi.fileName() : fi.absoluteFilePath();
+            // model can't find / without absoluteFilePath on unix
+            if (d->rootPath == "")
+                childFileName = idx.isValid() ? fi.fileName() : fi.absoluteFilePath();
+            else
+                childFileName = fi.fileName();
 #if (defined(Q_OS_WIN) && !defined(Q_OS_WINCE)) || defined(Q_OS_SYMBIAN)
             childFileName = childFileName.toLower();
 #endif
