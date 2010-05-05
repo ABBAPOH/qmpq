@@ -23,7 +23,6 @@
 
 #include "universalview.h"
 #include "idirmodel.h"
-#include "archivesuffixesmanager.h"
 
 //QDirModel * MPQEditor::m_model = 0;
 
@@ -43,12 +42,6 @@ MPQEditor::MPQEditor(QWidget *parent) :
     m_layout->setContentsMargins(0, 0, 0, 0);
     m_layout->addWidget(m_view);
     setLayout(m_layout);
-
-    suffixesManager = new ArchiveSuffixesManager;
-    QStringList suffixes;
-    suffixes << "mpq" << "w3x" << "w3m" << "s2ma" << "SC2Data" << "SC2Archive" << "SC2Assets"
-            << "SC2Replay" << "scx" << "w3n" << "snp" << "sv" << "hsv";
-    suffixesManager->addSuffixes(suffixes, "mpq:");
 }
 
 MPQEditor::~MPQEditor()
@@ -76,7 +69,6 @@ MPQEditor::ModelType MPQEditor::getModelType(const QString & path)
         return DirModel;
     else
         return FileSystemModel;
-
 }
 
 bool canModelHandle(const IDirModel * model, const QModelIndex & index)
@@ -86,39 +78,20 @@ bool canModelHandle(const IDirModel * model, const QModelIndex & index)
 
 void MPQEditor::initModel(const QString & path)
 {
-    qDebug("MPQEditor::initModel");
-//    QModelIndex index;
-//    if (m_model)
-//        index = m_model->index(path);
-//    if (!canModelHandle(m_model, index))
+    // we have to try to switch model
+    ModelType currentType = getModelType(m_currentFile);
+    ModelType newType = getModelType(path);
+    qDebug() << path << currentType << newType;
+    if (currentType != newType || m_model == 0)
     {
-        // we have to try to switch model
-        ModelType currentType = getModelType(m_currentFile);
-        ModelType newType = getModelType(path);
-        qDebug() << path << currentType << newType;
-        if (currentType != newType || m_model == 0)
-        {
-            delete m_model;
-            m_model = 0;
-            if (newType == DirModel)
-                m_model = new DirModelWrapper(path);
-            else if (newType == FileSystemModel)
-                m_model = new FileSystemModelWrapper;
-            m_view->setModel(m_model->model());
-            resizeColumns();
-        }
-        qDebug() <<  m_model->model()->metaObject()->className();
-        return;
         delete m_model;
         m_model = 0;
-        if (path.startsWith("mpq:"))
+        if (newType == DirModel)
             m_model = new DirModelWrapper(path);
-        if (path.startsWith(":"))
-            m_model = new DirModelWrapper(path);
-        if (!m_model)
+        else if (newType == FileSystemModel)
             m_model = new FileSystemModelWrapper;
         m_view->setModel(m_model->model());
-        qDebug() << m_model->model()->metaObject()->className();
+        resizeColumns();
     }
 }
 
@@ -178,7 +151,6 @@ void MPQEditor::open(const QString &file)
         qDebug("test");
         emit currentChanged(file);
     }
-
 }
 
 void MPQEditor::reopenUsingListfile(const QByteArray &listfile)
@@ -303,24 +275,6 @@ void MPQEditor::extract(const QString & destDir)
 void MPQEditor::remove(const QModelIndex & index)
 {
     m_model->remove(index);
-//qDebug() << m_model->filePath(index);
-//
-//    if (m_model->isDir(index)) { // recursively removes current dir
-//        QDir dir(m_model->filePath(index));
-//        foreach (QString child, dir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot)) {
-//            remove(m_model->index(dir.filePath(child)));
-//        }
-//
-////        for (int row = 0, rows = m_model->rowCount(index); row < rows; row++) {
-////            remove(index.child(0, 0));
-////        }
-////        m_model->in
-////        QApplication::processEvents();
-//        bool result = m_model->rmdir(index);
-//        qDebug() << result;
-//    } else { // removes current file
-//        bool result = m_model->remove(index);
-//    }
 }
 
 void MPQEditor::remove()
@@ -346,11 +300,6 @@ bool MPQEditor::canUp()
 {
 //    return m_model->filePath(currentView->rootIndex().parent()).startsWith(m_currentFile);
 }
-
-//QAbstractItemModel * MPQEditor::model()
-//{
-//    return m_model;
-//}
 
 QStringList MPQEditor::selectedPaths()
 {
@@ -380,29 +329,6 @@ void MPQEditor::showColumns(bool show)
 //        tableView->setColumnHidden(2, true);
 //        tableView->setColumnHidden(3, true);
 //    }
-}
-
-#warning do not use
-QMPQFileEngine * MPQEditor::getIndexMPQEngine(const QModelIndex & index)
-{
-//    QString path = m_model->filePath(index);
-//    QFile file(path);
-//    //  if we can cat file then we're in mpq archive
-//    return dynamic_cast<QMPQFileEngine *>(file.fileEngine());
-}
-
-bool MPQEditor::isMPQArchive()
-{
-    QModelIndexList list = selectedIndexes();
-    if (list.isEmpty())
-        return false;
-    //  if we can cat file then we're in mpq archive
-    QMPQFileEngine * engine = getIndexMPQEngine(list.first());
-    if (engine) {
-        qDebug("archive!");
-        return true;
-    }
-    return engine;
 }
 
 bool MPQEditor::isMPQArchive(const QString & file)
@@ -449,12 +375,7 @@ void MPQEditor::onDoubleClick(const QModelIndex & index)
         open(path);
         emit currentChanged(path);
     } else {
-        QString prefix = suffixesManager->mapFromPath(path);
-        if (prefix != "")
-            open(prefix + path);
-        else
-            emit openRequested(path);
-//        emit currentChanged(m_model->filePath(index));
+        emit openRequested(path);
     }
 }
 

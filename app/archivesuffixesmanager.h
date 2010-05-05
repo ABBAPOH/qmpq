@@ -22,7 +22,6 @@ public:
         }
     }
 
-
     QString mapFromPath(QString path) const
     {
         QFileInfo info(path);

@@ -27,6 +27,7 @@ public:
     static ICore * instance();
 
     virtual bool addObject(QObject * object) = 0;
+    virtual QObject * getObject(const QString & name) = 0;
 
     virtual IActionManager * actionManager() = 0;
     virtual IContext * context() = 0;

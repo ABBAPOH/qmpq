@@ -11,8 +11,7 @@ INCLUDEPATH += -I \
 HEADERS += mpqeditor.h \
     mpqeditorplugin.h \
     universalview.h \
-    idirmodel.h \
-    archivesuffixesmanager.h
+    idirmodel.h
 SOURCES += mpqeditor.cpp \
     mpqeditorplugin.cpp \
     main.cpp \

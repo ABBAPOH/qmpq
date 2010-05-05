@@ -53,9 +53,9 @@ public:
     static QAbstractItemModel * model();
     QStringList selectedPaths();
     void showColumns(bool show);
-    bool isMPQArchive();
     bool isMPQArchive(const QString & file);
     const MPQEditorError & lastError() const { return m_lastError; }
+    ArchiveSuffixesManager * suffixesManager() const { return m_suffixesManager; }
 
 private:
 	UniversalView * m_view;
@@ -64,7 +64,7 @@ private:
 //    static FileSystemModel * m_model;
     QAction * openAction;
 	IDirModel * m_model;
-    ArchiveSuffixesManager * suffixesManager;
+    ArchiveSuffixesManager * m_suffixesManager;
     MPQEditorError m_lastError;
 
     ModelType getModelType(const QString & path);
@@ -73,7 +73,6 @@ private:
     void initViews();
     void initActions();
     void resizeColumns();
-    QMPQFileEngine * getIndexMPQEngine(const QModelIndex & index);
     QModelIndexList selectedIndexes();
     QString selectedDir();
     void extract(const QString & path, const QString & destDir);

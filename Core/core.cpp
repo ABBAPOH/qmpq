@@ -52,7 +52,14 @@ bool Core::addObject(QObject * object)
         return true;
     }
 
-    return false;
+    object->setParent(this);
+
+    return true;
+}
+
+QObject * Core::getObject(const QString & name)
+{
+    return findChild<QObject *>(name);
 }
 
 IActionManager * Core::actionManager()

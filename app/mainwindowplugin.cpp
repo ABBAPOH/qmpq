@@ -10,6 +10,7 @@
 #include "windowmanager.h"
 #include "mainwindow.h"
 #include "createarchivedialog.h"
+#include "archivesuffixesmanager.h"
 
 #include "../QMPQFileEngine/qmpqarchive.h"
 
@@ -30,13 +31,21 @@ void MainWindowPlugin::initialize()
     core->pluginManager()->load();
 
     initializeMenus();
+    ArchiveSuffixesManager * manager = new ArchiveSuffixesManager;
+    QStringList suffixes;
+    suffixes << "mpq" << "w3x" << "w3m" << "s2ma" << "SC2Data" << "SC2Archive" << "SC2Assets"
+            << "SC2Replay" << "scx" << "w3n" << "snp" << "sv" << "hsv";
+
+    manager->addSuffixes(suffixes, "mpq:");
+    manager->setObjectName("SuffixesManager");
+    core->addObject(manager);
 
     MainWindow * w = new MainWindow();
     w->show();
     w->newTab();
 
     QTimer t;
-    t.singleShot(0, this, SLOT(openFirstTab()));
+    t.singleShot(10, this, SLOT(openFirstTab()));
 }
 
 void MainWindowPlugin::newArchive()

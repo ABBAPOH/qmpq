@@ -34,7 +34,8 @@ HEADERS += mainwindow.h \
     tabmanager.h \
     mainwindowplugin.h \
     historymanager.h \
-    createarchivedialog.h
+    createarchivedialog.h \
+    archivesuffixesmanager.h
 SOURCES += mainwindow.cpp \
     main.cpp \
     editormanager.cpp \

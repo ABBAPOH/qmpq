@@ -12,6 +12,7 @@ public:
     ~Core();
 
     bool addObject(QObject * object);
+    QObject * getObject(const QString & name);
 
     IActionManager * actionManager();
     IContext * context();

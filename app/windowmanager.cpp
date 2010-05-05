@@ -9,6 +9,9 @@
 #include <icore.h>
 
 #include "mainwindow.h"
+#include "archivesuffixesmanager.h"
+
+#include <QDebug>
 
 WindowManager::WindowManager(QObject *parent) :
     IWindowManager(parent)
@@ -20,8 +23,17 @@ bool WindowManager::open(const QString path)
     ICore * core = ICore::instance();
     MainWindow * window = qobject_cast<MainWindow *>(core->context()->mainWindow());
     Q_ASSERT(window);
-    if (window)
-        window->open(path);
+    ArchiveSuffixesManager * manager = qobject_cast<ArchiveSuffixesManager *>(core->getObject("SuffixesManager"));
+    Q_ASSERT(manager);
+    QString prefix = manager->mapFromPath(path);
+
+    if (window) {
+        if (prefix != "")
+            return window->open(prefix + path);
+        else
+            return window->open(path);
+    }
+    return false;
 }
 
 bool WindowManager::openInNewTab(const QString path)
@@ -29,7 +41,8 @@ bool WindowManager::openInNewTab(const QString path)
     ICore * core = ICore::instance();
     MainWindow * window = qobject_cast<MainWindow *>(core->context()->mainWindow());
     window->newTab();
-    window->open(path);
+    return window->open(path);
+
 }
 
 bool WindowManager::openInNewWindow(const QString path)
