@@ -41,6 +41,7 @@ FileSystemModelWrapper::FileSystemModelWrapper()
     if (!m_model) {
         m_model = new QFileSystemModel;
         m_model->setRootPath("");
+        m_model->setReadOnly(false);
     }
 }
 
