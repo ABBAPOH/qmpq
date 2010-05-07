@@ -1,18 +1,22 @@
 #include "mainwindowplugin.h"
 
 #include <icore.h>
+#include <preferencesmanager.h>
 #include <QtCore/QTimer>
 #include <QtGui/QMenu>
 #include <QtGui/QApplication>
 #include <QtGui/QMessageBox>
 #include <QtGui/QDesktopServices>
 
-#include "windowmanager.h"
-#include "mainwindow.h"
-#include "createarchivedialog.h"
 #include "archivesuffixesmanager.h"
+#include "createarchivedialog.h"
+#include "mainwindow.h"
+#include "mpqsettings.h"
+#include "preferenceswidget.h"
+#include "windowmanager.h"
 
 #include "../QMPQFileEngine/qmpqarchive.h"
+//#include "../QMPQFileEngine/mpqextensionmanager.h"
 
 MainWindowPlugin::MainWindowPlugin(QObject *parent) :
     IPlugin(parent)
@@ -30,7 +34,6 @@ void MainWindowPlugin::initialize()
     core->addObject(windowManager);
     core->pluginManager()->load();
 
-    initializeMenus();
     ArchiveSuffixesManager * manager = new ArchiveSuffixesManager;
     QStringList suffixes;
     suffixes << "mpq" << "w3x" << "w3m" << "s2ma" << "SC2Data" << "SC2Archive" << "SC2Assets"
@@ -39,6 +42,16 @@ void MainWindowPlugin::initialize()
     manager->addSuffixes(suffixes, "mpq:");
     manager->setObjectName("SuffixesManager");
     core->addObject(manager);
+
+//    core->addObject(MPQExtensionManager::instance());
+
+    PreferencesManager * preferencesManager = qobject_cast<PreferencesManager *>(core->getObject("PreferencesManager"));
+    preferencesManager->addPreferencesPage(new MPQSettingsPage);
+//    preferencesManager->loadSettings();
+
+    m_preferencesWidget = new PreferencesWidget(preferencesManager);
+
+    initializeMenus();
 
     MainWindow * w = new MainWindow();
     w->show();
@@ -155,6 +168,12 @@ void MainWindowPlugin::initializeMenus()
     connect(closeTabAction, SIGNAL(triggered()), SLOT(closeTab()));
     closeTabAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+W", 0, QApplication::UnicodeUTF8));
     core->actionManager()->registerAction(closeTabAction, "CLOSE TAB");
+
+    QAction * preferencesAction = fileMenu->addAction(tr("Preferences"));
+    connect(preferencesAction, SIGNAL(triggered()), m_preferencesWidget, SLOT(show()));
+    preferencesAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+,", 0, QApplication::UnicodeUTF8));
+    core->actionManager()->registerAction(preferencesAction, "PREFERENCES");
+
 
     QMenu * editMenu = core->actionManager()->createMenu("EDIT");
     editMenu->setTitle(tr("Edit"));

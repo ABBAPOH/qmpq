@@ -3,12 +3,10 @@
 # -------------------------------------------------
 TARGET = QMPQ
 TEMPLATE = app
-
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
-
 LIBS += -L../plugins/editorplugins/MPQEditor/bin/ \
     -lMPQEditor
 LIBS += -L../QMPQFileEngine/bin \
@@ -19,12 +17,10 @@ LIBS += -L../3rdParty/QDirModel/bin \
     -lQDirModel
 LIBS += -L../Core/bin/ \
     -lCore
-
 INCLUDEPATH += -I \
     ../QMPQFileEngine
 INCLUDEPATH += -I \
     ../Core
-
 HEADERS += mainwindow.h \
     editormanager.h \
     editorview.h \
@@ -35,7 +31,9 @@ HEADERS += mainwindow.h \
     mainwindowplugin.h \
     historymanager.h \
     createarchivedialog.h \
-    archivesuffixesmanager.h
+    archivesuffixesmanager.h \
+    preferenceswidget.h \
+    mpqsettings.h
 SOURCES += mainwindow.cpp \
     main.cpp \
     editormanager.cpp \
@@ -45,6 +43,10 @@ SOURCES += mainwindow.cpp \
     tabcontext.cpp \
     tabmanager.cpp \
     mainwindowplugin.cpp \
-    historymanager.cpp
-FORMS += createarchivedialog.ui
+    historymanager.cpp \
+    preferenceswidget.cpp \
+    mpqsettings.cpp
+FORMS += createarchivedialog.ui \
+    preferenceswidget.ui \
+    mpqsettings.ui
 RESOURCES += qmq.qrc

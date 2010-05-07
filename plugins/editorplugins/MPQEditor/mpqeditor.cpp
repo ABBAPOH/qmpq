@@ -112,10 +112,11 @@ void MPQEditor::initActions()
 void MPQEditor::initViews()
 {
     m_view->setEditTriggers(QAbstractItemView::SelectedClicked);
-    m_view->setDragDropMode(QAbstractItemView::DropOnly);
+//    m_view->setDragDropMode(QAbstractItemView::DropOnly);
+    m_view->setDragDropMode(QAbstractItemView::DragDrop);
     m_view->setAcceptDrops(true);
-    m_view->setDragDropOverwriteMode(false);
-    m_view->setDefaultDropAction(Qt::MoveAction);
+//    m_view->setDragDropOverwriteMode(false);
+//    m_view->setDefaultDropAction(Qt::MoveAction);
     m_view->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     #warning TODO: see why signal emited before some actions

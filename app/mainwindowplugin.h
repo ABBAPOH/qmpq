@@ -3,6 +3,7 @@
 
 #include <iplugin.h>
 
+class PreferencesWidget;
 class MainWindowPlugin : public IPlugin
 {
 Q_OBJECT
@@ -25,11 +26,14 @@ private slots:
     void newTab();
     void closeTab();
 
+//    void closeTab();
+
     void about();
     void newArchive();
 
 private:
     void initializeMenus();
+    PreferencesWidget * m_preferencesWidget;
 };
 
 #endif // MAINWINDOWPLUGIN_H

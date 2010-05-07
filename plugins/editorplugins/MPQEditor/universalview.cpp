@@ -20,6 +20,8 @@ UniversalView::UniversalView(QWidget *parent) :
     initViews();
     setViewMode(ListView);
     setLayout(layout);
+    listView->setDragEnabled(true);
+    listView->setDropIndicatorShown(true);
 }
 
 UniversalView::~UniversalView()
@@ -35,6 +37,7 @@ void UniversalView::edit(const QModelIndex & index)
 
 void UniversalView::setAcceptDrops(bool on)
 {
+//    this->setAcceptDrops(true);
     for (int i = 0; i < MaxViews; i++) {
         views[i]->setAcceptDrops(on);
     }

@@ -12,7 +12,7 @@ public:
     ~MPQFileEngineIterator();
 //    QFileInfo currentFileInfo () const;
     QString currentFileName () const;
-    bool hasNext ()const;
+    bool hasNext () const;
     QString next();
 private:
     TreeItem * m_item;

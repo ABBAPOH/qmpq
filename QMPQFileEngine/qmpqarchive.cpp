@@ -7,6 +7,7 @@
 #include <StormLib/Stormlib.h>
 
 #include "treeitem.h"
+#include "mpqextensionmanager.h"
 
 #include <QDebug>
 
@@ -206,13 +207,31 @@ QByteArray QMPQArchivePrivate::readFile(const QString &file)
     return arr;
 }
 
+int getCompressionFlags(MPQExtensionManager::CompressionTypes types)
+{
+    switch (types) {
+    case MPQExtensionManager::UNKNOWN : return 0;
+    case MPQExtensionManager::HUFFMAN : return MPQ_COMPRESSION_HUFFMANN;
+    case MPQExtensionManager::ZLIB : return MPQ_COMPRESSION_ZLIB;
+    case MPQExtensionManager::PKWARE : return MPQ_COMPRESSION_PKWARE;
+    case MPQExtensionManager::BZIP2 : return MPQ_COMPRESSION_BZIP2;
+    case MPQExtensionManager::ADCPM_Mono : return MPQ_COMPRESSION_WAVE_MONO;
+    case MPQExtensionManager::ADCPM_Stereo : return MPQ_COMPRESSION_WAVE_STEREO;
+    default: return 0;
+    }
+}
+
 bool QMPQArchivePrivate::addLocalFile(const QString &localFile, const QString &file)
 {
     setUpdateOnClose();
+    QString suffix = QFileInfo(localFile).suffix();
+    int flags = 0;
+    flags |= getCompressionFlags(MPQExtensionManager::instance()->compressionTypes(suffix));
+    qDebug() << MPQExtensionManager::instance()->compressionTypes(suffix);
     bool result = SFileAddFile(mpq,
                         localFile.toLocal8Bit().data(),
                         file.toLocal8Bit().data(),
-                        0);
+                        flags);
     if (!result) {
         m_lastError = GetLastError();
         qWarning() << "can't add file: " << m_lastError.errorMessage();

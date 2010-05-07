@@ -7,6 +7,7 @@
 //#include "iwindowmanager.h"
 #include "iplugin.h"
 #include "pluginmanager.h"
+#include "preferencesmanager.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QMainWindow>
@@ -29,6 +30,10 @@ Core::Core()
 
     m_actionManager = new ActionManager(this); // must be initialized after EditorFactoryManager
     m_windowManager = 0;
+
+    PreferencesManager * preferenecesManager = new PreferencesManager;
+    preferenecesManager->setObjectName("PreferencesManager");
+    addObject(preferenecesManager);
 
     connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), SLOT(onFocusChange(QWidget *, QWidget *)));
 }
