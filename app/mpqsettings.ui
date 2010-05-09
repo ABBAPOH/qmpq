@@ -103,7 +103,7 @@
    <item row="5" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -116,42 +116,42 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="checkBox_Implode">
         <property name="text">
          <string>Implode file (obsolette)</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QCheckBox" name="checkBox_5">
+       <widget class="QCheckBox" name="checkBox_SingleUnit">
         <property name="text">
          <string>Store file as a sinle unit</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QCheckBox" name="checkBox_2">
+       <widget class="QCheckBox" name="checkBox_Compress">
         <property name="text">
          <string>Compress file</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QCheckBox" name="checkBox_7">
+       <widget class="QCheckBox" name="checkBox_Deleted">
         <property name="text">
          <string>Mark file as deleted</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QCheckBox" name="checkBox_3">
+       <widget class="QCheckBox" name="checkBox_Encrypt">
         <property name="text">
          <string>Encrypt file</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QCheckBox" name="checkBox_6">
+       <widget class="QCheckBox" name="checkBox_CheckSum">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -161,7 +161,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QCheckBox" name="checkBox_4">
+       <widget class="QCheckBox" name="checkBox_File_Key">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -178,9 +178,9 @@
  <resources/>
  <connections>
   <connection>
-   <sender>checkBox</sender>
+   <sender>checkBox_Implode</sender>
    <signal>toggled(bool)</signal>
-   <receiver>checkBox_6</receiver>
+   <receiver>checkBox_CheckSum</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -194,9 +194,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>checkBox_2</sender>
+   <sender>checkBox_Compress</sender>
    <signal>toggled(bool)</signal>
-   <receiver>checkBox_6</receiver>
+   <receiver>checkBox_CheckSum</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -210,9 +210,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>checkBox_3</sender>
+   <sender>checkBox_Encrypt</sender>
    <signal>toggled(bool)</signal>
-   <receiver>checkBox_4</receiver>
+   <receiver>checkBox_File_Key</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

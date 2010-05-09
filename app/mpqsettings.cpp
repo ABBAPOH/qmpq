@@ -19,7 +19,8 @@ MPQSettings::MPQSettings(QWidget *parent) :
     int index = mo.indexOfEnumerator("CompressionTypes");
     QMetaEnum me = mo.enumerator(index);
 
-    compressionEnum = mo.enumerator(index);;
+    optionsEnum = mo.enumerator(mo.indexOfEnumerator("AddFileOptions"));
+    compressionEnum = mo.enumerator(index);
 
     for (int index = 0; index < me.keyCount(); index++) {
 //        qDebug() << me.key(index);
@@ -35,6 +36,14 @@ MPQSettings::MPQSettings(QWidget *parent) :
     connect(ui->pushButton_2, SIGNAL(clicked()), SLOT(removeExtension()));
     connect(ui->lineEdit, SIGNAL(textEdited(QString)), SLOT(onEditText(QString)));
     connect(ui->comboBox, SIGNAL(activated(int)), SLOT(onActivate(int)));
+
+    connect(ui->checkBox_Implode, SIGNAL(toggled(bool)), SLOT(onCheck()));
+    connect(ui->checkBox_Compress, SIGNAL(toggled(bool)), SLOT(onCheck()));
+    connect(ui->checkBox_Encrypt, SIGNAL(toggled(bool)), SLOT(onCheck()));
+    connect(ui->checkBox_File_Key, SIGNAL(toggled(bool)), SLOT(onCheck()));
+    connect(ui->checkBox_SingleUnit, SIGNAL(toggled(bool)), SLOT(onCheck()));
+    connect(ui->checkBox_Deleted, SIGNAL(toggled(bool)), SLOT(onCheck()));
+    connect(ui->checkBox_CheckSum, SIGNAL(toggled(bool)), SLOT(onCheck()));
 }
 
 MPQSettings::~MPQSettings()
@@ -44,7 +53,7 @@ MPQSettings::~MPQSettings()
 
 void MPQSettings::addExtension(const QString & key, int value)
 {
-    extensionManager()->addExtension(key, (MPQExtensionManager::CompressionType)value);
+    extensionManager()->addExtension(key, 0, (MPQExtensionManager::CompressionType)value);
 
     QTreeWidgetItem * item = new QTreeWidgetItem;
     ui->treeWidget->addTopLevelItem(item);
@@ -102,21 +111,15 @@ void MPQSettings::onClick(const QModelIndex & index)
 {
     QAbstractItemModel * model = ui->treeWidget->model();
     QModelIndex suffixIndex = model->index(index.row(), 0, index.parent());
-    ui->lineEdit->setText(model->data(suffixIndex, Qt::DisplayRole).toString());
+    QModelIndex optionsIndex = model->index(index.row(), 1, index.parent());
     QModelIndex compressionIndex = model->index(index.row(), 2, index.parent());
+
+    ui->lineEdit->setText(model->data(suffixIndex, Qt::DisplayRole).toString());
     int compressionTypes = compressionIndex.data(Qt::UserRole).toInt();
+    int options = optionsIndex.data(Qt::UserRole).toInt();
 
-    const QMetaObject &mo = m_extensionManager->staticMetaObject;
-    int indexOfEnumerator = mo.indexOfEnumerator("CompressionTypes");
-    QMetaEnum me = mo.enumerator(indexOfEnumerator);
+    setCurrentOptions(options);
 
-//    int indexOfType = -1;
-//    for (int i = 0; i < me.keyCount(); i++) {
-//        if (me.value(i) == compressionTypes) {
-//            indexOfType = i;
-//            break;
-//        }
-//    }
     int indexOfType = compresionValueToIndex(compressionTypes);
     qDebug() << indexOfType;
     ui->comboBox->setCurrentIndex(indexOfType);
@@ -132,7 +135,7 @@ void MPQSettings::onEditText(const QString & text)
     QString previousText = index.data(Qt::DisplayRole).toString();
     MPQExtensionManager::CompressionTypes previousTypes = m_extensionManager->compressionTypes(previousText);
     m_extensionManager->removeExtension(previousText);
-    m_extensionManager->addExtension(text, previousTypes);
+    m_extensionManager->addExtension(text, 0, previousTypes);
     model->setData(index, text, Qt::DisplayRole);
 }
 
@@ -157,6 +160,24 @@ void MPQSettings::onActivate(int index)
     m_extensionManager->setCompressionTypes(text, (MPQExtensionManager::CompressionType)compressionTypes);
 }
 
+void MPQSettings::onCheck()
+{
+    QAbstractItemModel * model = ui->treeWidget->model();
+    QItemSelectionModel * selectionModel = ui->treeWidget->selectionModel();
+    QModelIndexList selectedIndexes = selectionModel->selectedRows();
+    QModelIndex rowIndex = selectedIndexes.first();
+    QModelIndex extensionIndex = model->index(rowIndex.row(), 0, rowIndex.parent());
+    QModelIndex optionsIndex = model->index(rowIndex.row(), 1, rowIndex.parent());
+
+    QString extension = extensionIndex.data(Qt::DisplayRole).toString();
+    int options = getCurrentOptions();
+
+    model->setData(optionsIndex, optionsEnum.valueToKeys(options), Qt::DisplayRole);
+    model->setData(optionsIndex, options, Qt::UserRole);
+    m_extensionManager->setAddFileOptions(extension, (MPQExtensionManager::AddFileOption)options);
+}
+
+
 //QString MPQSettings::compresionValueToKeys(int value)
 //{
 //    return compressionEnum.valueToKeys(value);
@@ -174,6 +195,40 @@ int MPQSettings::compresionValueToIndex(int value)
             return i;
         }
     }
+}
+
+int MPQSettings::getCurrentOptions()
+{
+    MPQExtensionManager::AddFileOptions flags = 0;
+
+    if (ui->checkBox_Implode->isChecked())
+        flags |= MPQExtensionManager::Implode;
+    if (ui->checkBox_Compress->isChecked())
+        flags |= MPQExtensionManager::Compress;
+    if (ui->checkBox_Encrypt->isChecked())
+        flags |= MPQExtensionManager::Encrypted;
+    if (ui->checkBox_File_Key->isChecked())
+        flags |= MPQExtensionManager::FixKey;
+    if (ui->checkBox_SingleUnit->isChecked())
+        flags |= MPQExtensionManager::SingleUnit;
+    if (ui->checkBox_Deleted->isChecked())
+        flags |= MPQExtensionManager::DeleteMarker;
+    if (ui->checkBox_CheckSum->isChecked())
+        flags |= MPQExtensionManager::SectorCRC;
+    return flags;
+}
+
+void MPQSettings::setCurrentOptions(int value)
+{
+    MPQExtensionManager::AddFileOptions flags(value);
+
+    ui->checkBox_Implode->setChecked(flags.testFlag(MPQExtensionManager::Implode));
+    ui->checkBox_Compress->setChecked(flags.testFlag(MPQExtensionManager::Compress));
+    ui->checkBox_Encrypt->setChecked(flags.testFlag(MPQExtensionManager::Encrypted));
+    ui->checkBox_File_Key->setChecked(flags.testFlag(MPQExtensionManager::FixKey));
+    ui->checkBox_SingleUnit->setChecked(flags.testFlag(MPQExtensionManager::SingleUnit));
+    ui->checkBox_Deleted->setChecked(flags.testFlag(MPQExtensionManager::DeleteMarker));
+    ui->checkBox_CheckSum->setChecked(flags.testFlag(MPQExtensionManager::SectorCRC));
 }
 
 #include <QtGui>

@@ -10,7 +10,7 @@ class MPQExtensionManager : public QObject
 Q_OBJECT
 public:
     enum CompressionType {
-        UNKNOWN = 0x00,
+        NONE = 0x00,
         HUFFMAN = 0x01,
         PKWARE = 0x02,
         ZLIB = 0x04,
@@ -23,12 +23,31 @@ public:
     Q_DECLARE_FLAGS(CompressionTypes, CompressionType)
     Q_FLAGS(CompressionTypes)
 
+    enum AddFileOption {
+        None = 0x00,
+        Implode = 0x01,
+        Compress = 0x02,
+        Compressed = 0x04,
+        Encrypted = 0x08,
+        FixKey = 0x10,
+        SingleUnit = 0x20,
+        DeleteMarker = 0x40,
+        SectorCRC = 0x80
+    };
+    Q_DECLARE_FLAGS(AddFileOptions, AddFileOption)
+    Q_FLAGS(AddFileOptions)
+
     explicit MPQExtensionManager(QObject *parent = 0);
     ~MPQExtensionManager() {}
-    void addExtension(const QString & extension, const CompressionTypes & types = UNKNOWN);
-    CompressionTypes compressionTypes(const QString & extension) const;
+
+    void addExtension(const QString & extension, const AddFileOptions & options = None, const CompressionTypes & types = NONE);
     QStringList extensions() { return m_compressionTypes.keys(); }
     void removeExtension(const QString & extension);
+
+    AddFileOptions addFileOptions(const QString & extension) const;
+    void setAddFileOptions(const QString & extension, const AddFileOptions & options);
+
+    CompressionTypes compressionTypes(const QString & extension) const;
     void setCompressionTypes(const QString & extension, const CompressionTypes & types);
 
     static MPQExtensionManager * instance();
@@ -39,6 +58,7 @@ public slots:
 
 private:
     QHash<QString, CompressionTypes> m_compressionTypes;
+    QHash<QString, AddFileOptions> m_addFileOptions;
     static MPQExtensionManager * m_instance;
 };
 

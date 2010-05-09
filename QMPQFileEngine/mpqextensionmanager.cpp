@@ -7,20 +7,7 @@ MPQExtensionManager::MPQExtensionManager(QObject *parent) :
 {
 }
 
-void MPQExtensionManager::addExtension(const QString & extension, const CompressionTypes & types)
-{
-    m_compressionTypes.insert(extension, types);
-}
-
-MPQExtensionManager::CompressionTypes MPQExtensionManager::compressionTypes(const QString & extension) const
-{
-    if (m_compressionTypes.contains(extension))
-        return m_compressionTypes.value(extension, UNKNOWN);
-    else
-        return m_compressionTypes.value("*", UNKNOWN);
-}
-
-void MPQExtensionManager::setCompressionTypes(const QString & extension, const CompressionTypes & types)
+void MPQExtensionManager::addExtension(const QString & extension, const AddFileOptions & options, const CompressionTypes & types)
 {
     m_compressionTypes.insert(extension, types);
 }
@@ -28,6 +15,29 @@ void MPQExtensionManager::setCompressionTypes(const QString & extension, const C
 void MPQExtensionManager::removeExtension(const QString & extension)
 {
     m_compressionTypes.remove(extension);
+}
+
+MPQExtensionManager::AddFileOptions MPQExtensionManager::addFileOptions(const QString & extension) const
+{
+    return m_addFileOptions.value(extension);
+}
+
+void MPQExtensionManager::setAddFileOptions(const QString & extension, const AddFileOptions & options)
+{
+    m_addFileOptions.insert(extension, options);
+}
+
+MPQExtensionManager::CompressionTypes MPQExtensionManager::compressionTypes(const QString & extension) const
+{
+    if (m_compressionTypes.contains(extension))
+        return m_compressionTypes.value(extension, NONE);
+    else
+        return m_compressionTypes.value("*", NONE);
+}
+
+void MPQExtensionManager::setCompressionTypes(const QString & extension, const CompressionTypes & types)
+{
+    m_compressionTypes.insert(extension, types);
 }
 
 MPQExtensionManager * MPQExtensionManager::instance()

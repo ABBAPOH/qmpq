@@ -26,10 +26,13 @@ private:
 //    QString compresionValueToKeys(int value);
 //    int compresionValue(int index);
     int compresionValueToIndex(int value);
+    int getCurrentOptions();
+    void setCurrentOptions(int value);
 //    int keyToValue(QString flagsName, int value);
 
     Ui::MPQSettings *ui;
     MPQExtensionManager * m_extensionManager;
+    QMetaEnum optionsEnum;
     QMetaEnum compressionEnum;
 
 private slots:
@@ -38,6 +41,7 @@ private slots:
     void onClick(const QModelIndex &);
     void onEditText(const QString &);
     void onActivate(int);
+    void onCheck();
 };
 
 class MPQSettingsPage : public IPreferencesPage
