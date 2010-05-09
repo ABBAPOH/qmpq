@@ -5,7 +5,9 @@
 #include <QStringList>
 #include <QHash>
 
-class MPQExtensionManager : public QObject
+#include "QMPQFileEngine_global.h"
+
+class QMPQFILEENGINESHARED_EXPORT MPQExtensionManager : public QObject
 {
 Q_OBJECT
 public:
