@@ -42,10 +42,13 @@ qDebug() << pageKey << indexes;
             QTreeWidgetItem * parent = 0;
             if (parentPageKey != "")
                 parent = m_items.value(parentPageKey);
-            QTreeWidgetItem * item = new QTreeWidgetItem(parent);
-            m_items.insert(currentPageKey, item);
-            item->setText(0, shortPageKey);
-            item->setData(0, Qt::UserRole, 0);
+            QTreeWidgetItem * item = m_items.value(currentPageKey);
+            if (!item) {
+                item = new QTreeWidgetItem(parent);
+                m_items.insert(currentPageKey, item);
+                item->setText(0, shortPageKey);
+                item->setData(0, Qt::UserRole, 0);
+           }
             parentPageKey = currentPageKey;
         }
         //  creates tree of items (does not fill item with pages)
