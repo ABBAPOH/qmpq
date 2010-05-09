@@ -13,18 +13,17 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,1,0" columnminimumwidth="0,0,0">
+  <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,1,0">
    <item row="0" column="0" rowspan="3" colspan="2">
-    <widget class="QTableWidget" name="tableWidget">
-     <property name="editTriggers">
-      <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
-     </property>
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectRows</enum>
-     </property>
+    <widget class="QTreeWidget" name="treeWidget">
      <column>
       <property name="text">
        <string>Extension</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Options</string>
       </property>
      </column>
      <column>

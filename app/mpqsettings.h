@@ -2,6 +2,7 @@
 #define MPQSETTINGS_H
 
 #include <QtGui/QWidget>
+#include <QtCore/QMetaEnum>
 #include <QtCore/QModelIndex>
 #include <ipreferences.h>
 
@@ -22,11 +23,14 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
-    QString valueToKeys(QString flagsName, int value);
+//    QString compresionValueToKeys(int value);
+//    int compresionValue(int index);
+    int compresionValueToIndex(int value);
 //    int keyToValue(QString flagsName, int value);
 
     Ui::MPQSettings *ui;
     MPQExtensionManager * m_extensionManager;
+    QMetaEnum compressionEnum;
 
 private slots:
     void addExtension();
