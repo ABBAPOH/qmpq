@@ -22,6 +22,9 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
+    QString valueToKeys(QString flagsName, int value);
+//    int keyToValue(QString flagsName, int value);
+
     Ui::MPQSettings *ui;
     MPQExtensionManager * m_extensionManager;
 
@@ -45,11 +48,12 @@ public:
 
     QStringList keys();
 
+    void setDefaults();
     QVariant value(const QString & key);
     void setValue(const QString & key, const QVariant & value);
 
-    virtual QString name() { return "MPQ Archive"; }
-    virtual QString key() { return "MPQ"; }
+    virtual QString name() { return "Rules for adding file to MPQ"; }
+    virtual QString key() { return "MPQ/rules"; }
     virtual QWidget * widget() { return m_widget; }
 
 private:

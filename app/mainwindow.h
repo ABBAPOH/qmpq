@@ -23,7 +23,7 @@ namespace Ui {
 
         void setupUi(QMainWindow * parent)
         {
-            parent->resize(800, 600);
+            parent->resize(920, 690);
 
             tabWidget = new QTabWidget(parent);
             tabWidget->setDocumentMode(true);

@@ -171,6 +171,9 @@ void MPQEditor::reopenUsingListfile(const QByteArray &listfile)
             archive->openArchive(archivePath, listfile);
 //            currentView->update(m_model->index(archivePath));
 //            m_model->update(archivePath);
+            QDirModel * model = qobject_cast<QDirModel *>(m_model->model());
+            if (model)
+                model->refresh(model->index(archivePath));
         }
     }
 }

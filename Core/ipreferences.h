@@ -23,6 +23,7 @@ class IPreferencesPage : public IPreferences
 public:
     IPreferencesPage(QObject * parent = 0) : IPreferences(parent) {}
     ~IPreferencesPage() {}
+    virtual void setDefaults() {}
     virtual void setValue(const QString & key, const QVariant & value) = 0;
     virtual QString name() = 0;
     virtual QString key() = 0;

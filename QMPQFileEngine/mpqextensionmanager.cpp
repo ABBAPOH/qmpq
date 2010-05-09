@@ -14,7 +14,10 @@ void MPQExtensionManager::addExtension(const QString & extension, const Compress
 
 MPQExtensionManager::CompressionTypes MPQExtensionManager::compressionTypes(const QString & extension) const
 {
-    return m_compressionTypes.value(extension, UNKNOWN);
+    if (m_compressionTypes.contains(extension))
+        return m_compressionTypes.value(extension, UNKNOWN);
+    else
+        return m_compressionTypes.value("*", UNKNOWN);
 }
 
 void MPQExtensionManager::setCompressionTypes(const QString & extension, const CompressionTypes & types)

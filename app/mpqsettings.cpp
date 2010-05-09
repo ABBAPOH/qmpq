@@ -78,11 +78,23 @@ void MPQSettings::addExtension()
 
 void MPQSettings::removeExtension()
 {
+//    QList<QTableWidgetItem *> itemList = ui->tableWidget->selectedItems();
+//    Q_ASSERT(itemList.isEmpty());
+
     QItemSelectionModel * model = ui->tableWidget->selectionModel();
-    QModelIndexList indexes = model->selectedRows();
+    QModelIndexList indexes = model->selectedIndexes();
 
-    Q_ASSERT(indexes.isEmpty());
+//    Q_ASSERT(!indexes.isEmpty());
+    if (indexes.isEmpty())
+        return;
 
+    QModelIndex index = indexes.first();
+    QModelIndex suffixIndex = ui->tableWidget->model()->index(index.row(), 0, index.parent());
+    m_extensionManager->removeExtension(suffixIndex.data(Qt::DisplayRole).toString());
+
+    model->clearSelection();
+    model->select(ui->tableWidget->model()->index(index.row() + 1, 0, index.parent()), QItemSelectionModel::Select);
+    model->select(ui->tableWidget->model()->index(index.row() + 1, 1, index.parent()), QItemSelectionModel::Select);
     ui->tableWidget->removeRow(indexes.first().row());
 }
 
@@ -93,7 +105,20 @@ void MPQSettings::onClick(const QModelIndex & index)
     QModelIndex suffixIndex = model->index(index.row(), 0, index.parent());
     ui->lineEdit->setText(model->data(suffixIndex, Qt::DisplayRole).toString());
     QModelIndex compressionIndex = model->index(index.row(), 1, index.parent());
-    ui->comboBox->setCurrentIndex(compressionIndex.data(Qt::UserRole).toInt());
+    int compressionTypes = compressionIndex.data(Qt::UserRole).toInt();
+
+    const QMetaObject &mo = m_extensionManager->staticMetaObject;
+    int indexOfEnumerator = mo.indexOfEnumerator("CompressionTypes");
+    QMetaEnum me = mo.enumerator(indexOfEnumerator);
+
+    int indexOfType = -1;
+    for (int i = 0; i < me.keyCount(); i++) {
+        if (me.value(i) == compressionTypes) {
+            indexOfType = i;
+            break;
+        }
+    }
+    ui->comboBox->setCurrentIndex(indexOfType);
 }
 
 void MPQSettings::onEditText(const QString & text)
@@ -210,6 +235,13 @@ void MPQSettings::onActivate(int index)
 QStringList MPQSettingsPage::keys()
 {
     return m_widget->extensionManager()->extensions();
+}
+
+void MPQSettingsPage::setDefaults()
+{
+    setValue("mpq", 0);
+    setValue("mp3", 0);
+    setValue("*", 0);
 }
 
 QVariant MPQSettingsPage::value(const QString & key)
