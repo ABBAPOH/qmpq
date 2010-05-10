@@ -38,6 +38,16 @@ bool hasSlot(QObject * obj, const char * slot)
     return obj->metaObject()->indexOfSlot(slot+1) != -1;
 }
 
+void ActionManager::undo()
+{
+    QMetaObject::invokeMethod(ICore::instance()->context()->widget(), "undo");
+}
+
+void ActionManager::redo()
+{
+    QMetaObject::invokeMethod(ICore::instance()->context()->widget(), "redo");
+}
+
 void ActionManager::cut()
 {
     QMetaObject::invokeMethod(ICore::instance()->context()->widget(), "cut");
@@ -58,15 +68,23 @@ void ActionManager::updateActions()
     QWidget * widget = ICore::instance()->context()->widget();
     if (!widget)
         return;
-    QAction * actionCut = ICore::instance()->actionManager()->action("CUT");
+    QAction * actionUndo = ICore::instance()->actionManager()->action(Core::ACTION_UNDO);
+    Q_ASSERT(actionUndo);
+    actionUndo->setEnabled(hasSlot(widget, SLOT(undo())));
+
+    QAction * actionRedo = ICore::instance()->actionManager()->action(Core::ACTION_REDO);
+    Q_ASSERT(actionRedo);
+    actionRedo->setEnabled(hasSlot(widget, SLOT(redo())));
+
+    QAction * actionCut = ICore::instance()->actionManager()->action(Core::ACTION_CUT);
     Q_ASSERT(actionCut);
     actionCut->setEnabled(hasSlot(widget, SLOT(cut())));
 
-    QAction * actionCopy = ICore::instance()->actionManager()->action("COPY");
+    QAction * actionCopy = ICore::instance()->actionManager()->action(Core::ACTION_COPY);
     Q_ASSERT(actionCopy);
     actionCopy->setEnabled(hasSlot(widget, SLOT(copy())));
 
-    QAction * actionPaste = ICore::instance()->actionManager()->action("PASTE");
+    QAction * actionPaste = ICore::instance()->actionManager()->action(Core::ACTION_PASTE);
     Q_ASSERT(actionPaste);
     actionPaste->setEnabled(hasSlot(widget, SLOT(paste())));
 }

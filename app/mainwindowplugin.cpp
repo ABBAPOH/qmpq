@@ -172,6 +172,20 @@ void MainWindowPlugin::initializeMenus()
     QMenu * editMenu = core->actionManager()->createMenu(Core::MENU_EDIT);
     editMenu->setTitle(tr("Edit"));
 
+    QAction * undoAction = editMenu->addAction(tr("Undo"));
+    connect(undoAction, SIGNAL(triggered()), core->actionManager(), SLOT(undo()));
+    undoAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+Z", 0, QApplication::UnicodeUTF8));
+    undoAction->setIcon(QIcon(":/icons/images/undo.png"));
+    core->actionManager()->registerAction(undoAction, Core::ACTION_UNDO);
+
+    QAction * redoAction = editMenu->addAction(tr("Redo"));
+    connect(redoAction, SIGNAL(triggered()), core->actionManager(), SLOT(redo()));
+    redoAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+Z", 0, QApplication::UnicodeUTF8));
+    redoAction->setIcon(QIcon(":/icons/images/redo.png"));
+    core->actionManager()->registerAction(redoAction, Core::ACTION_REDO);
+
+    editMenu->addSeparator();
+
     QAction * cutAction = editMenu->addAction(tr("Cut"));
     connect(cutAction, SIGNAL(triggered()), core->actionManager(), SLOT(cut()));
     cutAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+X", 0, QApplication::UnicodeUTF8));

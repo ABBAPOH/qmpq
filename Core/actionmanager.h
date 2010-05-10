@@ -20,6 +20,9 @@ public:
 signals:
 
 public slots:
+    void undo();
+    void redo();
+
     void cut();
     void copy();
     void paste();
