@@ -13,6 +13,7 @@ class ImageViewerInterface : public IEditor
 public:
     ImageViewerInterface(ImageViewer * editor);
     ~ImageViewerInterface();
+    virtual bool canSave() { return true; }
     virtual QString currentFile() { return m_currentFile; }
     virtual bool open(const QString & file);
     virtual QWidget * widget();

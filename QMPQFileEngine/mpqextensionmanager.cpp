@@ -10,6 +10,7 @@ MPQExtensionManager::MPQExtensionManager(QObject *parent) :
 void MPQExtensionManager::addExtension(const QString & extension, const AddFileOptions & options, const CompressionTypes & types)
 {
     m_compressionTypes.insert(extension, types);
+    m_addFileOptions.insert(extension, options);
 }
 
 void MPQExtensionManager::removeExtension(const QString & extension)
@@ -19,7 +20,10 @@ void MPQExtensionManager::removeExtension(const QString & extension)
 
 MPQExtensionManager::AddFileOptions MPQExtensionManager::addFileOptions(const QString & extension) const
 {
-    return m_addFileOptions.value(extension);
+    if (m_addFileOptions.contains(extension))
+        return m_addFileOptions.value(extension, None);
+    else
+        return m_addFileOptions.value("*", None);
 }
 
 void MPQExtensionManager::setAddFileOptions(const QString & extension, const AddFileOptions & options)

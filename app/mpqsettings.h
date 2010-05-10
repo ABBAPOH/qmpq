@@ -17,7 +17,7 @@ public:
     MPQSettings(QWidget *parent = 0);
     ~MPQSettings();
     MPQExtensionManager * extensionManager() { return m_extensionManager; }
-    void addExtension(const QString & key, int value);
+    void addExtension(const QString & key, int options, int value);
 
 protected:
     void changeEvent(QEvent *e);

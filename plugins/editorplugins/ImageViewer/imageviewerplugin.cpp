@@ -20,8 +20,6 @@ ImageViewerInterface::ImageViewerInterface(ImageViewer * editor)
     m_toolBar = new QToolBar();
 
     initToolBar();
-    ICore * core = ICore::instance();
-    core->addObject(0);
 }
 
 void ImageViewerInterface::initToolBar()

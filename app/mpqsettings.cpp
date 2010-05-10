@@ -51,18 +51,16 @@ MPQSettings::~MPQSettings()
     delete ui;
 }
 
-void MPQSettings::addExtension(const QString & key, int value)
+void MPQSettings::addExtension(const QString & key, int options, int value)
 {
-    extensionManager()->addExtension(key, 0, (MPQExtensionManager::CompressionType)value);
+    extensionManager()->addExtension(key, (MPQExtensionManager::AddFileOption)options, (MPQExtensionManager::CompressionType)value);
 
     QTreeWidgetItem * item = new QTreeWidgetItem;
     ui->treeWidget->addTopLevelItem(item);
 
-    const QMetaObject &mo = m_extensionManager->staticMetaObject;
-    int indexOfEnumerator = mo.indexOfEnumerator("CompressionTypes");
-    QMetaEnum me = mo.enumerator(indexOfEnumerator);
-
     item->setData(0, Qt::DisplayRole, key);
+    item->setData(1, Qt::DisplayRole, optionsEnum.valueToKeys(options));
+    item->setData(1, Qt::UserRole, options);
     item->setData(2, Qt::DisplayRole, compressionEnum.valueToKeys(value));
     item->setData(2, Qt::UserRole, value);
 }
@@ -81,7 +79,7 @@ void MPQSettings::changeEvent(QEvent *e)
 
 void MPQSettings::addExtension()
 {
-    addExtension("", 0);
+    addExtension("", 0, 0);
 }
 
 void MPQSettings::removeExtension()
@@ -315,10 +313,36 @@ void MPQSettingsPage::setDefaults()
 
 QVariant MPQSettingsPage::value(const QString & key)
 {
-    return QVariant(m_widget->extensionManager()->compressionTypes(key));
+    int options = m_widget->extensionManager()->addFileOptions(key);
+    int compresssion = m_widget->extensionManager()->compressionTypes(key);
+
+    QMetaObject mo = m_widget->extensionManager()->staticMetaObject;
+    QMetaEnum me1 = mo.enumerator(mo.indexOfEnumerator("AddFileOptions"));
+    QMetaEnum me2 = mo.enumerator(mo.indexOfEnumerator("CompressionTypes"));
+
+    QStringList result;
+    result << me1.valueToKeys(options);
+    result << me2.valueToKeys(compresssion);
+
+    qDebug() << "MPQSettingsPage::value" << key << result << options << compresssion;
+    return QVariant(result);
 }
 
 void MPQSettingsPage::setValue(const QString & key, const QVariant & value)
 {
-    m_widget->addExtension(key, value.toInt());
+    QStringList data = value.toStringList();
+
+    QMetaObject mo = m_widget->extensionManager()->staticMetaObject;
+    QMetaEnum me1 = mo.enumerator(mo.indexOfEnumerator("AddFileOptions"));
+    QMetaEnum me2 = mo.enumerator(mo.indexOfEnumerator("CompressionTypes"));
+
+    int options = 0;
+    int compresssion = 0;
+    if (data.count() == 2) {
+        options = me1.keysToValue(data.at(0).toLocal8Bit().data());
+        compresssion = me2.keysToValue(data.at(1).toLocal8Bit().data());
+    }
+    qDebug() << "MPQSettingsPage::setValue" << data << options << compresssion;
+
+    m_widget->addExtension(key, options, compresssion);
 }

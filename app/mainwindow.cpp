@@ -137,7 +137,7 @@ void MainWindow::tabChanged(int index)
     if (!editor)
         return;
     ICore::instance()->editorFactoryManager()->setCurrentEditor(editor);
-    ui->lineEdit->setText(context->editor()->currentFile());
+    ui->lineEdit->setText(QDir::toNativeSeparators(context->editor()->currentFile()));
 }
 
 void MainWindow::closeTab(int index)

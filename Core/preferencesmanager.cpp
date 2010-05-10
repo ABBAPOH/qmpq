@@ -36,7 +36,7 @@ PreferencesManager::~PreferencesManager()
 //    QSettings settings("QMPQ", "app", this);
     m_settings->clear();
     foreach (QString key, keys()) {
-        qDebug() << key << value(key);
+//        qDebug() << key << value(key);
         m_settings->setValue(key, value(key));
     }
 }
@@ -62,7 +62,7 @@ void PreferencesManager::addPreferencesPage(IPreferencesPage * preferencesPage)
         preferencesPage->setDefaults();        
     } else { // we read them from QSettings
         foreach (QString key, m_settings->childKeys()) {
-            qDebug() << key;
+//            qDebug() << key;
             preferencesPage->setValue(key, m_settings->value(key));
         }
     }

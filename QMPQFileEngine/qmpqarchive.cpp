@@ -294,7 +294,7 @@ QMPQArchive::QMPQArchive()
 
 QMPQArchive::~QMPQArchive()
 {
-//    qDebug() << "QMPQArchive::~QMPQArchive" << file();
+    qDebug() << "QMPQArchive::~QMPQArchive" << file();
     closeArchive();
     delete d_ptr;
 }
