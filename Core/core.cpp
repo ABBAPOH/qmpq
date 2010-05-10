@@ -19,7 +19,7 @@ ICore* ICore::instance()
     return m_instance;
 }
 
-Core::Core()
+CoreImpl::CoreImpl()
     : ICore()
 {
     m_instance = this;
@@ -38,11 +38,11 @@ Core::Core()
     connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), SLOT(onFocusChange(QWidget *, QWidget *)));
 }
 
-Core::~Core()
+CoreImpl::~CoreImpl()
 {
 }
 
-bool Core::addObject(QObject * object)
+bool CoreImpl::addObject(QObject * object)
 {
     if (!object)
         return false;
@@ -63,42 +63,42 @@ bool Core::addObject(QObject * object)
     return true;
 }
 
-QObject * Core::getObject(const QString & name)
+QObject * CoreImpl::getObject(const QString & name)
 {
     return findChild<QObject *>(name);
 }
 
-IActionManager * Core::actionManager()
+IActionManager * CoreImpl::actionManager()
 {
     return m_actionManager;
 }
 
-IContext * Core::context()
+IContext * CoreImpl::context()
 {
     return m_context;
 }
 
-IEditorFactoryManager * Core::editorFactoryManager()
+IEditorFactoryManager * CoreImpl::editorFactoryManager()
 {
     return m_editorFactoryManager;
 }
 
-IWindowManager * Core::windowManager()
+IWindowManager * CoreImpl::windowManager()
 {
     return m_windowManager;
 }
 
-FileManager * Core::fileManager()
+FileManager * CoreImpl::fileManager()
 {
     return m_fileManager;
 }
 
-IPluginManager * Core::pluginManager()
+IPluginManager * CoreImpl::pluginManager()
 {
     return m_pluginManager;
 }
 
-void Core::onFocusChange(QWidget *, QWidget *newWidget)
+void CoreImpl::onFocusChange(QWidget *, QWidget *newWidget)
 {
     emit contextAboutToBeChanged(m_context);
     delete m_context;

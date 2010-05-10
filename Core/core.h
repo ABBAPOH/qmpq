@@ -4,12 +4,12 @@
 #include "icore.h"
 
 class EditorFactoryManager;
-class Core : public ICore
+class CoreImpl : public ICore
 {
 Q_OBJECT
 public:
-    explicit Core();
-    ~Core();
+    explicit CoreImpl();
+    ~CoreImpl();
 
     bool addObject(QObject * object);
     QObject * getObject(const QString & name);

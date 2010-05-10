@@ -23,7 +23,8 @@ HEADERS += icore.h \
     actionmanager.h \
     filemanager.h \
     ipreferences.h \
-    preferencesmanager.h
+    preferencesmanager.h \
+    coreconstants.h
 SOURCES += core.cpp \
     pluginmanager.cpp \
     basecontext.cpp \

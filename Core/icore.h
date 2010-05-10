@@ -8,6 +8,7 @@
 #include "iwindowmanager.h"
 #include "ipluginmanager.h"
 #include "filemanager.h"
+#include "coreconstants.h"
 
 //class IActionManager;
 //class IContext;

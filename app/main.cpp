@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     app.installTranslator(&translator);
     app.installTranslator(&qtTranslator);
 
-    Core core;
+    CoreImpl core;
     MainWindowPlugin plugin;
     plugin.initialize();
 
