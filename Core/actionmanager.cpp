@@ -92,8 +92,8 @@ void ActionManager::updateActions()
 void ActionManager::updateSave_AsAction()
 {
     IEditor * editor = ICore::instance()->editorFactoryManager()->currentEditor();
-    QAction * actionSave_As = ICore::instance()->actionManager()->action("SAVE AS");
-    QAction * actionSave = ICore::instance()->actionManager()->action("SAVE");
+    QAction * actionSave_As = ICore::instance()->actionManager()->action(Core::ACTION_SAVE_AS);
+    QAction * actionSave = ICore::instance()->actionManager()->action(Core::ACTION_SAVE);
 
     // we disconnect editor in case it already connected
     disconnect(editor, SIGNAL(changed()), this, SLOT(updateSaveAction()));
@@ -112,7 +112,7 @@ void ActionManager::updateSave_AsAction()
 void ActionManager::updateSaveAction()
 {
     IEditor * editor = ICore::instance()->editorFactoryManager()->currentEditor();
-    QAction * actionSave = ICore::instance()->actionManager()->action("SAVE");
+    QAction * actionSave = ICore::instance()->actionManager()->action(Core::ACTION_SAVE);
     Q_ASSERT(actionSave);
     if (editor && editor->isModified()) {
         actionSave->setEnabled(true);
