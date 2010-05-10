@@ -324,7 +324,7 @@ QVariant MPQSettingsPage::value(const QString & key)
     result << me1.valueToKeys(options);
     result << me2.valueToKeys(compresssion);
 
-    qDebug() << "MPQSettingsPage::value" << key << result << options << compresssion;
+//    qDebug() << "MPQSettingsPage::value" << key << result << options << compresssion;
     return QVariant(result);
 }
 
@@ -342,7 +342,7 @@ void MPQSettingsPage::setValue(const QString & key, const QVariant & value)
         options = me1.keysToValue(data.at(0).toLocal8Bit().data());
         compresssion = me2.keysToValue(data.at(1).toLocal8Bit().data());
     }
-    qDebug() << "MPQSettingsPage::setValue" << data << options << compresssion;
+//    qDebug() << "MPQSettingsPage::setValue" << data << options << compresssion;
 
     m_widget->addExtension(key, options, compresssion);
 }

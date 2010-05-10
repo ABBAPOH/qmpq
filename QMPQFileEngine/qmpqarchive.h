@@ -43,6 +43,7 @@ public:
     bool remove(const QString & name);
     bool mkdir(const QString & path, bool createParentDirectories = true);
     qint64 size(const QString &file) const;
+    qint64 compressedSize(const QString &file) const;
 
     const QMPQError & lastError();
     static const QString getFileName(const QString & path);

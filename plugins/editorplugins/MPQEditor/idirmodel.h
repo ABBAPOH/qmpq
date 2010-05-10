@@ -8,8 +8,6 @@
 #include "../../../3rdParty/QDirModel/qdirmodel.h"
 #include <QtGui/QFileSystemModel>
 
-#include <QDebug>
-
 class QAbstractItemModel;
 class QDirModel;
 class QFileSystemModel;

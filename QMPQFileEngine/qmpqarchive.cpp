@@ -27,7 +27,7 @@ QMPQArchivePrivate::~QMPQArchivePrivate()
 bool QMPQArchivePrivate::newArchive(const QString & name, int flags, int maximumFilesInArchive)
 {
     void * mpq = 0;
-    if (!SFileCreateArchiveEx(name.toLocal8Bit().data(), CREATE_ALWAYS | flags, maximumFilesInArchive, &mpq)) {
+    if (!SFileCreateArchiveEx(name.toLocal8Bit().data(), MPQ_CREATE_NEW | flags, maximumFilesInArchive, &mpq)) {
         //  always returns that file not exists... look why!!
         m_lastError = GetLastError();
         qWarning() << "can't create archive: "<< m_lastError.errorMessage();
@@ -46,7 +46,7 @@ bool QMPQArchivePrivate::openArchive(const QString & name/*, QByteArray listfile
     }
 
 #warning under Linux toLower() may cause bug with case-sensitive files
-    if (!SFileCreateArchiveEx(name.toLower().toLocal8Bit().data(), OPEN_EXISTING, 0, &mpq)) {
+    if (!SFileCreateArchiveEx(name.toLower().toLocal8Bit().data(), MPQ_OPEN_EXISTING, 0, &mpq)) {
         m_lastError = GetLastError();
         qWarning() << "can't open archive: " << name << m_lastError.errorMessage();
         m_isOpened = false;
@@ -128,7 +128,9 @@ void QMPQArchivePrivate::initialize(QStringList listfile)
         }
     }
 
-    int count = SFileGetFileInfo(mpq, SFILE_INFO_BLOCK_TABLE_SIZE);
+//    int count = SFileGetFileInfo(mpq, SFILE_INFO_BLOCK_TABLE_SIZE);
+    quint32 count = 0;
+    SFileGetFileInfo(mpq, SFILE_INFO_BLOCK_TABLE_SIZE, &count, sizeof(count));
     for (int i = 0; i < count; i++)
     {
         if (indexes.contains(i))
@@ -148,11 +150,12 @@ void QMPQArchivePrivate::initFile(const char * fileName, quint32 searchScope)
 //    qDebug() << "QMPQArchive::getFileInfo";
     void * hFile;
     TMPQFile * hf;
-    int index = -1;
+    quint32 index = -1;
     if (SFileOpenFileEx(mpq, fileName, searchScope, &hFile))
     {
         hf = (TMPQFile *)hFile;
-        index = SFileGetFileInfo(hFile, SFILE_INFO_BLOCKINDEX);
+        index = 0;
+        SFileGetFileInfo(hFile, SFILE_INFO_BLOCKINDEX, &index, sizeof(index));
 
         QString name;
         if (searchScope == SFILE_OPEN_BY_INDEX) {
@@ -166,8 +169,10 @@ void QMPQArchivePrivate::initFile(const char * fileName, quint32 searchScope)
         if (name != "") {
             m_listFile << name;
 
-            qlonglong fileSize = SFileGetFileInfo(hFile, SFILE_INFO_FILE_SIZE);
-            qlonglong compressedSize = SFileGetFileInfo(hFile, SFILE_INFO_COMPRESSED_SIZE);
+            quint32 fileSize = 0;
+            SFileGetFileInfo(hFile, SFILE_INFO_FILE_SIZE, &fileSize, sizeof(fileSize));
+            quint32 compressedSize = 0;
+            SFileGetFileInfo(hFile, SFILE_INFO_COMPRESSED_SIZE, &compressedSize, sizeof(compressedSize));
             TreeItem * item = q->mkfile(name, fileSize, compressedSize);
 
             indexHash.insert(name, index);
@@ -176,6 +181,9 @@ void QMPQArchivePrivate::initFile(const char * fileName, quint32 searchScope)
         }
 
         SFileCloseFile(hFile);
+    } else {
+        m_lastError = GetLastError();
+        qWarning() << "can't open file: " << m_lastError.errorMessage();
     }
 }
 
@@ -241,17 +249,18 @@ bool QMPQArchivePrivate::addLocalFile(const QString &localFile, const QString &f
 {
     setUpdateOnClose();
     QString suffix = QFileInfo(localFile).suffix();
-    int flags = 0;
-    flags |= getCompressionFlags(MPQExtensionManager::instance()->compressionTypes(suffix));
-    flags |= getAddFileOptionFlags(MPQExtensionManager::instance()->addFileOptions(suffix));
-    qDebug() << MPQExtensionManager::instance()->compressionTypes(suffix);
-    bool result = SFileAddFile(mpq,
+    int flags = getAddFileOptionFlags(MPQExtensionManager::instance()->addFileOptions(suffix));;
+    int compression = getCompressionFlags(MPQExtensionManager::instance()->compressionTypes(suffix));;
+    flags |= MPQ_FILE_REPLACEEXISTING; // we always replace existing file
+    //    qDebug() << MPQExtensionManager::instance()->compressionTypes(suffix);
+    bool result = SFileAddFileEx(mpq,
                         localFile.toLocal8Bit().data(),
                         file.toLocal8Bit().data(),
-                        flags);
+                        flags,
+                        compression);
     if (!result) {
         m_lastError = GetLastError();
-        qWarning() << "can't add file: " << m_lastError.errorMessage();
+        qWarning() << "can't add file: " << localFile << file << m_lastError.errorMessage();
         return false;
     }
     return true;
@@ -584,6 +593,17 @@ qint64 QMPQArchive::size(const QString &file) const
         return -1;
     else
         return item->data(QMPQArchive::FullSize).toInt();
+}
+
+qint64 QMPQArchive::compressedSize(const QString &file) const
+{
+    TreeItem * item = treeItem(file);
+//    qDebug() << "QMPQArchive::size()" << file << item;
+
+    if (!item || item->isDir())
+        return -1;
+    else
+        return item->data(QMPQArchive::CompressedSize).toInt();
 }
 
 //bool QMPQArchive::detachTree(TreeItem * item)

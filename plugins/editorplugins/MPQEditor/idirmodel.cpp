@@ -15,7 +15,6 @@ DirModelWrapper::DirModelWrapper(const QString & path)
 
 bool DirModelWrapper::remove(const QModelIndex & index) const
 {
-    qDebug() << "DirModelWrapper::remove" << m_model->filePath(index);
     bool result = true;
     if (m_model->isDir(index)) { // recursively removes current dir
         QDir dir(m_model->filePath(index));
@@ -32,7 +31,6 @@ bool DirModelWrapper::remove(const QModelIndex & index) const
     } else { // removes current file
         result = m_model->remove(index);
     }
-    qDebug() << result;
 
     return result;
 }

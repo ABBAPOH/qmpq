@@ -3,7 +3,7 @@
 
 #include <preferencesmanager.h>
 
-#include <QDebug>
+//#include <QDebug>
 
 PreferencesWidget::PreferencesWidget(PreferencesManager * manager, QWidget *parent) :
     QWidget(parent),
@@ -32,13 +32,12 @@ PreferencesWidget::PreferencesWidget(PreferencesManager * manager, QWidget *pare
                 indexes.append(i);
         }
         indexes.append(length);
-qDebug() << pageKey << indexes;
+
         QString parentPageKey = "";
         for (int i = 1; i < indexes.count(); i++) {
             QString currentPageKey = pageKey.mid(0, indexes.at(i));
             QString shortPageKey = pageKey.mid(indexes.at(i - 1) + 1, indexes.at(i));
 
-            qDebug() << currentPageKey << currentPageKey;
             QTreeWidgetItem * parent = 0;
             if (parentPageKey != "")
                 parent = m_items.value(parentPageKey);
@@ -85,7 +84,6 @@ void PreferencesWidget::changeEvent(QEvent *e)
 
 void PreferencesWidget::onItemClick(QTreeWidgetItem * item, int column)
 {
-    qDebug () << item->text(0);
     int index = item->data(0, Qt::UserRole).toInt();
     ui->stackedWidget->setCurrentIndex(index);
 }

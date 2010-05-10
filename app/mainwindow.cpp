@@ -131,7 +131,7 @@ void MainWindow::openManual(const QString & path)
 
 void MainWindow::tabChanged(int index)
 {
-    qDebug() << "MainWindow::tabChanged" << index;
+//    qDebug() << "MainWindow::tabChanged" << index;
     TabContext * context = tabManager->context();
     IEditor * editor = context->editor();
     if (!editor)
@@ -142,7 +142,7 @@ void MainWindow::tabChanged(int index)
 
 void MainWindow::closeTab(int index)
 {
-    qDebug() << "MainWindow::closeTab" << index;
+//    qDebug() << "MainWindow::closeTab" << index;
     if (ui->tabWidget->count() == 1)
         return;
     TabContext * context = tabManager->context(index);

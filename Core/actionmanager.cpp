@@ -53,14 +53,11 @@ void ActionManager::paste()
     QMetaObject::invokeMethod(ICore::instance()->context()->widget(), "paste");
 }
 
-#include <QDebug>
 void ActionManager::updateActions()
 {
-    qDebug("updateActions");
     QWidget * widget = ICore::instance()->context()->widget();
     if (!widget)
         return;
-    qDebug() << widget->metaObject()->className();
     QAction * actionCut = ICore::instance()->actionManager()->action("CUT");
     Q_ASSERT(actionCut);
     actionCut->setEnabled(hasSlot(widget, SLOT(cut())));

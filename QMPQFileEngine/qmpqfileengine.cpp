@@ -320,6 +320,7 @@ bool QMPQFileEngine::setSize(qint64 size)
 qint64 QMPQFileEngine::size() const
 {
     Q_D(const QMPQFileEngine);
+//    return d->archive->compressedSize(d->innerPath);
     return d->archive->size(d->innerPath);
 }
 

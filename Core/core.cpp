@@ -44,7 +44,8 @@ Core::~Core()
 
 bool Core::addObject(QObject * object)
 {
-    qDebug("Core::addObject");
+    if (!object)
+        return false;
     IWindowManager * fileManager = qobject_cast<IWindowManager *>(object);
     if (fileManager) {
         m_windowManager = fileManager;

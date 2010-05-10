@@ -36,6 +36,7 @@
   #endif
 
   #include <assert.h>      
+  #include <ctype.h>      
   #include <stdio.h>      
   #include <windows.h>      
   #define PLATFORM_LITTLE_ENDIAN  1
@@ -51,7 +52,7 @@
 #endif
 
 // Defines for Mac Carbon 
-#if !defined(PLATFORM_DEFINED)  // Mac Carbon API
+#if !defined(PLATFORM_DEFINED) && defined(__APPLE__)  // Mac Carbon API
 
   // Macintosh using Carbon
   #include <Carbon/Carbon.h> // Mac OS X
@@ -67,7 +68,7 @@
     #define PLATFORM_LITTLE_ENDIAN  1       // Apple is now making Macs with Intel CPUs
   #endif
   
-  #ifdef __LP64__
+  #if __LP64__
     #define PLATFORM_64BIT
   #else
     #define PLATFORM_32BIT
@@ -109,18 +110,11 @@
   typedef uint16_t       USHORT;
   typedef int32_t        LONG;
   typedef uint32_t       DWORD;
-//  typedef intptr_t       DWORD_PTR;
-  typedef unsigned long      DWORD_PTR;
+  typedef intptr_t       DWORD_PTR;
   typedef intptr_t       LONG_PTR;
   typedef intptr_t       INT_PTR;
   typedef int64_t        LONGLONG;
-#ifndef __OBJC__
-#ifdef __cplusplus
-  #define BOOL           bool
-#else
-  #define BOOL           int
-#endif
-#endif
+  typedef signed char    BOOL;
   typedef void         * HANDLE;
   typedef void         * LPOVERLAPPED; // Unsupported on Linux and Mac
   typedef char           TCHAR;
@@ -135,7 +129,7 @@
       DWORD dwLowDateTime; 
       DWORD dwHighDateTime; 
   }
-  FILETIME, *PFILETIME;
+  FILETIME, *PFILETIME, *LPFILETIME;
 
   typedef union _LARGE_INTEGER
   {
@@ -156,17 +150,21 @@
   }
   LARGE_INTEGER, *PLARGE_INTEGER;
   
+  #ifdef PLATFORM_32BIT
+    #define _LZMA_UINT32_IS_ULONG
+  #endif
+
   // Some Windows-specific defines
   #ifndef MAX_PATH
     #define MAX_PATH 1024
   #endif
 
   #ifndef TRUE
-    #define TRUE true
+    #define TRUE (BOOL)1
   #endif
 
   #ifndef FALSE
-    #define FALSE false
+    #define FALSE (BOOL)0
   #endif
 
   #define VOID     void
@@ -175,12 +173,7 @@
   #define FILE_BEGIN    SEEK_SET
   #define FILE_CURRENT  SEEK_CUR
   #define FILE_END      SEEK_END
-  
-  #define CREATE_NEW    1
-  #define CREATE_ALWAYS 2
-  #define OPEN_EXISTING 3
-  #define OPEN_ALWAYS   4
-  
+
   #define FILE_SHARE_READ 0x00000001L
   #define GENERIC_WRITE   0x40000000
   #define GENERIC_READ    0x80000000
@@ -189,10 +182,12 @@
   #define ERROR_INVALID_FUNCTION            1
   #define ERROR_FILE_NOT_FOUND              2
   #define ERROR_ACCESS_DENIED               5
+  #define ERROR_INVALID_HANDLE              6
   #define ERROR_NOT_ENOUGH_MEMORY           8
   #define ERROR_BAD_FORMAT                 11
   #define ERROR_NO_MORE_FILES              18
   #define ERROR_WRITE_FAULT                29
+  #define ERROR_READ_FAULT                 30
   #define ERROR_GEN_FAILURE                31
   #define ERROR_HANDLE_EOF                 38
   #define ERROR_HANDLE_DISK_FULL           39
@@ -214,8 +209,9 @@
   extern int globalerr;
   
   void  SetLastError(int err);
-  int   WINAPI GetLastError();
+  int   GetLastError();
   char *ErrString(int err);
+
   // Emulation of functions for file I/O available in Win32
   HANDLE CreateFile(const char * lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, void * lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
   BOOL   CloseHandle(HANDLE hObject);
@@ -223,6 +219,8 @@
   DWORD  GetFileSize(HANDLE hFile, DWORD * lpFileSizeHigh);
   DWORD  SetFilePointer(HANDLE, LONG lDistanceToMove, LONG * lpDistanceToMoveHigh, DWORD dwMoveMethod);
   BOOL   SetEndOfFile(HANDLE hFile);
+
+  BOOL   GetFileTime(HANDLE hFile, LPFILETIME lpCreationTime, LPFILETIME lpLastAccessTime, LPFILETIME lpLastWriteTime);
 
   BOOL   ReadFile(HANDLE hFile, void * lpBuffer, DWORD nNumberOfBytesToRead, DWORD * lpNumberOfBytesRead, void * lpOverLapped);
   BOOL   WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite, DWORD * lpNumberOfBytesWritten, void * lpOverLapped);
@@ -232,8 +230,6 @@
 
   BOOL   DeleteFile(const char * lpFileName);
   BOOL   MoveFile(const char * lpFromFileName, const char * lpToFileName);
-  void   GetTempPath(DWORD szTempLength, char * szTemp);
-  void   GetTempFileName(const char * lpTempFolderPath, const char * lpFileName, DWORD something, char * szLFName);
 
   #define strnicmp strncasecmp
 
@@ -246,16 +242,16 @@
     #define    BSWAP_INT32_SIGNED(a)            (a)
     #define    BSWAP_ARRAY16_UNSIGNED(a,b)      {}
     #define    BSWAP_ARRAY32_UNSIGNED(a,b)      {}
-    #define    BSWAP_TMPQSHUNT(a)               {}
+    #define    BSWAP_TMPQUSERDATA(a)            {}
     #define    BSWAP_TMPQHEADER(a)              {}
 #else
     extern uint16_t SwapUShort(uint16_t);
     extern uint32_t SwapULong(uint32_t);
     extern int16_t SwapShort(uint16_t);
     extern int32_t SwapLong(uint32_t);
-    extern void ConvertUnsignedLongBuffer(uint32_t *buffer, uint32_t nbLongs);
-    extern void ConvertUnsignedShortBuffer(uint16_t *buffer, uint32_t nbShorts);
-    extern void ConvertTMPQShunt(void *shunt);
+    extern void ConvertUnsignedLongBuffer(void * ptr, size_t length);
+    extern void ConvertUnsignedShortBuffer(void * ptr, size_t length);
+    extern void ConvertTMPQUserData(void *userData);
     extern void ConvertTMPQHeader(void *header);
     #define    BSWAP_INT16_UNSIGNED(a)          SwapUShort((a))
     #define    BSWAP_INT32_UNSIGNED(a)          SwapULong((a))
@@ -263,7 +259,7 @@
     #define    BSWAP_INT32_SIGNED(a)            SwapLong((a))
     #define    BSWAP_ARRAY16_UNSIGNED(a,b)      ConvertUnsignedShortBuffer((a),(b))
     #define    BSWAP_ARRAY32_UNSIGNED(a,b)      ConvertUnsignedLongBuffer((a),(b))
-    #define    BSWAP_TMPQSHUNT(a)               ConvertTMPQShunt((a))
+    #define    BSWAP_TMPQUSERDATA(a)            ConvertTMPQUserData((a))
     #define    BSWAP_TMPQHEADER(a)              ConvertTMPQHeader((a))
 #endif
 
