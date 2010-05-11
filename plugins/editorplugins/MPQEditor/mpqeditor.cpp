@@ -304,6 +304,14 @@ bool MPQEditor::canUp()
 //    return m_model->filePath(currentView->rootIndex().parent()).startsWith(m_currentFile);
 }
 
+void MPQEditor::refresh(const QString & path)
+{
+    //  we manually refresh model if it is QDirModel or it's subclass
+    QDirModel * model = qobject_cast<QDirModel *>(m_model->model());
+    if (model)
+        model->refresh(m_model->index(path));
+}
+
 QStringList MPQEditor::selectedPaths()
 {
     QStringList result;

@@ -12,7 +12,7 @@ class ArchiveSuffixesManager : public QObject
 public:
     void addSuffix(const QString & suffix, const QString & prefix)
     {
-        m_prefixes.insert(suffix, prefix);
+        m_prefixes.insert(suffix.toLower(), prefix);
     }
 
     void addSuffixes(const QStringList & suffixes, const QString & prefix)
@@ -25,7 +25,7 @@ public:
     QString mapFromPath(QString path) const
     {
         QFileInfo info(path);
-        return m_prefixes.value(info.suffix());
+        return m_prefixes.value(info.suffix().toLower());
     }
 
 private:

@@ -17,11 +17,11 @@ public:
     MPQEditorInterface(MPQEditor * editor);
     ~MPQEditorInterface();
     virtual bool canHandle(const QString & filePath);
+    virtual void close();
     virtual QString currentFile();
     virtual bool open(const QString &file);
-    virtual QWidget * widget();
     virtual QToolBar * toolBar ();
-    virtual void close();
+    virtual QWidget * widget();
 
 private:
     void initActions();

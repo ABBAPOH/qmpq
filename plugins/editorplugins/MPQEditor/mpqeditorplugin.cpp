@@ -99,6 +99,11 @@ bool MPQEditorInterface::canHandle(const QString & filePath)
     return MPQEditorPlugin::canHandle(filePath);
 }
 
+void MPQEditorInterface::close()
+{
+    m_editor->closeFile();
+}
+
 QString MPQEditorInterface::currentFile()
 {
     return m_editor->currentFile();
@@ -108,11 +113,6 @@ bool MPQEditorInterface::open(const QString &file)
 {
     m_editor->open(file);
     return true;
-}
-
-void MPQEditorInterface::close()
-{
-    m_editor->closeFile();
 }
 
 void MPQEditorInterface::add()
@@ -216,7 +216,7 @@ bool MPQEditorInterface::contextMenu(QContextMenuEvent *event)
     QMenu mpqMenu;
     mpqMenu.setTitle("MPQ");
     mpqMenu.addAction(actionReopen);
-    mpqMenu.addAction(actionApply);
+//    mpqMenu.addAction(actionApply);
 
     QStringList paths = m_editor->selectedPaths();
     if (!paths.isEmpty() && m_editor->isMPQArchive(paths.first())) {

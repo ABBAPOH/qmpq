@@ -50,12 +50,14 @@ public:
 
     bool canUp();
     QString currentFile() { return m_currentFile; }
-    static QAbstractItemModel * model();
-    QStringList selectedPaths();
-    void showColumns(bool show);
     bool isMPQArchive(const QString & file);
     const MPQEditorError & lastError() const { return m_lastError; }
+    void refresh(const QString & path);
+    QStringList selectedPaths();
+    void showColumns(bool show);
     ArchiveSuffixesManager * suffixesManager() const { return m_suffixesManager; }
+
+    static QAbstractItemModel * model();
 
 private:
 	UniversalView * m_view;
