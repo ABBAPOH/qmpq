@@ -82,7 +82,8 @@ void MPQEditor::initModel(const QString & path)
     ModelType currentType = getModelType(m_currentFile);
     ModelType newType = getModelType(path);
     qDebug() << path << currentType << newType;
-    if (currentType != newType || m_model == 0)
+    //  if old path is not part of a new path, it is a chance that we have to switch archive
+    if ( (currentType != newType || m_model == 0) || (!path.startsWith(m_currentFile)) )
     {
         delete m_model;
         m_model = 0;
