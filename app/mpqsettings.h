@@ -10,13 +10,13 @@ namespace Ui {
     class MPQSettings;
 }
 
-class MPQExtensionManager;
-class MPQSettings : public QWidget {
+class MPQSettings;
+class MPQSettingsWidget : public QWidget {
     Q_OBJECT
 public:
-    MPQSettings(QWidget *parent = 0);
-    ~MPQSettings();
-    MPQExtensionManager * extensionManager() { return m_extensionManager; }
+    MPQSettingsWidget(QWidget *parent = 0);
+    ~MPQSettingsWidget();
+    MPQSettings * extensionManager() { return m_extensionManager; }
     void addExtension(const QString & key, int options, int value);
 
 protected:
@@ -31,7 +31,7 @@ private:
 //    int keyToValue(QString flagsName, int value);
 
     Ui::MPQSettings *ui;
-    MPQExtensionManager * m_extensionManager;
+    MPQSettings * m_extensionManager;
     QMetaEnum optionsEnum;
     QMetaEnum compressionEnum;
 
@@ -47,7 +47,7 @@ private slots:
 class MPQSettingsPage : public IPreferencesPage
 {
 public:
-    MPQSettingsPage(QObject * parent = 0) : IPreferencesPage(parent), m_widget(new MPQSettings)
+    MPQSettingsPage(QObject * parent = 0) : IPreferencesPage(parent), m_widget(new MPQSettingsWidget)
     {
     }
 
@@ -65,7 +65,7 @@ public:
     virtual QWidget * widget() { return m_widget; }
 
 private:
-    MPQSettings * m_widget;
+    MPQSettingsWidget * m_widget;
 };
 
 

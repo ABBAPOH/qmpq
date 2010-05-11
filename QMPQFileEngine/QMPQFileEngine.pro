@@ -22,7 +22,7 @@ SOURCES += qmpqfileengine.cpp \
     sharedmpqarchive.cpp \
     objectcache.cpp \
     qmpqarchivecache.cpp \
-    mpqextensionmanager.cpp
+    mpqsettings.cpp
 HEADERS += qmpqfileengine.h \
     QMPQFileEngine_global.h \
     qmpqfileenginehandler.h \
@@ -35,7 +35,7 @@ HEADERS += qmpqfileengine.h \
     qmpqfileengine_p.h \
     objectcache.h \
     qmpqarchivecache.h \
-    mpqextensionmanager.h
+    mpqsettings.h
 mac:target.path += ../app/bin/QMPQ.app/Contents/MacOS
 win32:target.path += ../app/bin/
 INSTALLS += target

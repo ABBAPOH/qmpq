@@ -33,7 +33,8 @@ HEADERS += mainwindow.h \
     createarchivedialog.h \
     archivesuffixesmanager.h \
     preferenceswidget.h \
-    mpqsettings.h
+    mpqsettings.h \
+    mpqextensionssettings.h
 SOURCES += mainwindow.cpp \
     main.cpp \
     editormanager.cpp \
@@ -45,8 +46,10 @@ SOURCES += mainwindow.cpp \
     mainwindowplugin.cpp \
     historymanager.cpp \
     preferenceswidget.cpp \
-    mpqsettings.cpp
+    mpqsettings.cpp \
+    mpqextensionssettings.cpp
 FORMS += createarchivedialog.ui \
     preferenceswidget.ui \
-    mpqsettings.ui
+    mpqsettings.ui \
+    mpqextensionssettings.ui
 RESOURCES += qmq.qrc

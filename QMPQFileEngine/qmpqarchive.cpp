@@ -215,30 +215,30 @@ QByteArray QMPQArchivePrivate::readFile(const QString &file)
     return arr;
 }
 
-int getCompressionFlags(MPQExtensionManager::CompressionTypes types)
+int getCompressionFlags(MPQSettings::CompressionFlags types)
 {
     switch (types) {
-    case MPQExtensionManager::NONE : return 0;
-    case MPQExtensionManager::HUFFMAN : return MPQ_COMPRESSION_HUFFMANN;
-    case MPQExtensionManager::ZLIB : return MPQ_COMPRESSION_ZLIB;
-    case MPQExtensionManager::PKWARE : return MPQ_COMPRESSION_PKWARE;
-    case MPQExtensionManager::BZIP2 : return MPQ_COMPRESSION_BZIP2;
-    case MPQExtensionManager::ADCPM_Mono : return MPQ_COMPRESSION_WAVE_MONO;
-    case MPQExtensionManager::ADCPM_Stereo : return MPQ_COMPRESSION_WAVE_STEREO;
+    case MPQSettings::NONE : return 0;
+    case MPQSettings::HUFFMAN : return MPQ_COMPRESSION_HUFFMANN;
+    case MPQSettings::ZLIB : return MPQ_COMPRESSION_ZLIB;
+    case MPQSettings::PKWARE : return MPQ_COMPRESSION_PKWARE;
+    case MPQSettings::BZIP2 : return MPQ_COMPRESSION_BZIP2;
+    case MPQSettings::ADCPM_Mono : return MPQ_COMPRESSION_WAVE_MONO;
+    case MPQSettings::ADCPM_Stereo : return MPQ_COMPRESSION_WAVE_STEREO;
     default: return 0;
     }
 }
 
-int getAddFileOptionFlags(MPQExtensionManager::AddFileOptions options)
+int getAddFileOptionFlags(MPQSettings::FileFlags options)
 {
     switch (options) {
-    case MPQExtensionManager::None : return 0;
-    case MPQExtensionManager::Implode : return MPQ_FILE_IMPLODE;
-    case MPQExtensionManager::Compress : return MPQ_FILE_COMPRESS;
-    case MPQExtensionManager::Compressed : return MPQ_FILE_COMPRESSED;
-    case MPQExtensionManager::Encrypted : return MPQ_FILE_ENCRYPTED;
+    case MPQSettings::None : return 0;
+    case MPQSettings::Implode : return MPQ_FILE_IMPLODE;
+    case MPQSettings::Compress : return MPQ_FILE_COMPRESS;
+    case MPQSettings::Compressed : return MPQ_FILE_COMPRESSED;
+    case MPQSettings::Encrypted : return MPQ_FILE_ENCRYPTED;
 //    case MPQExtensionManager::FixKey : return MPQ_FILE_FIX_KEY;
-    case MPQExtensionManager::SingleUnit : return MPQ_FILE_SINGLE_UNIT;
+    case MPQSettings::SingleUnit : return MPQ_FILE_SINGLE_UNIT;
 //    case MPQExtensionManager::DeleteMarker : return MPQ_FILE_DELETE_MARKER;
 //    case MPQExtensionManager::SectorCRC : return MPQ_FILE_SECTOR_CRC;
     default: return 0;
@@ -249,8 +249,8 @@ bool QMPQArchivePrivate::addLocalFile(const QString &localFile, const QString &f
 {
     setUpdateOnClose();
     QString suffix = QFileInfo(localFile).suffix();
-    int flags = getAddFileOptionFlags(MPQExtensionManager::instance()->addFileOptions(suffix));;
-    int compression = getCompressionFlags(MPQExtensionManager::instance()->compressionTypes(suffix));;
+    int flags = getAddFileOptionFlags(MPQSettings::instance()->fileFlags(suffix));;
+    int compression = getCompressionFlags(MPQSettings::instance()->compressionTypes(suffix));;
     flags |= MPQ_FILE_REPLACEEXISTING; // we always replace existing file
     //    qDebug() << MPQExtensionManager::instance()->compressionTypes(suffix);
     bool result = SFileAddFileEx(mpq,
