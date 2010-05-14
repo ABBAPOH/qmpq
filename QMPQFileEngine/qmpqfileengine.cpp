@@ -99,12 +99,10 @@ QAbstractFileEngine::FileFlags QMPQFileEngine::fileFlags(FileFlags type) const
     Q_UNUSED(type);
     QAbstractFileEngine::FileFlags result = 0;
     Q_D(const QMPQFileEngine);
-    QFileInfo * info = getNativeFileInfo(d->archiveFilePath);
-    if (!info->exists()) {
-        delete info;
+    QFileInfo info(d->archiveFilePath);
+    if (!info.exists()) {
         return result;
     }
-    delete info;
     result |= d->archive->isDir(d->innerPath) ? QAbstractFileEngine::DirectoryType : QAbstractFileEngine::FileType;
     if (d->archive->treeItem(d->innerPath))
         result |= QAbstractFileEngine::ExistsFlag;
@@ -226,13 +224,9 @@ bool QMPQFileEngine::remove()
 {
     Q_D(QMPQFileEngine);
     if (d->innerPath=="") {
-        #warning TODO: fix it
-        QMPQFileEngineHandler::setLocked(true);
         QFile file(d->archiveFilePath);
         d->archive->closeArchive();
-        bool result = file.remove();
-        QMPQFileEngineHandler::setLocked(false);
-        return result;
+        return file.remove();
     } else {
         return d->archive->remove(d_func()->innerPath);
     }
@@ -242,13 +236,9 @@ bool QMPQFileEngine::rename(const QString & newName)
 {
     Q_D(const QMPQFileEngine);
     if (d->innerPath=="") {
-        #warning TODO: fix it
-        QMPQFileEngineHandler::setLocked(true);
         QFile file(d->archiveFilePath);
         d->archive->closeArchive();
-        bool result = file.rename(newName);
-        QMPQFileEngineHandler::setLocked(false);
-        return result;
+        return file.rename(newName);
     } else {
         QString newInnerPath = newName.mid(d->archiveFilePath.length() + 1);
         newInnerPath = newInnerPath.replace('/', '\\');
@@ -334,20 +324,4 @@ qint64 QMPQFileEngine::write(const char * data, qint64 maxlen)
     d->fileData.append(data, maxlen);
     d->offset += maxlen;
     return maxlen;
-}
-
-QFile * QMPQFileEngine::getNativeFile(QString path) const
-{
-    QMPQFileEngineHandler::setLocked(true);
-    QFile * result = new QFile(path);
-    QMPQFileEngineHandler::setLocked(false);
-    return result;
-}
-
-QFileInfo * QMPQFileEngine::getNativeFileInfo(QString path) const
-{
-    QMPQFileEngineHandler::setLocked(true);
-    QFileInfo * result = new QFileInfo(path);
-    QMPQFileEngineHandler::setLocked(false);
-    return result;
 }

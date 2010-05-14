@@ -4,8 +4,6 @@
 
 #include <QtCore/QDebug>
 
-bool QMPQFileEngineHandler::lock = false;
-
 QMPQFileEngineHandler::QMPQFileEngineHandler() : QAbstractFileEngineHandler()
 {
 //    qDebug() << "QMPQFileEngineHandler::QMPQFileEngineHandler";
@@ -13,8 +11,6 @@ QMPQFileEngineHandler::QMPQFileEngineHandler() : QAbstractFileEngineHandler()
 
 QAbstractFileEngine *QMPQFileEngineHandler::create(const QString &fileName) const
 {
-    if (lock)
-        return 0;
     QStringList suffixes = QMPQFileEngine::supportedFormats();
 
 //    if (QMPQFileEngineStringParser(fileName, suffixes).isFound()) {

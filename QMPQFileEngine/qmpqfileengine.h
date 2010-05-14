@@ -84,8 +84,6 @@ public:
                 << "SC2Replay" << "scx" << "w3n" << "snp" << "sv" << "hsv";
     }
 private:
-    QFile * getNativeFile(QString path) const;
-    QFileInfo * getNativeFileInfo(QString path) const;
     void initArchive();
 
 protected:
