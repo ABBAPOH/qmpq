@@ -37,7 +37,8 @@ PreferencesManager::~PreferencesManager()
     m_settings->clear();
     foreach (QString key, keys()) {
 //        qDebug() << key << value(key);
-        m_settings->setValue(key, value(key));
+        QVariant val = value(key);
+        m_settings->setValue(key, val);
     }
 }
 

@@ -1,7 +1,7 @@
 #include "mpqsettings.h"
 #include "ui_mpqsettings.h"
 
-#include "../QMPQFileEngine/mpqextensionmanager.h"
+#include "../QMPQFileEngine/mpqsettings.h"
 
 #include <QMetaEnum>
 

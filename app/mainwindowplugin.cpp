@@ -12,6 +12,7 @@
 #include "createarchivedialog.h"
 #include "mainwindow.h"
 #include "mpqsettings.h"
+#include "mpqextensionssettings.h"
 #include "preferenceswidget.h"
 #include "windowmanager.h"
 
@@ -35,11 +36,11 @@ void MainWindowPlugin::initialize()
     core->pluginManager()->load();
 
     ArchiveSuffixesManager * manager = new ArchiveSuffixesManager;
-    QStringList suffixes;
-    suffixes << "mpq" << "w3x" << "w3m" << "s2ma" << "SC2Data" << "SC2Archive" << "SC2Assets"
-            << "SC2Replay" << "scx" << "w3n" << "snp" << "sv" << "hsv";
+//    QStringList suffixes;
+//    suffixes << "mpq" << "w3x" << "w3m" << "s2ma" << "SC2Data" << "SC2Archive" << "SC2Assets"
+//            << "SC2Replay" << "scx" << "w3n" << "snp" << "sv" << "hsv";
 
-    manager->addSuffixes(suffixes, "mpq:");
+//    manager->addSuffixes(suffixes, "mpq:");
     manager->setObjectName("SuffixesManager");
     core->addObject(manager);
 
@@ -47,6 +48,8 @@ void MainWindowPlugin::initialize()
 
     PreferencesManager * preferencesManager = qobject_cast<PreferencesManager *>(core->getObject("PreferencesManager"));
     preferencesManager->addPreferencesPage(new MPQSettingsPage);
+    preferencesManager->addPreferencesPage(new MPQExtensionsPage);
+
 //    preferencesManager->loadSettings();
 
     m_preferencesWidget = new PreferencesWidget(preferencesManager);

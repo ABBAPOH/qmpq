@@ -47,11 +47,12 @@ private slots:
 class MPQSettingsPage : public IPreferencesPage
 {
 public:
-    MPQSettingsPage(QObject * parent = 0) : IPreferencesPage(parent), m_widget(new MPQSettingsWidget)
+    explicit MPQSettingsPage(QObject * parent = 0) : IPreferencesPage(parent), m_widget(new MPQSettingsWidget)
     {
     }
 
-    ~MPQSettingsPage() {
+    ~MPQSettingsPage()
+    {
     }
 
     QStringList keys();

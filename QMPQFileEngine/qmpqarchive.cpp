@@ -7,7 +7,7 @@
 #include <StormLib/Stormlib.h>
 
 #include "treeitem.h"
-#include "mpqextensionmanager.h"
+#include "mpqsettings.h"
 
 #include <QDebug>
 

@@ -28,6 +28,18 @@ public:
         return m_prefixes.value(info.suffix().toLower());
     }
 
+    void removeSuffix(const QString & suffix) {
+        m_prefixes.remove(suffix.toLower());
+	}
+
+    void removePrefix(const QString & prefix) {
+        QStringList list = m_prefixes.keys(prefix);
+        foreach (QString suffix, list) {
+            removeSuffix(suffix);
+        }
+    }
+
+
 private:
     QMap<QString, QString> m_prefixes;
 };

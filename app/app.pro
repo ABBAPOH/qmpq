@@ -3,10 +3,12 @@
 # -------------------------------------------------
 TARGET = QMPQ
 TEMPLATE = app
+
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
+
 LIBS += -L../plugins/editorplugins/MPQEditor/bin/ \
     -lMPQEditor
 LIBS += -L../QMPQFileEngine/bin \
@@ -17,10 +19,12 @@ LIBS += -L../3rdParty/QDirModel/bin \
     -lQDirModel
 LIBS += -L../Core/bin/ \
     -lCore
+
 INCLUDEPATH += -I \
     ../QMPQFileEngine
 INCLUDEPATH += -I \
     ../Core
+
 HEADERS += mainwindow.h \
     editormanager.h \
     editorview.h \
