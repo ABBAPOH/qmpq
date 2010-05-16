@@ -214,6 +214,10 @@ void MainWindowPlugin::initializeMenus()
     preferencesAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+,", 0, QApplication::UnicodeUTF8));
     core->actionManager()->registerAction(preferencesAction, Core::ACTION_PREFERENCES);
 
+    QMenu * toolsMenu = core->actionManager()->menu(Core::MENU_TOOLS);
+    toolsMenu->setTitle(tr("Tools"));
+
+
     QMenu * helpMenu = core->actionManager()->createMenu(Core::MENU_HELP);
     helpMenu->setTitle(tr("Help"));
 

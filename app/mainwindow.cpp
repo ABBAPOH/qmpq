@@ -25,11 +25,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setCentralWidget(ui->tabWidget);
 
-    QMenu * fileMenu = ICore::instance()->actionManager()->menu("FILE");
-    QMenu * editMenu = ICore::instance()->actionManager()->menu("EDIT");
-    QMenu * helpMenu = ICore::instance()->actionManager()->menu("HELP");
+    QMenu * fileMenu = ICore::instance()->actionManager()->menu(Core::MENU_FILE);
+    QMenu * editMenu = ICore::instance()->actionManager()->menu(Core::MENU_EDIT);
+    QMenu * toolsMenu = ICore::instance()->actionManager()->menu(Core::MENU_TOOLS);
+    QMenu * helpMenu = ICore::instance()->actionManager()->menu(Core::MENU_HELP);
     menuBar()->addAction(fileMenu->menuAction());
     menuBar()->addAction(editMenu->menuAction());
+    menuBar()->addAction(toolsMenu->menuAction());
     menuBar()->addAction(helpMenu->menuAction());
 
     connect(ui->tabWidget, SIGNAL(currentChanged(int)), tabManager, SLOT(changeCurrent(int)));

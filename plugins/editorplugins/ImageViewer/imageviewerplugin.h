@@ -4,6 +4,14 @@
 #include <ieditorfactory.h>
 #include <iplugin.h>
 
+
+namespace Core
+{
+    const char * const ACTION_ZOOM_IN = "ZOOM IN";
+    const char * const ACTION_ZOOM_OUT = "ZOOM OUT";
+    const char * const ACTION_ZOOM_RESET = "ZOOM RESET";
+}
+
 class ImageViewer;
 class QSignalMapper;
 class QAction;
@@ -57,6 +65,15 @@ public:
     virtual QString name() { return "Image Viewer Plugin"; }
     virtual QString description() { return QString(); };
 
+private slots:
+    void updateActions();
+    void zoomIn();
+    void zoomOut();
+    void zoomReset();
+
+private:
+    ImageViewerInterface * editor();
+    ImageViewer * editorWidget();
 };
 
 #endif // MPQEDITORPLUGIN_H

@@ -6,6 +6,7 @@
 #include <QtCore/QSignalMapper>
 #include <QtGui/QAction>
 #include <QtGui/QImageWriter>
+#include <QtGui/QMenu>
 #include <QDebug>
 
 #include "imageviewer.h"
@@ -24,14 +25,15 @@ ImageViewerInterface::ImageViewerInterface(ImageViewer * editor)
 
 void ImageViewerInterface::initToolBar()
 {
+    IActionManager * manager = ICore::instance()->actionManager();
     m_toolBar->addAction(QIcon(":/icons/images/save.png"), "Save", this, SLOT(save()));
     m_toolBar->addSeparator();
     m_toolBar->addAction(QIcon(":/icons/images/copy.png"), "Copy", m_editor, SLOT(copy()));
     m_toolBar->addAction(QIcon(":/icons/images/paste.png"), "Paste", m_editor, SLOT(paste()));
     m_toolBar->addSeparator();
-    m_toolBar->addAction(QIcon(":/icons/images/zoomin.png"), "Zoom In", m_editor, SLOT(zoomIn()));
-    m_toolBar->addAction(QIcon(":/icons/images/zoomout.png"), "Zoom Out", m_editor, SLOT(zoomOut()));
-    m_toolBar->addAction(QIcon(":/icons/images/resetzoom.png"), "Reset Zoom", m_editor, SLOT(zoomReset()));
+    m_toolBar->addAction(manager->action(Core::ACTION_ZOOM_IN));
+    m_toolBar->addAction(manager->action(Core::ACTION_ZOOM_OUT));
+    m_toolBar->addAction(manager->action(Core::ACTION_ZOOM_RESET));
 }
 
 ImageViewerInterface::~ImageViewerInterface()
@@ -118,8 +120,72 @@ bool ImageViewerFactory::canHandle(const QString &file) const
 
 void ImageViewerPlugin::initialize()
 {
-    ICore::instance()->editorFactoryManager()->addFactory(new ImageViewerFactory);
-    ICore::instance()->fileManager()->registerExtensionString("Image Files (*.blp *.tga *.jpg *.bmp *.png)");
+    ICore * core = ICore::instance();
+
+    core->editorFactoryManager()->addFactory(new ImageViewerFactory);
+    core->fileManager()->registerExtensionString("Image Files (*.blp *.tga *.jpg *.bmp *.png)");
+
+    QAction * actionZoomIn = new QAction(QIcon(":/icons/images/zoomin.png"), "Zoom In", this);
+    QAction * actionZoomOut = new QAction(QIcon(":/icons/images/zoomout.png"), "Zoom Out", this);
+    QAction * actionZoomReset = new QAction(QIcon(":/icons/images/resetzoom.png"), "Reset Zoom", this);
+
+    connect(actionZoomIn, SIGNAL(triggered()), SLOT(zoomIn()));
+    connect(actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
+    connect(actionZoomReset, SIGNAL(triggered()), SLOT(zoomReset()));
+
+    QMenu * menuTools = core->actionManager()->menu(Core::MENU_TOOLS);
+    QMenu * menu = menuTools->addMenu(tr("Image Viewer"));
+    menu->addAction(actionZoomIn);
+    menu->addAction(actionZoomOut);
+    menu->addAction(actionZoomReset);
+    core->actionManager()->registerAction(actionZoomIn, Core::ACTION_ZOOM_IN);
+    core->actionManager()->registerAction(actionZoomOut, Core::ACTION_ZOOM_OUT);
+    core->actionManager()->registerAction(actionZoomReset, Core::ACTION_ZOOM_RESET);
+
+    connect(core->editorFactoryManager(), SIGNAL(currentEditorChanged(IEditor*)), SLOT(updateActions()));
+}
+
+ImageViewerInterface * ImageViewerPlugin::editor()
+{
+    ICore * core = ICore::instance();
+    return qobject_cast<ImageViewerInterface *>(core->editorFactoryManager()->currentEditor());
+}
+
+ImageViewer * ImageViewerPlugin::editorWidget()
+{
+    ImageViewerInterface * editor = this->editor();
+    if (editor)
+        return static_cast<ImageViewer*>(editor->widget());
+}
+
+void ImageViewerPlugin::updateActions()
+{
+    ICore * core = ICore::instance();
+    ImageViewerInterface * editor = this->editor();
+    core->actionManager()->action(Core::ACTION_ZOOM_IN)->setEnabled(editor);;
+    core->actionManager()->action(Core::ACTION_ZOOM_OUT)->setEnabled(editor);;
+    core->actionManager()->action(Core::ACTION_ZOOM_RESET)->setEnabled(editor);;
+}
+
+void ImageViewerPlugin::zoomIn()
+{
+    ImageViewer * viewer = editorWidget();
+    if (viewer)
+        viewer->zoomIn();
+}
+
+void ImageViewerPlugin::zoomOut()
+{
+    ImageViewer * viewer = editorWidget();
+    if (viewer)
+        viewer->zoomOut();
+}
+
+void ImageViewerPlugin::zoomReset()
+{
+    ImageViewer * viewer = editorWidget();
+    if (viewer)
+        viewer->zoomReset();
 }
 
 //Q_EXPORT_PLUGIN2(image_viewer_factory, ImageViewerFactory)

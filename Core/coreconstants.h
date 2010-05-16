@@ -19,6 +19,7 @@ namespace Core {
 
     const char * const MENU_FILE = "FILE";
     const char * const MENU_EDIT = "EDIT";
+    const char * const MENU_TOOLS = "TOOLS";
     const char * const MENU_HELP = "HELP";
 }
 

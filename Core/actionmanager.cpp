@@ -30,6 +30,8 @@ QList<QString> ActionManager::menuIds()
 
 QMenu * ActionManager::menu(const QString & id)
 {
+    if (!m_menus.contains(id))
+        createMenu(id);
     return m_menus.value(id);
 }
 
