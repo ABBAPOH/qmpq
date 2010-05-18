@@ -11,7 +11,7 @@ Q_OBJECT
 public:
     explicit ActionManager(QObject *parent = 0);
 
-    QAction * action(const QString & id) { return m_actions.value(id); }
+    QAction * action(const QString & id);
     QMenu * createMenu(const QString & id);
     QMenu * menu(const QString & id);
     QList<QString> menuIds();

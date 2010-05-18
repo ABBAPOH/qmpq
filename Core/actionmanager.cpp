@@ -12,6 +12,16 @@ ActionManager::ActionManager(QObject *parent) :
     connect(ICore::instance()->editorFactoryManager(), SIGNAL(currentEditorChanged(IEditor*)), SLOT(updateSave_AsAction()));
 }
 
+QAction * ActionManager::action(const QString & id)
+{
+    QAction * a = m_actions.value(id);
+    if (!a) {
+        a = new QAction(this);
+        m_actions.insert(id, a);
+    }
+    return a;
+}
+
 QMenu * ActionManager::createMenu(const QString & id)
 {
     QMenu * menu = new QMenu();

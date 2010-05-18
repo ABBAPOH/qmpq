@@ -39,11 +39,12 @@ MPQEditorInterface::~MPQEditorInterface()
 
 void MPQEditorInterface::initActions()
 {
-    actionAdd = m_toolBar->addAction(QIcon(":/icons/images/add.png"), tr("Add"), this, SLOT(add()));
-    actionExtract = m_toolBar->addAction(QIcon(":/icons/images/extract.png"), tr("Extract"), this, SLOT(extract()));
-    actionRename = new QAction(QIcon(":/icons/images/rename.png"), tr("Rename"), m_toolBar);
-    connect(actionRename, SIGNAL(triggered()), m_editor, SLOT(rename()));
-    actionRemove = m_toolBar->addAction(QIcon(":/icons/images/remove.png"), tr("Remove"), m_editor, SLOT(remove()));
+    IActionManager * manager = ICore::instance()->actionManager();
+
+    m_toolBar->addAction(manager->action(Core::ACTION_ADD));
+    m_toolBar->addAction(manager->action(Core::ACTION_EXTRACT));
+    m_toolBar->addAction(manager->action(Core::ACTION_RENAME));
+    m_toolBar->addAction(manager->action(Core::ACTION_REMOVE));
     m_toolBar->addSeparator();
     viewModeActions[0] = new QAction(QIcon(":/icons/images/list.png"), tr("List View"), m_toolBar);
     viewModeActions[1] = new QAction(QIcon(":/icons/images/icons.png"), tr("Icon View"), m_toolBar);
@@ -83,12 +84,6 @@ void MPQEditorInterface::initActions()
     connect(actionOpenExternally, SIGNAL(triggered()), SLOT(openExternally()));
     m_editor->addAction(actionOpenExternally);
 
-    actionReopen = new QAction(tr("Reopen using listfile..."), this);
-    connect(actionReopen, SIGNAL(triggered()), SLOT(reopen()));
-
-    actionApply = new QAction(tr("Apply changes to archive"), this);
-    connect(actionApply, SIGNAL(triggered()), SLOT(submit()));
-
     actionNew_Folder = new QAction(tr("New Folder"), this);
     connect(actionNew_Folder, SIGNAL(triggered()), m_editor, SLOT(newFolder()));
 
@@ -113,18 +108,6 @@ bool MPQEditorInterface::open(const QString &file)
 {
     m_editor->open(file);
     return true;
-}
-
-void MPQEditorInterface::add()
-{
-    QStringList files = QFileDialog::getOpenFileNames(m_editor, tr("Select Files to add"));
-    m_editor->add(files);
-}
-
-void MPQEditorInterface::extract()
-{
-    QString dir = QFileDialog::getExistingDirectory(m_editor, tr("Select Target Directory"));
-    m_editor->extract(dir);
 }
 
 void MPQEditorInterface::setViewMode(int mode)
@@ -172,17 +155,6 @@ void MPQEditorInterface::openExternally()
     }
 }
 
-void MPQEditorInterface::reopen()
-{
-    QString filePath = QFileDialog::getOpenFileName(m_editor, tr("Select listfile"));
-    if (filePath.isEmpty())
-        return;
-    QFile file(filePath);
-    file.open(QFile::ReadOnly);
-    m_editor->reopenUsingListfile(file.readAll());
-    file.close();
-}
-
 QWidget * MPQEditorInterface::widget()
 {
     return m_editor;
@@ -203,6 +175,8 @@ bool MPQEditorInterface::eventFilter(QObject *obj, QEvent *event)
 
 bool MPQEditorInterface::contextMenu(QContextMenuEvent *event)
 {
+    IActionManager * manager = ICore::instance()->actionManager();
+
     QMenu menu;
     menu.addAction(actionOpen);
     menu.addAction(actionOpenInNewTab);
@@ -215,23 +189,16 @@ bool MPQEditorInterface::contextMenu(QContextMenuEvent *event)
 
     QMenu mpqMenu;
     mpqMenu.setTitle("MPQ");
-    mpqMenu.addAction(actionReopen);
-//    mpqMenu.addAction(actionApply);
-
-    QStringList paths = m_editor->selectedPaths();
-    if (!paths.isEmpty() && m_editor->isMPQArchive(paths.first())) {
-        actionReopen->setEnabled(true);
-    } else {
-        actionReopen->setEnabled(false);
-    }
-    actionApply->setEnabled(false);
+    mpqMenu.addAction(manager->action(Core::ACTION_REOPEN));
+    mpqMenu.addAction(manager->action(Core::ACTION_COMPACT));
+    mpqMenu.addAction(manager->action(Core::ACTION_SET_HASH_TABLE_SIZE));
 
     menu.addMenu(&mpqMenu);
     menu.addSeparator();
-    menu.addAction(actionAdd);
-    menu.addAction(actionExtract);
-    menu.addAction(actionRename);
-    menu.addAction(actionRemove);
+    menu.addAction(manager->action(Core::ACTION_ADD));
+    menu.addAction(manager->action(Core::ACTION_EXTRACT));
+    menu.addAction(manager->action(Core::ACTION_RENAME));
+    menu.addAction(manager->action(Core::ACTION_REMOVE));
     menu.exec(event->globalPos());
     return true;
 }
@@ -271,6 +238,10 @@ void MPQEditorPlugin::initialize()
     ICore::instance()->fileManager()->registerExtensionString(
             "MPQ Archives (*.mpq *.w3x *.w3m *.s2ma *.SC2Data *.SC2Archive *.SC2Assets *.SC2Replay *.scx *.w3n *.snp *.sv *.hsv)"
             );
+
+    initActions();
+
+    connect(ICore::instance()->editorFactoryManager(), SIGNAL(currentEditorChanged(IEditor*)), SLOT(updateActions()));
 }
 
 void MPQEditorPlugin::shutdown()
@@ -287,6 +258,127 @@ bool MPQEditorPlugin::canHandle(const QString &file)
         return true;
     else
         return false;
+}
+
+MPQEditorInterface * MPQEditorPlugin::editor()
+{
+    ICore * core = ICore::instance();
+    return qobject_cast<MPQEditorInterface *>(core->editorFactoryManager()->currentEditor());
+}
+
+MPQEditor * MPQEditorPlugin::editorWidget()
+{
+    MPQEditorInterface * editor = this->editor();
+    if (editor)
+        return static_cast<MPQEditor*>(editor->widget());
+}
+
+void MPQEditorPlugin::updateActions()
+{
+    qDebug("MPQEditorPlugin::updateActions");
+    ICore * core = ICore::instance();
+    MPQEditorInterface * editor = this->editor();
+    core->actionManager()->action(Core::ACTION_ADD)->setEnabled(editor);
+    core->actionManager()->action(Core::ACTION_EXTRACT)->setEnabled(editor);
+    core->actionManager()->action(Core::ACTION_RENAME)->setEnabled(editor);
+    core->actionManager()->action(Core::ACTION_REMOVE)->setEnabled(editor);
+
+    bool b = editor && editor->currentFile().startsWith("mpq:");
+    core->actionManager()->action(Core::ACTION_REOPEN)->setEnabled(b);
+    core->actionManager()->action(Core::ACTION_COMPACT)->setEnabled(b);
+    core->actionManager()->action(Core::ACTION_SET_HASH_TABLE_SIZE)->setEnabled(b);
+}
+
+void MPQEditorPlugin::add()
+{
+    MPQEditor * editor = editorWidget();
+    QStringList files = QFileDialog::getOpenFileNames(editor, tr("Select Files to add"));
+    editor->add(files);
+}
+
+void MPQEditorPlugin::extract()
+{
+    MPQEditor * editor = editorWidget();
+    QString dir = QFileDialog::getExistingDirectory(editor, tr("Select Target Directory"));
+    editor->extract(dir);
+}
+
+void MPQEditorPlugin::rename()
+{
+    editorWidget()->rename();
+}
+
+void MPQEditorPlugin::remove()
+{
+    editorWidget()->rename();
+}
+
+void MPQEditorPlugin::reopen()
+{
+    MPQEditor * editor = editorWidget();
+    QString filePath = QFileDialog::getOpenFileName(editor, tr("Select listfile"));
+    if (filePath.isEmpty())
+        return;
+    QFile file(filePath);
+    file.open(QFile::ReadOnly);
+    editor->reopenUsingListfile(file.readAll());
+    file.close();
+}
+
+void MPQEditorPlugin::initActions()
+{
+    IActionManager * manager = ICore::instance()->actionManager();
+
+    actionAdd = manager->action(Core::ACTION_ADD);
+    actionAdd->setIcon(QIcon(":/icons/images/add.png"));
+    actionAdd->setText(tr("Add"));
+    connect(actionAdd, SIGNAL(triggered()), SLOT(add()));
+
+    actionExtract = manager->action(Core::ACTION_EXTRACT);
+    actionExtract->setIcon(QIcon(":/icons/images/extract.png"));
+    actionExtract->setText(tr("Extract"));
+    connect(actionExtract, SIGNAL(triggered()), SLOT(extract()));
+
+    actionRename = manager->action(Core::ACTION_RENAME);
+    actionRename->setIcon(QIcon(":/icons/images/rename.png"));
+    actionRename->setText(tr("Rename"));
+    connect(actionRename, SIGNAL(triggered()), SLOT(rename()));
+
+    actionRemove = manager->action(Core::ACTION_REMOVE);
+    actionRemove->setIcon(QIcon(":/icons/images/remove.png"));
+    actionRemove->setText(tr("Remove"));
+    connect(actionRemove, SIGNAL(triggered()), SLOT(remove()));
+
+    actionReopen = manager->action(Core::ACTION_REOPEN);
+    actionReopen->setText(tr("Reopen using listfile..."));
+    connect(actionReopen, SIGNAL(triggered()), SLOT(reopen()));
+
+    actionCompact = manager->action(Core::ACTION_COMPACT);
+    actionCompact->setText(tr("Compact archive"));
+    actionCompact->setEnabled(false);
+    connect(actionCompact, SIGNAL(triggered()), SLOT(compact()));
+
+    actionSetHashTableSize = manager->action(Core::ACTION_SET_HASH_TABLE_SIZE);
+    actionSetHashTableSize->setText(tr("Set hash table size..."));
+    actionSetHashTableSize->setEnabled(false);
+    connect(actionSetHashTableSize, SIGNAL(triggered()), SLOT(setHashTableSize()));
+
+    QMenu * toolsMenu = manager->menu(Core::MENU_TOOLS);
+    QMenu * menu = new QMenu("MPQ Viewer");
+
+    QMenu * mpqMenu = new QMenu;
+    mpqMenu->setTitle("MPQ");
+    mpqMenu->addAction(actionReopen);
+    mpqMenu->addAction(actionCompact);
+    mpqMenu->addAction(actionSetHashTableSize);
+
+    menu->addMenu(mpqMenu);
+    menu->addSeparator();
+    menu->addAction(actionAdd);
+    menu->addAction(actionExtract);
+    menu->addAction(actionRename);
+    menu->addAction(actionRemove);
+    toolsMenu->addMenu(menu);
 }
 
 //Q_EXPORT_PLUGIN2(mpq_editor_factory, MPQEditorFactory)

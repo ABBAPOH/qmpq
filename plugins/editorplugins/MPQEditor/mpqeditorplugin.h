@@ -4,6 +4,20 @@
 #include <ieditorfactory.h>
 #include <iplugin.h>
 
+
+namespace Core {
+
+    const char * const ACTION_ADD = "ADD";
+    const char * const ACTION_EXTRACT = "EXTRACT";
+    const char * const ACTION_RENAME = "RENAME";
+    const char * const ACTION_REMOVE = "REMOVE";
+
+    const char * const ACTION_REOPEN = "REOPEN";
+    const char * const ACTION_COMPACT = "COMPACT";
+    const char * const ACTION_SET_HASH_TABLE_SIZE = "SET HASH TABLE SIZE";
+
+}
+
 class MPQEditor;
 class QSignalMapper;
 class QAction;
@@ -35,13 +49,7 @@ private:
     QAction * actionOpenInNewTab;
     QAction * actionOpenInNewWindow;
     QAction * actionOpenExternally;
-    QAction * actionReopen;
-    QAction * actionApply;
     QAction * actionNew_Folder;
-    QAction * actionAdd;
-    QAction * actionExtract;
-    QAction * actionRename;
-    QAction * actionRemove;
 
 public slots:
     void open();
@@ -49,10 +57,6 @@ public slots:
     void openInNewWindow();
     void openExternally();
 
-    void reopen();
-
-    void add();
-    void extract();
     void setViewMode(int mode);
     void openRequest(const QString &file);
 
@@ -88,6 +92,29 @@ public:
     QString description() { return QString(); };
 
     static bool canHandle(const QString &file);
+
+private slots:
+    void updateActions();
+    void add();
+    void extract();
+    void rename();
+    void remove();
+    void reopen();
+
+private:
+    MPQEditorInterface * editor();
+    MPQEditor * editorWidget();
+    void initActions();
+
+    QAction * actionReopen;
+    QAction * actionSetHashTableSize;
+    QAction * actionCompact;
+
+    QAction * actionAdd;
+    QAction * actionExtract;
+    QAction * actionRename;
+    QAction * actionRemove;
+
 };
 
 #endif // MPQEDITORPLUGIN_H
