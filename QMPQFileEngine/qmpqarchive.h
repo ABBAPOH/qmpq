@@ -5,6 +5,7 @@
 
 #include <QMap>
 #include <QStringList>
+#include <QDebug>
 
 #include "QMPQError.h"
 
@@ -15,8 +16,9 @@ class TreeItem;
 //#define MPQ_CREATE_ATTRIBUTES   0x00100000  // Also add the (attributes) file
 
 class QMPQArchivePrivate;
-class QMPQFILEENGINESHARED_EXPORT QMPQArchive
+class QMPQFILEENGINESHARED_EXPORT QMPQArchive : public QObject
 {
+    Q_OBJECT
     Q_DECLARE_PRIVATE(QMPQArchive);
     friend class QMPQModel;
 public:
@@ -26,7 +28,15 @@ public:
         CreateAttributes = 0x00100000
     };
 
-    QMPQArchive();
+    enum CompactOperation {
+        CheckingFiles = 1,
+        CheckingHashTableSize,
+        CopyingNonMPQData,
+        CompactingFiles,
+        ClosingArchive
+    };
+
+    QMPQArchive(QObject * parent = 0);
     virtual ~QMPQArchive();
 
     enum {Name, CompressedSize, FullSize, FullPath};
@@ -34,6 +44,7 @@ public:
     bool newArchive(const QString & name, int flags = /*MPQ_CREATE_ARCHIVE_V1*/QMPQArchive::CreateArchiveV1, int maximumFilesInArchive = 1024);
     bool openArchive(const QString & name, QByteArray listfile = QByteArray());
     bool closeArchive();
+    bool compact();
     bool extract(const QString & name, const QString & path);
     QString extractToTemp(const QString & name);
     bool add(const QStringList & files, const QString & path);
@@ -80,6 +91,11 @@ public:
 //    QMPQError m_lastError;
 protected:
     QMPQArchivePrivate *d_ptr;
+signals:
+    void compactProcessChanged(QMPQArchive::CompactOperation op, qint64 bytesProcessed, qint64 bytesTotal);
+//    {
+//        qDebug() << op << bytesProcessed << bytesTotal;
+//    }
 };
 
 #endif // QMPQARCHIVE_H

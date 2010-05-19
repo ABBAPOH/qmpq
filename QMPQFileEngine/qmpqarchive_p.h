@@ -18,6 +18,7 @@ public:
     bool openArchive(const QString & name/*, QByteArray listfile = QByteArray()*/);
     bool closeArchive();
     void clear();
+    bool compact();
     void initialize(QStringList listfile);
     void initFile(const QString & file);
     void initFile(const char * fileName, quint32 searchScope= 0);
@@ -39,8 +40,12 @@ public:
     QMPQError m_lastError;
     bool m_updateOnClose;
     bool m_isOpened;
+
 private:
+    static void compactProcessChanged(void *, int, qint64 * bytesProcessed, qint64 * bytesTotal);
+
     QMPQArchive * q_ptr;
+
 };
 
 #endif // QMPQARCHIVE_P_H

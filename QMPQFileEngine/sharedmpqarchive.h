@@ -5,7 +5,7 @@
 #include <QHash>
 #include <QReadWriteLock>
 
-class SharedMPQArchive : public QObject, public QMPQArchive
+class SharedMPQArchive : /*public QObject, */public QMPQArchive
 {
     Q_OBJECT
 public:

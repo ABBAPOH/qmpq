@@ -11,11 +11,13 @@ INCLUDEPATH += -I \
 HEADERS += mpqeditor.h \
     mpqeditorplugin.h \
     universalview.h \
-    idirmodel.h
+    idirmodel.h \
+    compactprocessdialog.h
 SOURCES += mpqeditor.cpp \
     mpqeditorplugin.cpp \
     main.cpp \
     universalview.cpp \
-    idirmodel.cpp
+    idirmodel.cpp \
+    compactprocessdialog.cpp
 RESOURCES += mpqeditor.qrc
-FORMS += 
+FORMS += compactprocessdialog.ui

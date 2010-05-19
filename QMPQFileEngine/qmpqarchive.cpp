@@ -85,6 +85,21 @@ void QMPQArchivePrivate::clear()
     m_listFile.clear();
 }
 
+void QMPQArchivePrivate::compactProcessChanged(void * o , int op, qint64 * bytesProcessed, qint64 * bytesTotal)
+{
+    QMPQArchive * q = reinterpret_cast<QMPQArchive *>(o);
+    emit q->compactProcessChanged((QMPQArchive::CompactOperation)op, *bytesProcessed, *bytesTotal);
+}
+
+bool QMPQArchivePrivate::compact()
+{
+    SFileSetCompactCallback(mpq,
+                            reinterpret_cast<SFILE_COMPACT_CALLBACK>(&QMPQArchivePrivate::compactProcessChanged),
+                            q_func());
+    bool result = SFileCompactArchive(mpq);
+    return result;
+}
+
 void QMPQArchivePrivate::initialize(QStringList listfile)
 {
 //    qDebug() << "QMPQArchive::getListFile()";
@@ -292,8 +307,9 @@ bool QMPQArchivePrivate::rename(const QString &oldName, const QString &newName)
     return true;
 }
 
-QMPQArchive::QMPQArchive()
-    : d_ptr(new QMPQArchivePrivate(this))
+QMPQArchive::QMPQArchive(QObject * parent) :
+        QObject(parent),
+        d_ptr(new QMPQArchivePrivate(this))
 {
     Q_D(QMPQArchive);
     d->m_rootItem = new TreeItem(0, true);
@@ -342,6 +358,11 @@ bool QMPQArchive::closeArchive()
     d->clear();
     bool result = d->closeArchive();
     return result;
+}
+
+bool QMPQArchive::compact()
+{
+    return d_func()->compact();
 }
 
 bool QMPQArchive::extract(const QString & name, const QString & path)

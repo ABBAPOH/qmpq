@@ -100,6 +100,7 @@ private slots:
     void rename();
     void remove();
     void reopen();
+    void compact();
 
 private:
     MPQEditorInterface * editor();

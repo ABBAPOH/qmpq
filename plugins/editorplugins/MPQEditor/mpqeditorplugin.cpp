@@ -15,6 +15,9 @@
 #include "mpqeditor.h"
 #include "idirmodel.h"
 
+#include "../../../../QMPQFileEngine/qmpqfileengine.h"
+#include "../../../../QMPQFileEngine/qmpqarchive.h"
+
 //================================== MPQEditorPlugin ==================================
 
 MPQEditorInterface::MPQEditorInterface(MPQEditor * editor)
@@ -323,6 +326,29 @@ void MPQEditorPlugin::reopen()
     file.open(QFile::ReadOnly);
     editor->reopenUsingListfile(file.readAll());
     file.close();
+}
+
+#include "compactprocessdialog.h"
+void MPQEditorPlugin::compact()
+{
+    MPQEditor * editor = editorWidget();
+    QString filePath = editor->currentFile();
+    QFile file(filePath);
+    //  if we can cat file then we're in mpq archive
+    QMPQFileEngine * engine = dynamic_cast<QMPQFileEngine *>(file.fileEngine());
+    if (engine) {
+        QMPQArchive * archive = engine->archive();
+        if (archive) {
+            QString archivePath = archive->file();
+            CompactProcessDialog dlg;
+            connect(archive, SIGNAL(compactProcessChanged(QMPQArchive::CompactOperation,qint64,qint64)),
+                    &dlg, SLOT(setProgress(QMPQArchive::CompactOperation, qint64, qint64)));
+            dlg.show();
+            archive->compact();
+//            archive->closeArchive();
+//            archive->openArchive(archivePath);
+        }
+    }
 }
 
 void MPQEditorPlugin::initActions()
