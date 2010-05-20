@@ -22,6 +22,7 @@ public:
     virtual QString filePath(const QModelIndex & index) const = 0;
     virtual QModelIndex mkdir(const QModelIndex & parent, const QString & name) = 0;
     virtual bool remove(const QModelIndex & index) const = 0;
+    virtual void setNameFilters(const QStringList & filters) = 0;
 };
 
 class DirModelWrapper : public IDirModel
@@ -35,6 +36,7 @@ public:
     virtual QString filePath(const QModelIndex & index) const { return m_model->filePath(index); }
     virtual QModelIndex mkdir(const QModelIndex & parent, const QString & name) { return m_model->mkdir(parent, name); }
     virtual bool remove(const QModelIndex & index) const;
+    virtual void setNameFilters(const QStringList & filters) { m_model->setNameFilters(filters); }
 private:
 	QDirModel * m_model;
 };
@@ -50,6 +52,7 @@ public:
     virtual QString filePath(const QModelIndex & index) const { return m_model->filePath(index); }
     virtual QModelIndex mkdir(const QModelIndex & parent, const QString & name) { return m_model->mkdir(parent, name); }
     virtual bool remove(const QModelIndex & index) const { return m_model->remove(index); }
+    virtual void setNameFilters(const QStringList & filters) { m_model->setNameFilters(filters); }
     static QFileSystemModel * modelInstance();
 private:
     static QFileSystemModel * m_model;

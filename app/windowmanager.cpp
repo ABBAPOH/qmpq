@@ -50,7 +50,7 @@ bool WindowManager::openInNewWindow(const QString path)
     MainWindow * window = new MainWindow();
     window->show();
     window->newTab();
-    window->open(path);
+    return window->open(path);
 }
 
 bool WindowManager::openExternally(const QString path)
@@ -60,14 +60,14 @@ bool WindowManager::openExternally(const QString path)
 //    QUuid uid = QUuid::createUuid();
     QString targetPath = temp + '/' + /*uid.toString() + '/' + */QFileInfo(path).fileName();
     file.copy(targetPath);
-    QDesktopServices::openUrl(QUrl::fromLocalFile(targetPath));
+    return QDesktopServices::openUrl(QUrl::fromLocalFile(targetPath));
 }
 
 bool WindowManager::save(const QString path)
 {
     ICore * core = ICore::instance();
     MainWindow * window = qobject_cast<MainWindow *>(core->context()->mainWindow());
-    window->save(path);
+    return window->save(path);
 }
 
 bool WindowManager::close()
@@ -75,4 +75,5 @@ bool WindowManager::close()
     ICore * core = ICore::instance();
     MainWindow * window = qobject_cast<MainWindow *>(core->context()->mainWindow());
     window->closeCurrentTab();
+    return true;
 }

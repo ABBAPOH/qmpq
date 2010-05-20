@@ -10,6 +10,7 @@
 #include <QtGui/QActionGroup>
 #include <QtGui/QMenu>
 #include <QtGui/QContextMenuEvent>
+#include <QtGui/QLineEdit>
 //#include <QDebug>
 
 #include "mpqeditor.h"
@@ -66,6 +67,12 @@ void MPQEditorInterface::initActions()
     // i use slot in this class because moc can't convert int to enum
     connect(viewModeMapper, SIGNAL(mapped(int)), SLOT(setViewMode(int)));
     viewModeActions[0]->trigger();
+
+    QLineEdit * filterLineEdit = new QLineEdit(m_toolBar);
+    filterLineEdit->setText("*");
+    connect(filterLineEdit, SIGNAL(textChanged(QString)), m_editor, SLOT(setNameFilter(const QString &)));
+    m_toolBar->addSeparator();
+    m_toolBar->addWidget(filterLineEdit);
 
     actionOpen = new QAction(tr("Open"), this);
     actionOpen->setShortcut(tr("Return"));

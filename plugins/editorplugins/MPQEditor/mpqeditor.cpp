@@ -377,6 +377,11 @@ void MPQEditor::newFolder(const QString & name)
     }
 }
 
+void MPQEditor::setNameFilter(const QString & filter)
+{
+    m_model->setNameFilters(QStringList() << currentFile().split('/') << filter);
+}
+
 void MPQEditor::onDoubleClick(const QModelIndex & index)
 {
 //    qDebug() << "MPQEditor::onDoubleClick";

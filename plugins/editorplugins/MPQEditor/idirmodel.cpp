@@ -11,6 +11,7 @@ DirModelWrapper::DirModelWrapper(const QString & path)
 {
     m_model = new QDirModel(path);
     m_model->setReadOnly(false);
+    m_model->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
 }
 
 bool DirModelWrapper::remove(const QModelIndex & index) const
@@ -40,6 +41,8 @@ FileSystemModelWrapper::FileSystemModelWrapper()
         m_model = new QFileSystemModel;
         m_model->setRootPath("");
         m_model->setReadOnly(false);
+        m_model->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
+        m_model->setNameFilterDisables(false);
     }
 }
 

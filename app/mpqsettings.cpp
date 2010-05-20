@@ -193,6 +193,7 @@ int MPQSettingsWidget::compresionValueToIndex(int value)
             return i;
         }
     }
+    return -1;
 }
 
 int MPQSettingsWidget::getCurrentOptions()
