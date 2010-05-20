@@ -19,6 +19,10 @@ public:
     bool closeArchive();
     void clear();
     bool compact();
+
+    quint32 hashTableSize() const;
+    bool setHashTableSize(quint32 size);
+
     void initialize(QStringList listfile);
     void initFile(const QString & file);
     void initFile(const char * fileName, quint32 searchScope= 0);

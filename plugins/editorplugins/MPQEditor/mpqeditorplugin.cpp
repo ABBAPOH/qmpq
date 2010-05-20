@@ -15,6 +15,8 @@
 
 #include "mpqeditor.h"
 #include "idirmodel.h"
+#include "compactprocessdialog.h"
+#include "hashtablesizedialog.h"
 
 #include "../../../../QMPQFileEngine/qmpqfileengine.h"
 #include "../../../../QMPQFileEngine/qmpqarchive.h"
@@ -281,6 +283,19 @@ MPQEditor * MPQEditorPlugin::editorWidget()
     MPQEditorInterface * editor = this->editor();
     if (editor)
         return static_cast<MPQEditor*>(editor->widget());
+    return 0;
+}
+
+
+QMPQArchive * MPQEditorPlugin::getArchive(const QString & filePath)
+{
+    QFile file(filePath);
+    //  if we can cat file then we're in mpq archive
+    QMPQFileEngine * engine = dynamic_cast<QMPQFileEngine *>(file.fileEngine());
+    if (engine)
+        return engine->archive();
+    else
+        return 0;
 }
 
 void MPQEditorPlugin::updateActions()
@@ -335,26 +350,32 @@ void MPQEditorPlugin::reopen()
     file.close();
 }
 
-#include "compactprocessdialog.h"
 void MPQEditorPlugin::compact()
 {
     MPQEditor * editor = editorWidget();
-    QString filePath = editor->currentFile();
-    QFile file(filePath);
-    //  if we can cat file then we're in mpq archive
-    QMPQFileEngine * engine = dynamic_cast<QMPQFileEngine *>(file.fileEngine());
-    if (engine) {
-        QMPQArchive * archive = engine->archive();
-        if (archive) {
-            QString archivePath = archive->file();
-            CompactProcessDialog dlg;
-            connect(archive, SIGNAL(compactProcessChanged(QMPQArchive::CompactOperation,qint64,qint64)),
-                    &dlg, SLOT(setProgress(QMPQArchive::CompactOperation, qint64, qint64)));
-            dlg.show();
-            archive->compact();
-//            archive->closeArchive();
-//            archive->openArchive(archivePath);
-        }
+    QMPQArchive * archive = getArchive(editor->currentFile());
+    if (archive) {
+        CompactProcessDialog dlg;
+        connect(archive, SIGNAL(compactProcessChanged(QMPQArchive::CompactOperation,qint64,qint64)),
+                &dlg, SLOT(setProgress(QMPQArchive::CompactOperation, qint64, qint64)));
+        dlg.show();
+        archive->compact();
+        //            archive->closeArchive();
+        //            archive->openArchive(archivePath);
+    }
+}
+
+void MPQEditorPlugin::setHashTableSize()
+{
+    MPQEditor * editor = editorWidget();
+    QMPQArchive * archive = getArchive(editor->currentFile());
+    if (archive) {
+        HashTableSizeDialog dlg;
+        dlg.setHashTableSize(archive->hashTableSize());
+        int result = dlg.exec();
+        if (result == QDialog::Rejected)
+            return;
+        archive->setHashTableSize(dlg.hashTableSize());
     }
 }
 

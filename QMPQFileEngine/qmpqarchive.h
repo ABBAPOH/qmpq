@@ -45,6 +45,10 @@ public:
     bool openArchive(const QString & name, QByteArray listfile = QByteArray());
     bool closeArchive();
     bool compact();
+
+    quint32 hashTableSize() const;
+    bool setHashTableSize(quint32 size);
+
     bool extract(const QString & name, const QString & path);
     QString extractToTemp(const QString & name);
     bool add(const QStringList & files, const QString & path);

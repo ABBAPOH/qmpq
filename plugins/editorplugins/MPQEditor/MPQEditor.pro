@@ -12,12 +12,17 @@ HEADERS += mpqeditor.h \
     mpqeditorplugin.h \
     universalview.h \
     idirmodel.h \
-    compactprocessdialog.h
+    compactprocessdialog.h \
+    hashtablesizedialog.h \
+    powerspinbox.h
 SOURCES += mpqeditor.cpp \
     mpqeditorplugin.cpp \
     main.cpp \
     universalview.cpp \
     idirmodel.cpp \
-    compactprocessdialog.cpp
+    compactprocessdialog.cpp \
+    hashtablesizedialog.cpp \
+    powerspinbox.cpp
 RESOURCES += mpqeditor.qrc
-FORMS += compactprocessdialog.ui
+FORMS += compactprocessdialog.ui \
+    hashtablesizedialog.ui

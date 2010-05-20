@@ -79,6 +79,7 @@ public:
     MPQEditorFactory();
 };
 
+class QMPQArchive;
 class MPQEditorPlugin : public IPlugin
 {
     Q_OBJECT
@@ -101,10 +102,12 @@ private slots:
     void remove();
     void reopen();
     void compact();
+    void setHashTableSize();
 
 private:
     MPQEditorInterface * editor();
     MPQEditor * editorWidget();
+    QMPQArchive * getArchive(const QString & filePath);
     void initActions();
 
     QAction * actionReopen;

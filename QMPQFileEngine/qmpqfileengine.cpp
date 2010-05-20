@@ -24,7 +24,6 @@ QString QMPQFileEnginePrivate::getArchiveFilePath(const QString & path)
 QMPQFileEngine::QMPQFileEngine()
     : QAbstractFileEngine(), d_ptr(new QMPQFileEnginePrivate(this))
 {
-    Q_D(QMPQFileEngine);
 }
 
 QMPQFileEngine::~QMPQFileEngine()
@@ -180,12 +179,12 @@ bool QMPQFileEngine::open(QIODevice::OpenMode mode)
     return true;
 }
 
-QString QMPQFileEngine::owner(FileOwner owner) const
+QString QMPQFileEngine::owner(FileOwner /*owner*/) const
 {
     return "";
 }
 
-uint QMPQFileEngine::ownerId(FileOwner owner) const
+uint QMPQFileEngine::ownerId(FileOwner /*owner*/) const
 {
     return -2;
 }
@@ -246,7 +245,7 @@ bool QMPQFileEngine::rename(const QString & newName)
     }
 }
 
-bool QMPQFileEngine::rmdir(const QString & dirName, bool recurseParentDirectories) const
+bool QMPQFileEngine::rmdir(const QString & dirName, bool /*recurseParentDirectories*/) const
 {
     Q_D(const QMPQFileEngine);
     if (!d->archive->isDir(dirName))
@@ -297,12 +296,12 @@ void QMPQFileEngine::setFileName(const QString & fileName)
 
 }
 
-bool QMPQFileEngine::setPermissions(uint perms)
+bool QMPQFileEngine::setPermissions(uint /*perms*/)
 {
     return false;
 }
 
-bool QMPQFileEngine::setSize(qint64 size)
+bool QMPQFileEngine::setSize(qint64 /*size*/)
 {
     return false;
 }

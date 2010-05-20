@@ -100,6 +100,19 @@ bool QMPQArchivePrivate::compact()
     return result;
 }
 
+quint32 QMPQArchivePrivate::hashTableSize() const
+{
+    quint32 result = 0;
+    if (mpq)
+        SFileGetFileInfo(mpq, SFILE_INFO_HASH_TABLE_SIZE, &result, sizeof(result));
+    return result;
+}
+
+bool QMPQArchivePrivate::setHashTableSize(quint32 size)
+{
+    return SFileSetHashTableSize(mpq, size);
+}
+
 void QMPQArchivePrivate::initialize(QStringList listfile)
 {
 //    qDebug() << "QMPQArchive::getListFile()";
@@ -144,9 +157,9 @@ void QMPQArchivePrivate::initialize(QStringList listfile)
     }
 
 //    int count = SFileGetFileInfo(mpq, SFILE_INFO_BLOCK_TABLE_SIZE);
-    quint32 count = 0;
-    SFileGetFileInfo(mpq, SFILE_INFO_BLOCK_TABLE_SIZE, &count, sizeof(count));
-    for (int i = 0; i < count; i++)
+    quint32 count = hashTableSize()/*0*/;
+//    SFileGetFileInfo(mpq, SFILE_INFO_BLOCK_TABLE_SIZE, &count, sizeof(count));
+    for (unsigned i = 0; i < count; i++)
     {
         if (indexes.contains(i))
             continue;
@@ -363,6 +376,16 @@ bool QMPQArchive::closeArchive()
 bool QMPQArchive::compact()
 {
     return d_func()->compact();
+}
+
+quint32 QMPQArchive::hashTableSize() const
+{
+    return d_func()->hashTableSize();
+}
+
+bool QMPQArchive::setHashTableSize(quint32 size)
+{
+    return d_func()->setHashTableSize(size);
 }
 
 bool QMPQArchive::extract(const QString & name, const QString & path)
