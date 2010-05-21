@@ -13,8 +13,6 @@ LIBS += -L../plugins/editorplugins/MPQEditor/bin/ \
     -lMPQEditor
 LIBS += -L../QMPQFileEngine/bin \
     -lQMPQFileEngine
-LIBS += -L../3rdParty/FileSystemModel/bin \
-    -lFileSystemModel
 LIBS += -L../3rdParty/QDirModel/bin \
     -lQDirModel
 LIBS += -L../Core/bin/ \

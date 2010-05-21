@@ -18,7 +18,8 @@ SOURCES += blp.cpp \
     main.cpp \
     blpheader.cpp
 
-mac:target.path += ../../../app/bin/QMPQ.app/Contents/MacOS/imageformats
-win32:target.path += ../../../app/bin/imageformats
+unix:target.path = /usr/local/lib
+mac:target.path = ../../../app/bin/QMPQ.app/Contents/MacOS/imageformats
+win32:target.path = ../../../app/bin/imageformats
 INSTALLS += target
 

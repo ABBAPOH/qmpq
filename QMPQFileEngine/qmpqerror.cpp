@@ -1,6 +1,6 @@
 #include "qmpqerror.h"
 
-#include <StormLib/Stormlib.h>
+#include <StormLib/StormLib.h>
 
 /*QMPQError::QMPQError()
 {

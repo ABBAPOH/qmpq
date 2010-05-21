@@ -22,8 +22,6 @@ PreferencesWidget::PreferencesWidget(PreferencesManager * manager, QWidget *pare
     foreach (QString pageKey, keys) {
         IPreferencesPage * page = manager->page(pageKey);
 
-//        QString currentPageKey = "";
-        int index = 0;
         int length = pageKey.length();
         QList<int> indexes;
         indexes.append(-1);
@@ -82,7 +80,7 @@ void PreferencesWidget::changeEvent(QEvent *e)
     }
 }
 
-void PreferencesWidget::onItemClick(QTreeWidgetItem * item, int column)
+void PreferencesWidget::onItemClick(QTreeWidgetItem * item, int /*column*/)
 {
     int index = item->data(0, Qt::UserRole).toInt();
     ui->stackedWidget->setCurrentIndex(index);

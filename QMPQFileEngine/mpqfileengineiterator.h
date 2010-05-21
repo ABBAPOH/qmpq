@@ -9,6 +9,7 @@ class MPQFileEngineIterator : public QAbstractFileEngineIterator
 {
 public:
     MPQFileEngineIterator(QDir::Filters filters, const QStringList & nameFilters, TreeItem * item = 0);
+    MPQFileEngineIterator(QDir::Filters filters, const QStringList & nameFilters, const QStringList &files);
     ~MPQFileEngineIterator();
 //    QFileInfo currentFileInfo () const;
     QString currentFileName () const;

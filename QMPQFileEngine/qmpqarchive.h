@@ -7,7 +7,7 @@
 #include <QStringList>
 #include <QDebug>
 
-#include "QMPQError.h"
+#include "qmpqerror.h"
 
 class TreeItem;
 
@@ -49,6 +49,7 @@ public:
     quint32 hashTableSize() const;
     bool setHashTableSize(quint32 size);
 
+    QStringList entryList(const QString & name);
     bool extract(const QString & name, const QString & path);
     QString extractToTemp(const QString & name);
     bool add(const QStringList & files, const QString & path);
@@ -70,7 +71,7 @@ public:
 
     QString file();
 
-//private:
+private:
     TreeItem * mkfile(const QString & path);
     TreeItem * mkfile(const QString & path, qlonglong size, qlonglong compressedSize);
     TreeItem * treeItem(const QString & path) const;
@@ -80,26 +81,15 @@ public:
     bool remove(TreeItem * item);
     bool add(const QStringList & files, TreeItem * item);
     bool rename(TreeItem * item, const QString & newName);
-    bool detachTree(TreeItem * item);
-    TreeItem * getExistingParent(QString path);
+//    bool detachTree(TreeItem * item);
+//    TreeItem * getExistingParent(QString path);
 
-//    void getListFile(QStringList listfile);
     void updateListFile();
-//    int getFileInfo(const char * fileName, quint32 searchScope= 0);
 
-//private:
-//    QMap<QString, TreeItem*> hash;
-//    TreeItem *m_rootItem;
-//    QStringList m_listFile;
-//    void * mpq; //qfmpq archive pointer;
-//    QMPQError m_lastError;
 protected:
     QMPQArchivePrivate *d_ptr;
 signals:
     void compactProcessChanged(QMPQArchive::CompactOperation op, qint64 bytesProcessed, qint64 bytesTotal);
-//    {
-//        qDebug() << op << bytesProcessed << bytesTotal;
-//    }
 };
 
 #endif // QMPQARCHIVE_H

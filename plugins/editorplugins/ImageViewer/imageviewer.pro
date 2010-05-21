@@ -7,8 +7,11 @@ OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
 
-INCLUDEPATH += -I ../../../core/
-LIBS += -L../../../core/bin -lcore
+INCLUDEPATH += -I \
+    ../../../Сore
+
+LIBS += -L../../../Core/bin \
+    -lCore
 
 HEADERS += imageviewer.h \
     imageviewerplugin.h

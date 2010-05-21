@@ -3,10 +3,12 @@
 # -------------------------------------------------
 TARGET = Core
 TEMPLATE = lib
+
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
+
 HEADERS += icore.h \
     icontext.h \
     ipluginmanager.h \
@@ -25,6 +27,7 @@ HEADERS += icore.h \
     ipreferences.h \
     preferencesmanager.h \
     coreconstants.h
+
 SOURCES += core.cpp \
     pluginmanager.cpp \
     basecontext.cpp \
@@ -33,6 +36,8 @@ SOURCES += core.cpp \
     actionmanager.cpp \
     filemanager.cpp \
     preferencesmanager.cpp
-mac:target.path += ../app/bin/QMPQ.app/Contents/MacOS
-win32:target.path += ../app/bin
+
+unix:target.path = /usr/local/lib
+mac:target.path = ../app/bin/QMPQ.app/Contents/MacOS
+win32:target.path = ../app/bin
 INSTALLS += target

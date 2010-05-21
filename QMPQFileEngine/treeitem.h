@@ -28,6 +28,7 @@ public:
     void setData(int column);
     bool isDir() { return m_dir; /*return childItems.count() > 0;*/ }
     bool isFile() { return !m_dir; }
+    #warning warning:)
 //  TODO: find another decision
     bool inUnknown() { return m_unknown; }
     void setUnknown(bool unknown) { m_unknown = unknown; }

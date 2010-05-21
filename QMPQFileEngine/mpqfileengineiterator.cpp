@@ -12,6 +12,12 @@ MPQFileEngineIterator::MPQFileEngineIterator(QDir::Filters filters, const QStrin
 //    entries << "entry1" << "entry2" << "entry3";
 }
 
+MPQFileEngineIterator::MPQFileEngineIterator(QDir::Filters filters, const QStringList & nameFilters, const QStringList &files)
+    : QAbstractFileEngineIterator(filters, nameFilters), index(-1)
+{
+    entries = files;
+}
+
 MPQFileEngineIterator::~MPQFileEngineIterator()
 {
 }
@@ -27,8 +33,9 @@ MPQFileEngineIterator::~MPQFileEngineIterator()
 
 bool MPQFileEngineIterator::hasNext() const
 {
+    return index + 1 < entries.count();
 //    qDebug() << "MPQFileEngineIterator::hasNext";
-    return m_item && index < m_item->childCount() - 1;
+//    return m_item && index < m_item->childCount() - 1;
 }
 
 QString MPQFileEngineIterator::next()
@@ -43,6 +50,7 @@ QString MPQFileEngineIterator::next()
 
 QString MPQFileEngineIterator::currentFileName() const
 {
+    return entries.at(index);
 //    qDebug() << "MPQFileEngineIterator::currentFileName" << m_item->childItems.at(index)->data(3).toString();
-    return m_item->childItems.at(index)->data(0).toString();
+//    return m_item->childItems.at(index)->data(0).toString();
 }

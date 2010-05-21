@@ -40,7 +40,8 @@ QMPQArchive * QMPQFileEngine::archive()
 QAbstractFileEngine::Iterator * QMPQFileEngine::beginEntryList(QDir::Filters filters, const QStringList & filterNames)
 {
     Q_D(QMPQFileEngine);
-    return new MPQFileEngineIterator(filters, filterNames, d->archive->treeItem(d->innerPath));
+//    return new MPQFileEngineIterator(filters, filterNames, d->archive->treeItem(d->innerPath));
+    return new MPQFileEngineIterator(filters, filterNames, d->archive->entryList(d->innerPath));
 }
 
 bool QMPQFileEngine::caseSensitive() const
@@ -103,7 +104,7 @@ QAbstractFileEngine::FileFlags QMPQFileEngine::fileFlags(FileFlags type) const
         return result;
     }
     result |= d->archive->isDir(d->innerPath) ? QAbstractFileEngine::DirectoryType : QAbstractFileEngine::FileType;
-    if (d->archive->treeItem(d->innerPath))
+    if (d->archive->exists(d->innerPath))
         result |= QAbstractFileEngine::ExistsFlag;
     result |= QAbstractFileEngine::ReadOwnerPerm;
     result |= QAbstractFileEngine::WriteOwnerPerm;

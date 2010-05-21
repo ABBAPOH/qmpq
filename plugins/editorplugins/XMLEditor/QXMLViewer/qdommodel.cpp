@@ -23,7 +23,7 @@ void QDomModel::setDomDocument(QDomDocument document)
     reset();
 }
 
-int QDomModel::columnCount(const QModelIndex & parent) const
+int QDomModel::columnCount(const QModelIndex & /*parent*/) const
 {
     return 3;
 }

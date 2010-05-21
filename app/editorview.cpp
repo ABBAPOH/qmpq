@@ -7,7 +7,6 @@
 EditorView::EditorView(QWidget *parent) :
     QWidget(parent)
 {
-    QWidget * widget = new QWidget();
     layout = new QVBoxLayout();
     layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(0);

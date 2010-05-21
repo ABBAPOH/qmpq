@@ -8,10 +8,14 @@ OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
 
-INCLUDEPATH += -I ../../../core/
-LIBS += -L../../../core/bin -lcore
+INCLUDEPATH += -I \
+    ../../../Core
+
+LIBS += -L../../../Core/bin \
+    -lCore
 
 INCLUDEPATH += QXMLViewer/
+
 DEPENDPATH +=  QXMLViewer/
 include(QXMLViewer/QXMLViewer.pro)
 #INCLUDEPATH += /Users/arch/c++/Qt4/QXMLViewer/

@@ -4,7 +4,7 @@
 #include <QFile>
 #include <QDir>
 //#include <QDesktopServices>
-#include <StormLib/Stormlib.h>
+#include <StormLib/StormLib.h>
 
 #include "treeitem.h"
 #include "mpqsettings.h"
@@ -265,10 +265,10 @@ int getAddFileOptionFlags(MPQSettings::FileFlags options)
     case MPQSettings::Compress : return MPQ_FILE_COMPRESS;
     case MPQSettings::Compressed : return MPQ_FILE_COMPRESSED;
     case MPQSettings::Encrypted : return MPQ_FILE_ENCRYPTED;
-//    case MPQExtensionManager::FixKey : return MPQ_FILE_FIX_KEY;
+    case MPQSettings::FixKey : return MPQ_FILE_FIX_KEY;
     case MPQSettings::SingleUnit : return MPQ_FILE_SINGLE_UNIT;
-//    case MPQExtensionManager::DeleteMarker : return MPQ_FILE_DELETE_MARKER;
-//    case MPQExtensionManager::SectorCRC : return MPQ_FILE_SECTOR_CRC;
+    case MPQSettings::DeleteMarker : return MPQ_FILE_DELETE_MARKER;
+    case MPQSettings::SectorCRC : return MPQ_FILE_SECTOR_CRC;
     default: return 0;
     }
 }
@@ -443,6 +443,16 @@ const QString QMPQArchive::getFilePath(const QString & fullPath)
         return "";
     else
         return fullPath.left(index);
+}
+
+QStringList QMPQArchive::entryList(const QString & name)
+{
+    QStringList result;
+    TreeItem * item = treeItem(name);
+    foreach(TreeItem * child, item->childItems) {
+        result.append(child->data(FullPath).toString());
+    }
+    return result;
 }
 
 bool QMPQArchive::extract(TreeItem * item, const QString & path)

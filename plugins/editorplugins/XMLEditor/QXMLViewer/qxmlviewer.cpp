@@ -1,4 +1,4 @@
-#include "qxmlviewer.h".h"
+#include "qxmlviewer.h"
 
 #include <QtGui/QResizeEvent>
 

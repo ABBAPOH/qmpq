@@ -9,10 +9,10 @@ RCC_DIR = build
 CONFIG += plugin
 
 INCLUDEPATH += -I \
-    ../../../core/
+    ../../../Core
 
-LIBS += -L../../../core/bin \
-    -lcore
+LIBS += -L../../../Core/bin \
+    -lCore
 
 HEADERS += codeeditor.h \
     codeeditorplugin.h \

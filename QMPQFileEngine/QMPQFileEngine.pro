@@ -36,6 +36,7 @@ HEADERS += qmpqfileengine.h \
     objectcache.h \
     qmpqarchivecache.h \
     mpqsettings.h
-mac:target.path += ../app/bin/QMPQ.app/Contents/MacOS
-win32:target.path += ../app/bin/
+unix:target.path = /usr/local/lib
+mac:target.path = ../app/bin/QMPQ.app/Contents/MacOS
+win32:target.path = ../app/bin/
 INSTALLS += target
