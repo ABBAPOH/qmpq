@@ -3,9 +3,9 @@
 # -------------------------------------------------
 #QT -= gui
 TARGET = QMPQFileEngine
-#TEMPLATE = lib
+TEMPLATE = lib
 
- TEMPLATE = app
+#TEMPLATE = app
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build

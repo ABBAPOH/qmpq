@@ -34,6 +34,7 @@ QString CompactProcessDialog::getOperation(QMPQArchive::CompactOperation op)
     case QMPQArchive::CopyingNonMPQData : return tr("Copying non-MPQ Data");
     case QMPQArchive::CompactingFiles : return tr("Compacting files");
     case QMPQArchive::ClosingArchive : return tr("Closing Archive");
+    default: return "";
     }
 }
 

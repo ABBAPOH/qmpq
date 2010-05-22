@@ -20,6 +20,7 @@
 
 #include "../../../../QMPQFileEngine/qmpqfileengine.h"
 #include "../../../../QMPQFileEngine/qmpqarchive.h"
+#include "../../../../QMPQFileEngine/qmpqarchiveex.h"
 
 //================================== MPQEditorPlugin ==================================
 
@@ -287,7 +288,7 @@ MPQEditor * MPQEditorPlugin::editorWidget()
 }
 
 
-QMPQArchive * MPQEditorPlugin::getArchive(const QString & filePath)
+QMPQArchiveEx * MPQEditorPlugin::getArchive(const QString & filePath)
 {
     QFile file(filePath);
     //  if we can cat file then we're in mpq archive
@@ -335,7 +336,7 @@ void MPQEditorPlugin::rename()
 
 void MPQEditorPlugin::remove()
 {
-    editorWidget()->rename();
+    editorWidget()->remove();
 }
 
 void MPQEditorPlugin::reopen()
@@ -353,7 +354,7 @@ void MPQEditorPlugin::reopen()
 void MPQEditorPlugin::compact()
 {
     MPQEditor * editor = editorWidget();
-    QMPQArchive * archive = getArchive(editor->currentFile());
+    QMPQArchiveEx * archive = getArchive(editor->currentFile());
     if (archive) {
         CompactProcessDialog dlg;
         connect(archive, SIGNAL(compactProcessChanged(QMPQArchive::CompactOperation,qint64,qint64)),
@@ -368,7 +369,7 @@ void MPQEditorPlugin::compact()
 void MPQEditorPlugin::setHashTableSize()
 {
     MPQEditor * editor = editorWidget();
-    QMPQArchive * archive = getArchive(editor->currentFile());
+    QMPQArchiveEx * archive = getArchive(editor->currentFile());
     if (archive) {
         HashTableSizeDialog dlg;
         dlg.setHashTableSize(archive->hashTableSize());

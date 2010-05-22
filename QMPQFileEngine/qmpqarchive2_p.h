@@ -20,6 +20,7 @@ class QMPQArchive2Private
 public:
     /*mutable*/ QMPQArchive2::Error error;
     /*mutable*/ QString errorString;
+    QString file;
     bool isOpened;
     void * mpq;
     quint32 archiveSize;

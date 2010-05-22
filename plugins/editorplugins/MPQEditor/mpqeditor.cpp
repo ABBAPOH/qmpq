@@ -19,6 +19,7 @@
 
 #include "../../../../QMPQFileEngine/qmpqfileengine.h"
 #include "../../../../QMPQFileEngine/qmpqarchive.h"
+#include "../../../../QMPQFileEngine/qmpqarchiveex.h"
 #include "../../../../3rdParty/FileSystemModel/filesystemmodel.h"
 
 #include "universalview.h"
@@ -164,11 +165,11 @@ void MPQEditor::reopenUsingListfile(const QByteArray &listfile)
     //  if we can cat file then we're in mpq archive
     QMPQFileEngine * engine = dynamic_cast<QMPQFileEngine *>(file.fileEngine());
     if (engine) {
-        QMPQArchive * archive = engine->archive();
+        QMPQArchiveEx * archive = engine->archive();
         if (archive) {
             QString archivePath = archive->file();
             archive->closeArchive();
-            archive->openArchive(archivePath, listfile);
+            archive->openArchive(archivePath, 0, listfile);
 //            currentView->update(m_model->index(archivePath));
 //            m_model->update(archivePath);
             QDirModel * model = qobject_cast<QDirModel *>(m_model->model());

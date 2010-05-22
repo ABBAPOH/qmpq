@@ -37,7 +37,7 @@ bool QMPQArchive2::addFile(const QString & fileName, const QString & archivedNam
     bool result = SFileAddFileEx(d_func()->mpq,
                                  fileName.toLocal8Bit().data(),
                                  archivedName.toLocal8Bit().data(),
-                                 getAddFileOptionFlags(flags),
+                                 getAddFileOptionFlags(flags) | MPQ_FILE_REPLACEEXISTING,
                                  getCompressionFlags(compression));
     if (!result) {
         setLastError();
@@ -110,6 +110,7 @@ bool QMPQArchive2::closeArchive()
     }
     d->mpq = 0;
     d->isOpened = false;
+    d->file = "";
     d->hashTableSize = 0;
     return true;
 }
@@ -264,6 +265,7 @@ bool QMPQArchive2::openArchive(const QString & name, OpenFlags flags)
         return false;
     }
 
+    d->file = name;
     d->isOpened = true;
     getArchiveInfo();
 
@@ -363,6 +365,16 @@ bool QMPQArchive2::setAttributes(Attributes attributes)
 quint32 QMPQArchive2::blockTableSize() const
 {
     return d_func()->blockTableSize;
+}
+
+/*!
+  \fn QString QMPQArchive2::file() const
+  \brief Returns name of currently opened file
+
+*/
+QString QMPQArchive2::file() const
+{
+    return d_func()->file;
 }
 
 /*!

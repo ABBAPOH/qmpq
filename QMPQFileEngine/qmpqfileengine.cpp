@@ -32,7 +32,7 @@ QMPQFileEngine::~QMPQFileEngine()
     QMPQArchiveCache::instance()->remove(d->archiveFilePath);
 }
 
-QMPQArchive * QMPQFileEngine::archive()
+QMPQArchiveEx * QMPQFileEngine::archive()
 {
     return d_func()->archive;
 }
@@ -54,21 +54,21 @@ bool QMPQFileEngine::close()
     Q_D(QMPQFileEngine);
 
     if (d->openMode & QIODevice::WriteOnly) {
-        QString filepath = d->innerPath;
-        filepath = filepath.mid(filepath.lastIndexOf('\\') + 1);
-        QString tempPath = QDir::tempPath() + "/" + filepath;
-        QFile file(tempPath);
-        file.open(QFile::WriteOnly);
-        file.write(d->fileData);
-        file.close();
+//        QString filepath = d->innerPath;
+//        filepath = filepath.mid(filepath.lastIndexOf('\\') + 1);
+//        QString tempPath = QDir::tempPath() + "/" + filepath;
+//        QFile file(tempPath);
+//        file.open(QFile::WriteOnly);
+//        file.write(d->fileData);
+//        file.close();
         if (!d->archive->remove(d->innerPath)) {
             qDebug() << "QMPQFileEngine::close - can't remove";
         }
-        if (!d->archive->add(tempPath, d->innerPath)) {
-            return false;
+        if (!d->archive->addFile(d->fileData, d->innerPath)) {
             qDebug() << "QMPQFileEngine::close - can't add";
+            return false;
         }
-        file.remove();
+//        file.remove();
     }
 
     d->openMode = QIODevice::NotOpen;
@@ -172,7 +172,7 @@ bool QMPQFileEngine::open(QIODevice::OpenMode mode)
     d->openMode = mode;
     d->offset = 0;
     if (mode & QIODevice::ReadOnly) {
-        d->fileData = d->archive->read(d->innerPath);
+        d->fileData = d->archive->readFile(d->innerPath);
     }
     if (mode & QIODevice::WriteOnly) {
         d->fileData.clear();
@@ -249,9 +249,14 @@ bool QMPQFileEngine::rename(const QString & newName)
 bool QMPQFileEngine::rmdir(const QString & dirName, bool /*recurseParentDirectories*/) const
 {
     Q_D(const QMPQFileEngine);
-    if (!d->archive->isDir(dirName))
+    QString realName;
+    if (dirName.startsWith("mpq:" + d->archiveFilePath))
+        realName = dirName.mid(d->archiveFilePath.length() + 5);
+    else
+        realName = dirName;
+    if (!d->archive->isDir(realName))
         return false;
-    return d_func()->archive->remove(dirName);
+    return d_func()->archive->remove(realName);
 }
 
 void QMPQFileEngine::initArchive()

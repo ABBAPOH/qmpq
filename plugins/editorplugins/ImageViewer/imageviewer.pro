@@ -8,7 +8,7 @@ MOC_DIR = build
 RCC_DIR = build
 
 INCLUDEPATH += -I \
-    ../../../Сore
+    ../../../Core
 
 LIBS += -L../../../Core/bin \
     -lCore

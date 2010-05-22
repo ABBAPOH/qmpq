@@ -2,10 +2,11 @@
 #define SHAREDMPQARCHIVE_H
 
 #include "qmpqarchive.h"
+#include "qmpqarchiveex.h"
 #include <QHash>
 #include <QReadWriteLock>
 
-class SharedMPQArchive : /*public QObject, */public QMPQArchive
+class SharedMPQArchive : /*public QObject, */public QMPQArchiveEx
 {
     Q_OBJECT
 public:

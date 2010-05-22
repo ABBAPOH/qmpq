@@ -80,6 +80,7 @@ public:
 };
 
 class QMPQArchive;
+class QMPQArchiveEx;
 class MPQEditorPlugin : public IPlugin
 {
     Q_OBJECT
@@ -107,7 +108,7 @@ private slots:
 private:
     MPQEditorInterface * editor();
     MPQEditor * editorWidget();
-    QMPQArchive * getArchive(const QString & filePath);
+    QMPQArchiveEx * getArchive(const QString & filePath);
     void initActions();
 
     QAction * actionReopen;

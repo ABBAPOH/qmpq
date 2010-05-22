@@ -3,7 +3,7 @@
 #include <QDebug>
 
 SharedMPQArchive::SharedMPQArchive(const QString &file)
-    : QMPQArchive()
+    : QMPQArchiveEx()
 {
     openArchive(file);
 }

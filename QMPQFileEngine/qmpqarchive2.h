@@ -4,14 +4,16 @@
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
 
+#include "QMPQFileEngine_global.h"
 #include "mpqfileinfo.h"
 #include "mpqfileinfoiterator.h"
 
 class QMPQArchive2Private;
-class QMPQArchive2 : public QObject
+class QMPQFILEENGINESHARED_EXPORT QMPQArchive2 : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QMPQArchive2)
+    Q_PROPERTY(QString file READ file)
     Q_PROPERTY(bool isOpened READ isOpened)
     Q_PROPERTY(quint32 blockTableSize READ hashTableSize)
     Q_PROPERTY(quint32 filesCount READ filesCount)
@@ -126,6 +128,8 @@ public:
     bool setAttributes(Attributes attributes);
 
     quint32 blockTableSize() const;
+
+    QString file() const;
 
     quint32 filesCount() const;
 
