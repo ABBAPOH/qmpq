@@ -543,7 +543,8 @@ QMPQArchive2::Error QMPQArchive2::lastError(int errorCode)
 bool QMPQArchive2::openFile(const QString & fileName, void ** hFile)
 {
     if (fileName.startsWith("File")) {
-        quint32 index = fileName.mid(5, 13).toInt(); // we get block index from file name
+        quint32 index = fileName.mid(4, 8).toInt(); // we get block index from file name
+//        QString mid = fileName.mid(4, 8);
         return SFileOpenFileEx(d_func()->mpq, (const char *)index, SFILE_OPEN_BY_INDEX, hFile);
     } else {
         return SFileOpenFileEx(d_func()->mpq, fileName.toLocal8Bit(), 0, hFile);
@@ -552,8 +553,11 @@ bool QMPQArchive2::openFile(const QString & fileName, void ** hFile)
 
 void QMPQArchive2::setLastError()
 {
-    d_func()->error = lastError(GetLastError());
-    d_func()->errorString = errorString(d_func()->error);
+    int errorCode = GetLastError();
+    d_func()->error = lastError(errorCode);
+    d_func()->errorString = ErrString(errorCode);
+    qWarning() << "Mpq Error: " << d_func()->errorString;
+//    d_func()->errorString = errorString(d_func()->error);
     emit error();
 }
 
