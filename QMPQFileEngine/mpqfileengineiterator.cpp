@@ -1,16 +1,16 @@
 #include "mpqfileengineiterator.h"
 
-#include "treeitem.h"
+//#include "treeitem.h"
 
 #include <QtCore/QDebug>
 
-MPQFileEngineIterator::MPQFileEngineIterator(QDir::Filters filters, const QStringList & nameFilters, TreeItem * item)
-    : QAbstractFileEngineIterator(filters, nameFilters), index(-1)
-{
-//    qDebug() << "MPQFileEngineIterator" << item;
-    m_item = item;
-//    entries << "entry1" << "entry2" << "entry3";
-}
+//MPQFileEngineIterator::MPQFileEngineIterator(QDir::Filters filters, const QStringList & nameFilters, TreeItem * item)
+//    : QAbstractFileEngineIterator(filters, nameFilters), index(-1)
+//{
+////    qDebug() << "MPQFileEngineIterator" << item;
+//    m_item = item;
+////    entries << "entry1" << "entry2" << "entry3";
+//}
 
 MPQFileEngineIterator::MPQFileEngineIterator(QDir::Filters filters, const QStringList & nameFilters, const QStringList &files)
     : QAbstractFileEngineIterator(filters, nameFilters), index(-1)

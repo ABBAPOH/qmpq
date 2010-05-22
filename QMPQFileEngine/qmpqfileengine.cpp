@@ -2,7 +2,6 @@
 #include "qmpqfileengine_p.h"
 
 #include "mpqfileengineiterator.h"
-#include "treeitem.h"
 #include "qmpqfileenginehandler.h"
 #include "qmpqarchivecache.h"
 
