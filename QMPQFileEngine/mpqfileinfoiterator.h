@@ -4,12 +4,12 @@
 #include <QtCore/QStringList>
 #include "mpqfileinfo.h"
 
-class QMPQArchive2;
+class QMPQArchive;
 class MPQFileInfoIterator
 {
-    friend class QMPQArchive2;
+    friend class QMPQArchive;
 
-    QMPQArchive2 * m_archive;
+    QMPQArchive * m_archive;
     void * mpq;
     QStringList m_listfile;
     bool m_includeUnknowns;
@@ -22,7 +22,7 @@ class MPQFileInfoIterator
     MPQFileInfo nextInfo;
     QList<quint32> indexes;
 
-    MPQFileInfoIterator(QMPQArchive2 * archive, const QStringList & listfile, bool includeUnknowns);
+    MPQFileInfoIterator(QMPQArchive * archive, const QStringList & listfile, bool includeUnknowns);
 
     MPQFileInfo getNext();
 public:

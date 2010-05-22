@@ -19,7 +19,6 @@
 #include "hashtablesizedialog.h"
 
 #include "../../../../QMPQFileEngine/qmpqfileengine.h"
-#include "../../../../QMPQFileEngine/qmpqarchive.h"
 #include "../../../../QMPQFileEngine/qmpqarchiveex.h"
 
 //================================== MPQEditorPlugin ==================================

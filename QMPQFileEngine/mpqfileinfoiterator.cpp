@@ -1,11 +1,11 @@
 #include "mpqfileinfoiterator.h"
 
-#include "qmpqarchive2.h"
-#include "qmpqarchive2_p.h"
+#include "qmpqarchive.h"
+#include "qmpqarchive_p.h"
 
 #include <QDebug>
 
-MPQFileInfoIterator::MPQFileInfoIterator(QMPQArchive2 * archive, const QStringList & listfile, bool includeUnknowns) :
+MPQFileInfoIterator::MPQFileInfoIterator(QMPQArchive * archive, const QStringList & listfile, bool includeUnknowns) :
         m_archive(archive)
 {
     mpq = m_archive->d_func()->mpq;

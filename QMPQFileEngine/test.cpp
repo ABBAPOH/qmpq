@@ -5,12 +5,12 @@
 Test::Test(QObject *parent) :
     QObject(parent)
 {
-    archive = new QMPQArchive2(this);
+    archive = new QMPQArchive(this);
     archiveEx = new QMPQArchiveEx(this);
 
     connect(archive, SIGNAL(error()), SLOT(archiveError()));
     connect(archive, SIGNAL(addFileProgressChanged(quint32,quint32,bool)), SLOT(addFileProgressChanged(quint32,quint32,bool)));
-    connect(archive, SIGNAL(compactProgressChanged(QMPQArchive2::CompactOperation,qint64,qint64)), SLOT(compactProgressChanged(QMPQArchive2::CompactOperation,qint64,qint64)));
+    connect(archive, SIGNAL(compactProgressChanged(QMPQArchive::CompactOperation,qint64,qint64)), SLOT(compactProgressChanged(QMPQArchive::CompactOperation,qint64,qint64)));
 //    testArchive();
     testArchiveEx();
 }
@@ -59,7 +59,7 @@ void Test::addFileProgressChanged(quint32 a,quint32 b ,bool c)
     qDebug() << "Test::addFileProgressChanged" << a << b << c;
 }
 
-void Test::compactProgressChanged(QMPQArchive2::CompactOperation a, qint64 b, qint64 c)
+void Test::compactProgressChanged(QMPQArchive::CompactOperation a, qint64 b, qint64 c)
 {
     qDebug() << "Test::compactProgressChanged" << a << b << c;
 }

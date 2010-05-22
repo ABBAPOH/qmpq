@@ -18,12 +18,11 @@ SOURCES += qmpqfileengine.cpp \
     mpqfileengineiterator.cpp \
     treeitem.cpp \
     qmpqerror.cpp \
-    qmpqarchive.cpp \
     sharedmpqarchive.cpp \
     objectcache.cpp \
     qmpqarchivecache.cpp \
     mpqsettings.cpp \
-    qmpqarchive2.cpp \
+    qmpqarchive.cpp \
     mpqfileinfo.cpp \
     mpqfileinfoiterator.cpp \
     test.cpp \
@@ -34,16 +33,15 @@ HEADERS += qmpqfileengine.h \
     mpqfileengineiterator.h \
     treeitem.h \
     qmpqerror.h \
-    qmpqarchive.h \
     qmpqarchive_p.h \
     sharedmpqarchive.h \
     qmpqfileengine_p.h \
     objectcache.h \
     qmpqarchivecache.h \
     mpqsettings.h \
-    qmpqarchive2.h \
+    qmpqarchive.h \
     mpqfileinfo.h \
-    qmpqarchive2_p.h \
+    qmpqarchive_p.h \
     mpqfileinfoiterator.h \
     test.h \
     qmpqarchiveex.h

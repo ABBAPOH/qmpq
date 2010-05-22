@@ -7,7 +7,7 @@ class MPQFileInfoData;
 
 class MPQFileInfo
 {
-    friend class QMPQArchive2;
+    friend class QMPQArchive;
 
 public:
     MPQFileInfo();

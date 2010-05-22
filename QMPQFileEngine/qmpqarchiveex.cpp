@@ -77,7 +77,7 @@ void QMPQArchiveExPrivate::clear()
 
 
 QMPQArchiveEx::QMPQArchiveEx(QObject *parent) :
-    QMPQArchive2(parent), d_ptr(new QMPQArchiveExPrivate())
+    QMPQArchive(parent), d_ptr(new QMPQArchiveExPrivate())
 {
 }
 
@@ -92,7 +92,7 @@ bool QMPQArchiveEx::openArchive(const QString & name, OpenFlags flags, QByteArra
 
     if (isOpened())
         closeArchive();
-    bool result = QMPQArchive2::openArchive(name, flags);
+    bool result = QMPQArchive::openArchive(name, flags);
 //    d->m_file = name;
     initialize(QString(listfile).split("\r\n"));
 
@@ -108,7 +108,7 @@ bool QMPQArchiveEx::closeArchive()
 //        updateListFile();
 
     d->clear();
-    return QMPQArchive2::closeArchive();
+    return QMPQArchive::closeArchive();
 }
 
 bool QMPQArchiveEx::add(const QString & file, const QString & path)

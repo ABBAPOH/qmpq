@@ -1,7 +1,6 @@
 #ifndef SHAREDMPQARCHIVE_H
 #define SHAREDMPQARCHIVE_H
 
-#include "qmpqarchive.h"
 #include "qmpqarchiveex.h"
 #include <QHash>
 #include <QReadWriteLock>

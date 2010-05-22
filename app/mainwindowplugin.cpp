@@ -16,7 +16,7 @@
 #include "preferenceswidget.h"
 #include "windowmanager.h"
 
-#include "../QMPQFileEngine/qmpqarchive.h"
+#include "../QMPQFileEngine/qmpqarchiveex.h"
 //#include "../QMPQFileEngine/mpqextensionmanager.h"
 
 MainWindowPlugin::MainWindowPlugin(QObject *parent) :
@@ -72,17 +72,16 @@ void MainWindowPlugin::newArchive()
         if (dialog.exec()) {
             int flags = 0, maxFiles = 1024;
             int version = dialog.archiveVersion();
-            flags |= (version == 1) ? QMPQArchive::CreateArchiveV1 : 0;
-            flags |= (version == 2) ? QMPQArchive::CreateArchiveV2 : 0;
-            flags |= dialog.addAttributes() ? QMPQArchive::CreateAttributes : 0;
+            flags |= (version == 1) ? QMPQArchive::ArchiveV1 : 0;
+            flags |= (version == 2) ? QMPQArchive::ArchiveV2 : 0;
+            flags |= dialog.addAttributes() ? QMPQArchive::AddAttributes : 0;
             maxFiles = dialog.maxFiles();
             QMPQArchive arch;
-            arch.newArchive(file, flags, maxFiles);
+            arch.createArchive(file, maxFiles, QMPQArchive::CreateFlags(flags));
             arch.closeArchive();
             ICore::instance()->windowManager()->open(file);
         }
     }
-
 }
 
 void MainWindowPlugin::open()

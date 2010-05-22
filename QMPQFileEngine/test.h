@@ -2,7 +2,7 @@
 #define TEST_H
 
 #include <QObject>
-#include <qmpqarchive2.h>
+#include <qmpqarchive.h>
 #include <qmpqarchiveex.h>
 
 class Test : public QObject
@@ -10,7 +10,7 @@ class Test : public QObject
     Q_OBJECT
 public:
     explicit Test(QObject *parent = 0);
-    QMPQArchive2 * archive;
+    QMPQArchive * archive;
     QMPQArchiveEx * archiveEx;
     void testArchive();
     void testArchiveEx();
@@ -20,7 +20,7 @@ signals:
 public slots:
     void archiveError();
     void addFileProgressChanged(quint32,quint32,bool);
-    void compactProgressChanged(QMPQArchive2::CompactOperation,qint64,qint64);
+    void compactProgressChanged(QMPQArchive::CompactOperation,qint64,qint64);
 };
 
 #endif // TEST_H

@@ -1,5 +1,5 @@
 #include "mpqfileinfo.h"
-#include "qmpqarchive2_p.h"
+#include "qmpqarchive_p.h"
 
 #include <QSharedData>
 

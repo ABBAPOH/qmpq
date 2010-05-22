@@ -18,7 +18,6 @@
 #include <icore.h>
 
 #include "../../../../QMPQFileEngine/qmpqfileengine.h"
-#include "../../../../QMPQFileEngine/qmpqarchive.h"
 #include "../../../../QMPQFileEngine/qmpqarchiveex.h"
 #include "../../../../3rdParty/FileSystemModel/filesystemmodel.h"
 

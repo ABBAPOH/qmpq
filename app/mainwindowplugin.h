@@ -14,7 +14,7 @@ public:
     void initialize();
     void shutdown() {}
     QString name() { return "MainWindow"; }
-    QString description() { return QString(); };
+    QString description() { return QString(); }
 
 signals:
 

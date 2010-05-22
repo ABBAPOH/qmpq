@@ -1,13 +1,13 @@
 #ifndef QMPQARCHIVEEX_H
 #define QMPQARCHIVEEX_H
 
-#include "qmpqarchive2.h"
+#include "qmpqarchive.h"
 #include "QMPQFileEngine_global.h"
 
 class Node;
 class QMPQArchiveExPrivate;
 
-class QMPQFILEENGINESHARED_EXPORT QMPQArchiveEx : public QMPQArchive2
+class QMPQFILEENGINESHARED_EXPORT QMPQArchiveEx : public QMPQArchive
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QMPQArchiveEx)
