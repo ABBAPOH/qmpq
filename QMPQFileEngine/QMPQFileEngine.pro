@@ -1,11 +1,11 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-11-19T09:03:48
 # -------------------------------------------------
-QT -= gui
+#QT -= gui
 TARGET = QMPQFileEngine
-TEMPLATE = lib
+#TEMPLATE = lib
 
-# TEMPLATE = app
+ TEMPLATE = app
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -22,7 +22,12 @@ SOURCES += qmpqfileengine.cpp \
     sharedmpqarchive.cpp \
     objectcache.cpp \
     qmpqarchivecache.cpp \
-    mpqsettings.cpp
+    mpqsettings.cpp \
+    qmpqarchive2.cpp \
+    mpqfileinfo.cpp \
+    mpqfileinfoiterator.cpp \
+    test.cpp \
+    qmpqarchiveex.cpp
 HEADERS += qmpqfileengine.h \
     QMPQFileEngine_global.h \
     qmpqfileenginehandler.h \
@@ -35,7 +40,13 @@ HEADERS += qmpqfileengine.h \
     qmpqfileengine_p.h \
     objectcache.h \
     qmpqarchivecache.h \
-    mpqsettings.h
+    mpqsettings.h \
+    qmpqarchive2.h \
+    mpqfileinfo.h \
+    qmpqarchive2_p.h \
+    mpqfileinfoiterator.h \
+    test.h \
+    qmpqarchiveex.h
 unix:target.path = /usr/local/lib
 mac:target.path = ../app/bin/QMPQ.app/Contents/MacOS
 win32:target.path = ../app/bin/
