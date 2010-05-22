@@ -37,9 +37,11 @@ protected:
 private:
     QString getFileName(const QString & path) const;
     QString getFilePath(const QString & path) const;
+    void initFile(const MPQFileInfo & info);
     void initialize(QStringList listfile);
     Node * mkNode(const QString & path, bool createParentDirectories);
     Node * node(const QString & path) const;
+    bool rename(Node * node, const QString & newName);
     bool remove(Node * node);
 };
 

@@ -240,7 +240,7 @@ bool QMPQFileEngine::rename(const QString & newName)
         d->archive->closeArchive();
         return file.rename(newName);
     } else {
-        QString newInnerPath = newName.mid(d->archiveFilePath.length() + 1);
+        QString newInnerPath = newName.mid(d->archiveFilePath.length() + 5);
         newInnerPath = newInnerPath.replace('/', '\\');
         return d->archive->rename(d->innerPath, newInnerPath/*newName.mid(newName.lastIndexOf('/') + 1)*/);
     }

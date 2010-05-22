@@ -1079,8 +1079,7 @@ bool QDirModel::rmdir(const QModelIndex &index)
     QDirModelPrivate::QDirNode *p = d_func()->node(par);
 //    QDir dir = p->info.dir(); // parent dir
     QDir dir(p->info.absolutePath()); // parent dir
-//    QString path = n->info.absoluteFilePath();
-    QString path = n->info.fileName();
+    QString path = n->info.absoluteFilePath();
     if (!dir.rmdir(path))
         return false;
 

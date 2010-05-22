@@ -144,7 +144,7 @@ bool QMPQArchiveEx::mkdir(const QString & path, bool createParentDirectories)
 
 bool QMPQArchiveEx::rename(const QString & oldName, const QString & newName)
 {
-    qDebug("QMPQArchiveEx::rename");
+    return rename(node(oldName), newName);
 }
 
 bool QMPQArchiveEx::remove(const QString & name)
@@ -178,14 +178,19 @@ QString QMPQArchiveEx::getFilePath(const QString & fullPath) const
         return fullPath.left(index);
 }
 
+void QMPQArchiveEx::initFile(const MPQFileInfo & info)
+{
+    Node * node = mkNode(info.name(), true);
+    node->m_isDir = false;
+}
+
 void QMPQArchiveEx::initialize(QStringList listfile)
 {
     MPQFileInfoIterator * iterator = beginFileInfoList(listfile, true);
 
     while (iterator->hasNext()) {
          MPQFileInfo info = iterator->next();
-         Node * node = mkNode(info.name(), true);
-         node->m_isDir = false;
+         initFile(info);
     }
 
     delete iterator;
@@ -226,6 +231,67 @@ Node * QMPQArchiveEx::node(const QString & path) const
     }
 }
 
+bool QMPQArchiveEx::rename(Node * node, const QString & newName)
+{
+    Q_D(QMPQArchiveEx);
+//    qDebug("QMPQArchive::rename");
+    if (!node) {
+        return false;
+    }
+
+//    d->setUpdateOnClose();
+
+    const QString & oldName = node->path();
+//    qDebug() << oldName << newName;
+
+    if (d->hash.contains(newName)) {
+        //file or folder already exists
+        return false;
+    }
+
+    bool isDir = node->isDir();
+    if (isDir) {
+//        return false;
+        QString name = newName;
+        if (name != "" ) {
+            name += '\\';
+        }
+        foreach (Node * child, node->childItems) {
+            rename(child, name + child->name());
+        }
+    }
+
+    QString path;
+    QString name;
+    int index = newName.lastIndexOf('\\');
+    if (index != -1) {
+        path = newName.left(index);
+        name = newName.mid(index+1);
+    } else {
+        name = newName;
+    }
+    //    qDebug() << "path: " << path << "name: " << name;
+//    Node * oldParent = node->parent();
+//    oldParent->deleteChild(node);
+    delete node;
+    d->hash.remove(oldName);
+
+//    d->m_listFile.removeAll(oldName);
+//    d->m_listFile.append(newName);
+    if (isDir) {
+        mkdir(newName, true);
+        node = this->node(newName);
+    } else {
+//        bool res = d->rename(oldName, newName);
+        bool result = renameFile(oldName, newName);
+//        d->initFile(newName);
+        initFile(fileInfo(newName));
+
+        return result;
+    }
+    return true;
+}
+
 bool QMPQArchiveEx::remove(Node * node)
 {
     Q_D(QMPQArchiveEx);
@@ -234,21 +300,16 @@ bool QMPQArchiveEx::remove(Node * node)
 
 //    d->setUpdateOnClose();
 
-//    Node * parent = node->parent();
     QString path = node->path();
-    qDebug() << "QMPQArchive::remove " << path;
     if (node->isDir()) {
         foreach (Node * child, node->childItems) {
             remove(child);
         }
     } else {
-//        bool result = remove(node->data(FullPath).toString());
         bool result = removeFile(path);
-        qDebug() << "QMPQArchiveEx::remove" << result;
         if (!result)
             return false;
     }
-//    parent->deleteChild(node);
     delete node;
 //    d->m_listFile.removeAll(path);
     d->hash.remove(path);
