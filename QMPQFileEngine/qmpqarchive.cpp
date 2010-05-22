@@ -178,7 +178,6 @@ MPQFileInfo QMPQArchive::fileInfo(const QString & fileName)
     {
         resultInfo = getFileInfo_p(hFile);
         // we don't detach data because we're continue filling resultInfo (not changing a copy)
-//        qDebug() << "QMPQArchive2::getFileInfo" << resultInfo.data.data()->ref;
         char buffer[255];
         SFileGetFileName(hFile, buffer);
         resultInfo.data->name = QString(buffer);
@@ -282,7 +281,6 @@ QByteArray QMPQArchive::readFile(const QString &file)
 {
     void * filePointer = 0;
     bool result;
-//    result = SFileOpenFileEx(d->mpq, file.toLocal8Bit().data(), 0, &filePointer);
     result = openFile(file, &filePointer);
 
     if (!result) {
@@ -323,8 +321,6 @@ bool QMPQArchive::removeFile(const QString & fileName)
 */
 bool QMPQArchive::renameFile(const QString & oldFileName, const QString & newFileName)
 {
-//    if (!isOpened())
-//        return false;
     bool result = SFileRenameFile(d_func()->mpq, oldFileName.toLocal8Bit().data(), newFileName.toLocal8Bit().data());
     if (!result) {
         setLastError();
@@ -428,11 +424,6 @@ quint32 QMPQArchive::sectorSize() const
 }
 
 // ============== private ==============
-
-//QMPQArchive2::Error QMPQArchive2::GetLastError()
-//{
-//    return lastError(GetLastError());
-//}
 
 void QMPQArchive::addFileCallBack(void *o, quint32 bytesWritten, quint32 totalBytes, bool finalCall)
 {

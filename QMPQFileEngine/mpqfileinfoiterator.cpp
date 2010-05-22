@@ -3,8 +3,6 @@
 #include "qmpqarchive.h"
 #include "qmpqarchive_p.h"
 
-#include <QDebug>
-
 MPQFileInfoIterator::MPQFileInfoIterator(QMPQArchive * archive, const QStringList & listfile, bool includeUnknowns) :
         m_archive(archive)
 {
@@ -24,10 +22,6 @@ MPQFileInfoIterator::MPQFileInfoIterator(QMPQArchive * archive, const QStringLis
     filesCount = m_archive->filesCount();
     hashTableSize = m_archive->hashTableSize();
 }
-
-//MPQFileInfoIterator::MPQFileInfoIterator()
-//{
-//}
 
 MPQFileInfo MPQFileInfoIterator::getNext()
 {

@@ -156,7 +156,6 @@ private:
     quint32 getAddFileOptionFlags(FileFlags options);
     quint32 getCompressionFlags(CompressionFlags types);
     MPQFileInfo getFileInfo_p(void *);
-//    Error GetLastError(); // wrapper aroung StormLib's GetLastError()
     Error lastError(int errorCode); // converts StormLib error to our enum
     bool openFile(const QString & name, void ** hFile);
     void setLastError();

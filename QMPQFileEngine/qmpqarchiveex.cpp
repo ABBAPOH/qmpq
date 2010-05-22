@@ -11,22 +11,13 @@ public:
             m_parent->childItems.append(this);
         }
         m_isDir = isDir;
-//        m_info = 0;
     }
-
-//    Node(Node * parent, MPQFileInfo info)
-//    {
-//        m_parent = parent;
-//        m_isDir = false;
-//        m_info = new MPQFileInfo(info);
-//    }
 
     virtual ~Node()
     {
         if (m_parent)
             m_parent->childItems.removeAll(this);
         qDeleteAll(childItems);
-//        delete m_info;
     }
 
     inline QString name() const { return m_name; }
@@ -50,7 +41,6 @@ public:
     bool m_isDir;
     QString m_name;
     QString m_path;
-//    MPQFileInfo * m_info;
 };
 
 QMPQArchiveExPrivate::QMPQArchiveExPrivate()
@@ -93,7 +83,6 @@ bool QMPQArchiveEx::openArchive(const QString & name, OpenFlags flags, QByteArra
     if (isOpened())
         closeArchive();
     bool result = QMPQArchive::openArchive(name, flags);
-//    d->m_file = name;
     initialize(QString(listfile).split("\r\n"));
 
     return result;
@@ -155,7 +144,6 @@ bool QMPQArchiveEx::remove(const QString & name)
 qint64 QMPQArchiveEx::size(const QString &file)/* const*/
 {
     MPQFileInfo info = fileInfo(file);
-//    qDebug() << "QMPQArchive::size()" << file << item;
 
     if (info.isValid())
         return info.fileSize();
@@ -271,8 +259,6 @@ bool QMPQArchiveEx::rename(Node * node, const QString & newName)
         name = newName;
     }
     //    qDebug() << "path: " << path << "name: " << name;
-//    Node * oldParent = node->parent();
-//    oldParent->deleteChild(node);
     delete node;
     d->hash.remove(oldName);
 
@@ -282,9 +268,7 @@ bool QMPQArchiveEx::rename(Node * node, const QString & newName)
         mkdir(newName, true);
         node = this->node(newName);
     } else {
-//        bool res = d->rename(oldName, newName);
         bool result = renameFile(oldName, newName);
-//        d->initFile(newName);
         initFile(fileInfo(newName));
 
         return result;

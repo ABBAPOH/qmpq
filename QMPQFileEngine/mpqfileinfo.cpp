@@ -3,14 +3,6 @@
 
 #include <QSharedData>
 
-//class MPQFileInfoData : public QSharedData {
-//public:
-//    unsigned m_localeId;
-//    quint32 m_fileSize;
-//    quint32 m_compressedSize;
-
-//};
-
 MPQFileInfoData::MPQFileInfoData() :
         valid(false)
 {
