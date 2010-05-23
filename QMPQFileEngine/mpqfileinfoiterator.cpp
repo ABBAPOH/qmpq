@@ -9,7 +9,7 @@ MPQFileInfoIterator::MPQFileInfoIterator(QMPQArchive * archive, const QStringLis
     mpq = m_archive->d_func()->mpq;
     m_listfile << "(listfile)" << "(attributes)";
 
-    QString listfileString = m_archive->readFile("(listfile)");
+    QString listfileString = m_archive->read("(listfile)");
     if (!listfileString.isEmpty()) {
         m_listfile.append(listfileString.split("\r\n"));
     }

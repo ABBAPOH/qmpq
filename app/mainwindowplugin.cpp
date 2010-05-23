@@ -77,8 +77,8 @@ void MainWindowPlugin::newArchive()
             flags |= dialog.addAttributes() ? QMPQArchive::AddAttributes : 0;
             maxFiles = dialog.maxFiles();
             QMPQArchive arch;
-            arch.createArchive(file, maxFiles, QMPQArchive::CreateFlags(flags));
-            arch.closeArchive();
+            arch.create(file, maxFiles, QMPQArchive::CreateFlags(flags));
+            arch.close();
             ICore::instance()->windowManager()->open(file);
         }
     }

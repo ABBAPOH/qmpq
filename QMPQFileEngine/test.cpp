@@ -17,7 +17,7 @@ Test::Test(QObject *parent) :
 
 void Test::testArchive()
 {
-    qDebug() << archive->openArchive("/Users/arch/(8)plainsofsnow5.w3m");
+    qDebug() << archive->open("/Users/arch/(8)plainsofsnow5.w3m");
     qDebug() << "number of files" << archive->filesCount();
     qDebug() << "hash table size" << archive->hashTableSize();
     qDebug() << "block table size" << archive->blockTableSize();
@@ -27,10 +27,10 @@ void Test::testArchive()
     qDebug() << "file name" << info.name();
     qDebug() << "file size" << info.fileSize();
     qDebug() << "comp size" << info.compressedSize();
-    qDebug() << archive->readFile("(listfile)");
+    qDebug() << archive->read("(listfile)");
 
-    qDebug() << "remove file"<< archive->removeFile("1.zip");
-    qDebug() << "add file" << archive->addFile(QString("/Users/arch/1.zip"), "1.zip");
+    qDebug() << "remove file"<< archive->remove("1.zip");
+    qDebug() << "add file" << archive->add(QString("/Users/arch/1.zip"), "1.zip");
 
     MPQFileInfoIterator * iter = archive->beginFileInfoList();
     while(iter->hasNext()) {
@@ -39,7 +39,7 @@ void Test::testArchive()
 
     }
 //    qDebug() << "compacting" << archive->compact();
-    qDebug() << "closing" << archive->closeArchive();
+    qDebug() << "closing" << archive->close();
 }
 
 void Test::testArchiveEx()

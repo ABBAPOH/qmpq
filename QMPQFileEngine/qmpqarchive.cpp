@@ -20,18 +20,18 @@ QMPQArchive::QMPQArchive(QObject *parent) :
 
 QMPQArchive::~QMPQArchive()
 {
-    closeArchive();
+    close();
     delete d_ptr;
 }
 
 /*!
-  \fn bool QMPQArchive2::addFile(const QString & fileName, const QString & archivedName, FileFlags flags, CompressionFlags compression)
+  \fn bool QMPQArchive2::add(const QString & fileName, const QString & archivedName, FileFlags flags, CompressionFlags compression)
   \brief Adds filem specified by \a fileName to archive using \a archivedName.
 
   Returns true if successful; otherwise returns false.
   While adding file, emits addFileProgressChanged signal
 */
-bool QMPQArchive::addFile(const QString & fileName, const QString & archivedName, FileFlags flags, CompressionFlags compression/*, DWORD dwCompressionNext = 0xFFFFFFFF*/)
+bool QMPQArchive::add(const QString & fileName, const QString & archivedName, FileFlags flags, CompressionFlags compression/*, DWORD dwCompressionNext = 0xFFFFFFFF*/)
 {
     SFileSetAddFileCallback(d_func()->mpq, addFileCallBack, this);
     bool result = SFileAddFileEx(d_func()->mpq,
@@ -46,12 +46,12 @@ bool QMPQArchive::addFile(const QString & fileName, const QString & archivedName
 }
 
 /*!
-  \fn bool QMPQArchive2::addFile(const QByteArray data, const QString & archivedName, FileFlags flags, CompressionFlags compression)
+  \fn bool QMPQArchive2::add(const QByteArray data, const QString & archivedName, FileFlags flags, CompressionFlags compression)
   \brief Adds \a data to archive specified by \a archivedName.
 
   Returns true if successful; otherwise returns false.
 */
-bool QMPQArchive::addFile(const QByteArray & data, const QString & archivedName, FileFlags flags, CompressionFlags compression/*, DWORD dwCompressionNext = 0xFFFFFFFF*/)
+bool QMPQArchive::add(const QByteArray & data, const QString & archivedName, FileFlags flags, CompressionFlags compression/*, DWORD dwCompressionNext = 0xFFFFFFFF*/)
 {
     QString temp = QDesktopServices::storageLocation(QDesktopServices::TempLocation);
     QString fileName = temp + '/' + archivedName;
@@ -61,7 +61,7 @@ bool QMPQArchive::addFile(const QByteArray & data, const QString & archivedName,
     file.write(data);
     file.close();
 
-    return addFile(fileName, archivedName, flags, compression);
+    return add(fileName, archivedName, flags, compression);
 }
 
 MPQFileInfoIterator * QMPQArchive::beginFileInfoList(const QStringList & listfile, bool includeUnknowns)
@@ -69,7 +69,7 @@ MPQFileInfoIterator * QMPQArchive::beginFileInfoList(const QStringList & listfil
     return new MPQFileInfoIterator(this, listfile, includeUnknowns);
 }
 
-bool QMPQArchive::createArchive(const QString & name, int hashTableSize, CreateFlags flags)
+bool QMPQArchive::create(const QString & name, int hashTableSize, CreateFlags flags)
 {
     void * mpq = 0;
     if (!SFileCreateArchiveEx(name.toLocal8Bit().data(), MPQ_CREATE_NEW | flags, hashTableSize, &mpq)) {
@@ -92,12 +92,12 @@ bool QMPQArchive::createAttributes(Attributes flags)
 }
 
 /*!
-  \fn bool QMPQArchive2::closeArchive()
+  \fn bool QMPQArchive2::close()
   \brief Closes currently open archive.
 
   Returns true on success.
 */
-bool QMPQArchive::closeArchive()
+bool QMPQArchive::close()
 {
     Q_D(QMPQArchive);
     if (!isOpened()) {
@@ -159,7 +159,7 @@ QString QMPQArchive::errorString(QMPQArchive::Error code)
 }
 
 /*!
-  \fn MPQFileInfo QMPQArchive2::getFileInfo(const QString & fileName)
+  \fn MPQFileInfo QMPQArchive2::fileInfo(const QString & fileName)
   \brief Returns information about \a fileName.
 
   If archive is not opened or error occured, the result will be invalid.
@@ -217,11 +217,11 @@ bool QMPQArchive::flush()
 }
 
 /*!
-  \fn bool QMPQArchive2::hasFile(const QString & file)
+  \fn bool QMPQArchive2::exists(const QString & file)
   \brief Returns true if archive contains file \a file
 
 */
-bool QMPQArchive::hasFile(const QString & file)
+bool QMPQArchive::exists(const QString & file)
 {
     return SFileHasFile(d_func()->mpq, file.toLocal8Bit().data());
 }
@@ -247,16 +247,16 @@ QMPQArchive::Error QMPQArchive::lastError()
 }
 
 /*!
-  \fn bool QMPQArchive2::openArchive(const QString & name, OpenFlags flags)
+  \fn bool QMPQArchive2::open(const QString & name, OpenFlags flags)
   \brief Opens archive specified by \a name with flags \a flags.
 
   Returns true if successful; otherwise returns false.
 */
-bool QMPQArchive::openArchive(const QString & name, OpenFlags flags)
+bool QMPQArchive::open(const QString & name, OpenFlags flags)
 {
     Q_D(QMPQArchive);
     if (isOpened()) {
-        closeArchive();
+        close();
     }
 
     bool result = SFileCreateArchiveEx(name.toLocal8Bit().data(),
@@ -276,12 +276,12 @@ bool QMPQArchive::openArchive(const QString & name, OpenFlags flags)
 }
 
 /*!
-  \fn QByteArray QMPQArchive2::readFile(const QString &file)
+  \fn QByteArray QMPQArchive2::read(const QString &file)
   \brief Opens archive specified by \a name with flags \a flags.
 
   Returns true if successful; otherwise returns false.
 */
-QByteArray QMPQArchive::readFile(const QString &file)
+QByteArray QMPQArchive::read(const QString &file)
 {
     void * filePointer = 0;
     bool result;
@@ -304,12 +304,12 @@ QByteArray QMPQArchive::readFile(const QString &file)
 }
 
 /*!
-  \fn bool QMPQArchive2::renameFile(const QString & oldFileName, const QString & newFileName)
+  \fn bool QMPQArchive::remove(const QString & fileName)
   \brief Removes the file \a fileName from currently opened archive.
 
   Returns true if successful; otherwise returns false.
 */
-bool QMPQArchive::removeFile(const QString & fileName)
+bool QMPQArchive::remove(const QString & fileName)
 {
     if (!SFileRemoveFile(d_func()->mpq, fileName.toLocal8Bit().data(), 0)) {
         setLastError();
@@ -319,11 +319,11 @@ bool QMPQArchive::removeFile(const QString & fileName)
 }
 
 /*!
-  \fn bool QMPQArchive2::renameFile(const QString & oldFileName, const QString & newFileName)
+  \fn bool QMPQArchive2::rename(const QString & oldFileName, const QString & newFileName)
   \brief Renames the file \a oldFileName to \a newFileName. Returns true if successful; otherwise returns false.
 
 */
-bool QMPQArchive::renameFile(const QString & oldFileName, const QString & newFileName)
+bool QMPQArchive::rename(const QString & oldFileName, const QString & newFileName)
 {
     bool result = SFileRenameFile(d_func()->mpq, oldFileName.toLocal8Bit().data(), newFileName.toLocal8Bit().data());
     if (!result) {

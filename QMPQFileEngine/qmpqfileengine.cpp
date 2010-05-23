@@ -63,7 +63,7 @@ bool QMPQFileEngine::close()
         if (!d->archive->remove(d->innerPath)) {
             qDebug() << "QMPQFileEngine::close - can't remove";
         }
-        if (!d->archive->addFile(d->fileData, d->innerPath)) {
+        if (!d->archive->add(d->fileData, d->innerPath)) {
             qDebug() << "QMPQFileEngine::close - can't add";
             return false;
         }
@@ -171,7 +171,7 @@ bool QMPQFileEngine::open(QIODevice::OpenMode mode)
     d->openMode = mode;
     d->offset = 0;
     if (mode & QIODevice::ReadOnly) {
-        d->fileData = d->archive->readFile(d->innerPath);
+        d->fileData = d->archive->read(d->innerPath);
     }
     if (mode & QIODevice::WriteOnly) {
         d->fileData.clear();

@@ -82,7 +82,7 @@ bool QMPQArchiveEx::openArchive(const QString & name, OpenFlags flags, QByteArra
 
     if (isOpened())
         closeArchive();
-    bool result = QMPQArchive::openArchive(name, flags);
+    bool result = QMPQArchive::open(name, flags);
     initialize(QString(listfile).split("\r\n"));
 
     return result;
@@ -97,7 +97,7 @@ bool QMPQArchiveEx::closeArchive()
 //        updateListFile();
 
     d->clear();
-    return QMPQArchive::closeArchive();
+    return QMPQArchive::close();
 }
 
 bool QMPQArchiveEx::add(const QString & file, const QString & path)
@@ -268,7 +268,7 @@ bool QMPQArchiveEx::rename(Node * node, const QString & newName)
         mkdir(newName, true);
         node = this->node(newName);
     } else {
-        bool result = renameFile(oldName, newName);
+        bool result = rename(oldName, newName);
         initFile(fileInfo(newName));
 
         return result;
@@ -290,7 +290,7 @@ bool QMPQArchiveEx::remove(Node * node)
             remove(child);
         }
     } else {
-        bool result = removeFile(path);
+        bool result = remove(path);
         if (!result)
             return false;
     }
