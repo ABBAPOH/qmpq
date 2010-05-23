@@ -32,7 +32,11 @@ public:
 
     enum OpenFlag
     {
-        OpenFlagNone = 0
+        OpenFlagNone = 0,
+        NoListfile = 0x01,
+        NoAttributes = 0x02,
+        ForceMPQ1 = 0x04,
+        CheckSectorCRC = 0x08
     };
     Q_DECLARE_FLAGS(OpenFlags, OpenFlag);
 
@@ -91,6 +95,15 @@ public:
     };
     Q_ENUMS(VerifyArchiveError);
 
+    enum VerifyFileError {
+        ErrorOpenFile = 0x01,
+        ErrorReadFile = 0x02,
+        ErrorSectorChecksum = 0x04,
+        ErrorFileChecksum = 0x08,
+        ErrorMD5 = 0x10
+    };
+    Q_ENUMS(VerifyArchiveError);
+
     enum Attribute {
         CRC32 = 1,
         FileTime = 2,
@@ -121,6 +134,7 @@ public:
     bool removeFile(const QString & fileName);
     bool renameFile(const QString & oldFileName, const QString & newFileName);
     VerifyArchiveError verifyArchive();
+    VerifyFileError verifyFile(const QString & file, Attributes attributes);
     bool updateFileAttributes(const QString & fileName);
 
     Attributes attributes() const;
@@ -155,6 +169,7 @@ private:
     void getArchiveInfo();
     quint32 getAddFileOptionFlags(FileFlags options);
     quint32 getCompressionFlags(CompressionFlags types);
+    quint32 getOpenFlags(OpenFlags options);
     MPQFileInfo getFileInfo_p(void *);
     Error lastError(int errorCode); // converts StormLib error to our enum
     bool openFile(const QString & name, void ** hFile);

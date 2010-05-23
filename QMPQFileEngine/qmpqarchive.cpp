@@ -259,7 +259,11 @@ bool QMPQArchive::openArchive(const QString & name, OpenFlags flags)
         closeArchive();
     }
 
-    if (!SFileCreateArchiveEx(name.toLocal8Bit().data(), MPQ_OPEN_EXISTING, 0, &d->mpq)) {
+    bool result = SFileCreateArchiveEx(name.toLocal8Bit().data(),
+                                      getOpenFlags(flags) | MPQ_OPEN_EXISTING,
+                                      0,
+                                      &d->mpq);
+    if (!result) {
         setLastError();
         return false;
     }
@@ -331,6 +335,11 @@ bool QMPQArchive::renameFile(const QString & oldFileName, const QString & newFil
 QMPQArchive::VerifyArchiveError QMPQArchive::verifyArchive()
 {
     return (VerifyArchiveError)SFileVerifyArchive(d_func()->mpq);
+}
+
+QMPQArchive::VerifyFileError QMPQArchive::verifyFile(const QString & file, Attributes attributes)
+{
+    return (VerifyFileError)SFileVerifyFile(d_func()->mpq, file.toLocal8Bit().data(), attributes);
 }
 
 bool QMPQArchive::updateFileAttributes(const QString & fileName)
@@ -470,6 +479,22 @@ void QMPQArchive::getArchiveInfo()
     }
 }
 
+quint32 QMPQArchive::getAddFileOptionFlags(FileFlags options)
+{
+    switch (options) {
+    case None : return 0;
+    case Implode : return MPQ_FILE_IMPLODE;
+    case Compress : return MPQ_FILE_COMPRESS;
+    case Compressed : return MPQ_FILE_COMPRESSED;
+    case Encrypted : return MPQ_FILE_ENCRYPTED;
+    case FixKey : return MPQ_FILE_FIX_KEY;
+    case SingleUnit : return MPQ_FILE_SINGLE_UNIT;
+    case DeleteMarker : return MPQ_FILE_DELETE_MARKER;
+    case SectorCRC : return MPQ_FILE_SECTOR_CRC;
+    default: return 0;
+    }
+}
+
 quint32 QMPQArchive::getCompressionFlags(CompressionFlags types)
 {
     switch (types) {
@@ -484,18 +509,14 @@ quint32 QMPQArchive::getCompressionFlags(CompressionFlags types)
     }
 }
 
-quint32 QMPQArchive::getAddFileOptionFlags(FileFlags options)
+quint32 QMPQArchive::getOpenFlags(OpenFlags flags)
 {
-    switch (options) {
-    case None : return 0;
-    case Implode : return MPQ_FILE_IMPLODE;
-    case Compress : return MPQ_FILE_COMPRESS;
-    case Compressed : return MPQ_FILE_COMPRESSED;
-    case Encrypted : return MPQ_FILE_ENCRYPTED;
-    case FixKey : return MPQ_FILE_FIX_KEY;
-    case SingleUnit : return MPQ_FILE_SINGLE_UNIT;
-    case DeleteMarker : return MPQ_FILE_DELETE_MARKER;
-    case SectorCRC : return MPQ_FILE_SECTOR_CRC;
+    switch (flags) {
+    case NoCompression : return 0;
+    case NoListfile : return MPQ_OPEN_NO_LISTFILE;
+    case NoAttributes : return MPQ_OPEN_NO_ATTRIBUTES;
+    case ForceMPQ1 : return MPQ_OPEN_FORCE_MPQ_V1;
+    case CheckSectorCRC : return MPQ_OPEN_CHECK_SECTOR_CRC;
     default: return 0;
     }
 }
