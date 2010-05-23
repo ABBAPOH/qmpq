@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     app.setOrganizationName("QMPQ");
     Q_INIT_RESOURCE(mpqeditor);
 
-    QMPQArchiveCache::init();
+//    QMPQArchiveCache::init();
 
     QString locale = QLocale::system().name();
 

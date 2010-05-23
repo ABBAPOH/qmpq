@@ -1,12 +1,14 @@
 #include "qmpqfileenginehandler.h"
 
 #include "qmpqfileengine.h"
+#include "qmpqarchivecache.h"
 
 #include <QtCore/QDebug>
 
 QMPQFileEngineHandler::QMPQFileEngineHandler() : QAbstractFileEngineHandler()
 {
 //    qDebug() << "QMPQFileEngineHandler::QMPQFileEngineHandler";
+    QMPQArchiveCache::init();
 }
 
 QAbstractFileEngine *QMPQFileEngineHandler::create(const QString &fileName) const

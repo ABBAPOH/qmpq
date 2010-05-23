@@ -268,7 +268,7 @@ bool QMPQArchiveEx::rename(Node * node, const QString & newName)
         mkdir(newName, true);
         node = this->node(newName);
     } else {
-        bool result = rename(oldName, newName);
+        bool result = QMPQArchive::rename(oldName, newName);
         initFile(fileInfo(newName));
 
         return result;
@@ -290,7 +290,7 @@ bool QMPQArchiveEx::remove(Node * node)
             remove(child);
         }
     } else {
-        bool result = remove(path);
+        bool result = QMPQArchive::remove(path);
         if (!result)
             return false;
     }
