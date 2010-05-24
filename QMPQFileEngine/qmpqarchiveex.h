@@ -16,8 +16,8 @@ public:
     explicit QMPQArchiveEx(QObject *parent = 0);
     ~QMPQArchiveEx();
 
-    bool openArchive(const QString & name, OpenFlags flags = OpenFlagNone, QByteArray listfile = QByteArray());
-    bool closeArchive();
+    bool open(const QString & name, OpenFlags flags = OpenFlagNone, QByteArray listfile = QByteArray());
+    bool close();
 
     bool add(const QString & file, const QString & path);
     QStringList entryList(const QString & name);

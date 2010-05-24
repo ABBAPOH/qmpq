@@ -167,8 +167,8 @@ void MPQEditor::reopenUsingListfile(const QByteArray &listfile)
         QMPQArchiveEx * archive = engine->archive();
         if (archive) {
             QString archivePath = archive->file();
-            archive->closeArchive();
-            archive->openArchive(archivePath, 0, listfile);
+            archive->close();
+            archive->open(archivePath, 0, listfile);
 //            currentView->update(m_model->index(archivePath));
 //            m_model->update(archivePath);
             QDirModel * model = qobject_cast<QDirModel *>(m_model->model());

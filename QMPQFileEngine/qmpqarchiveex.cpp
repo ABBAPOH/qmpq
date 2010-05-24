@@ -76,19 +76,19 @@ QMPQArchiveEx::~QMPQArchiveEx()
     delete d_ptr;
 }
 
-bool QMPQArchiveEx::openArchive(const QString & name, OpenFlags flags, QByteArray listfile)
+bool QMPQArchiveEx::open(const QString & name, OpenFlags flags, QByteArray listfile)
 {
 //    Q_D(QMPQArchiveEx);
 
     if (isOpened())
-        closeArchive();
+        close();
     bool result = QMPQArchive::open(name, flags);
     initialize(QString(listfile).split("\r\n"));
 
     return result;
 }
 
-bool QMPQArchiveEx::closeArchive()
+bool QMPQArchiveEx::close()
 {
     Q_D(QMPQArchiveEx);
 

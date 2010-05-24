@@ -11,6 +11,8 @@ class QMPQFILEENGINESHARED_EXPORT QMPQFileEngineHandler : public QAbstractFileEn
 public:
     QMPQFileEngineHandler();
     QAbstractFileEngine *create(const QString &fileName) const;
+    static QStringList suffixes();
+    static void setSufixes(QStringList suffixes);
 };
 
 #endif // QMPQFILEENGINEHANDLER_H

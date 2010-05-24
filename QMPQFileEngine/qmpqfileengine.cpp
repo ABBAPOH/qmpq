@@ -10,14 +10,22 @@
 
 QString QMPQFileEnginePrivate::getArchiveFilePath(const QString & path)
 {
-    QMPQFileEngineStringParser parser(path, QMPQFileEngine::supportedFormats());
-    QString format = parser.suffix();
-    int index = path.lastIndexOf(parser.suffix(), -1, Qt::CaseInsensitive);
-    if (index != -1) {
-        return path.mid(0, index+format.length());
-    }
-
-    return "";
+    int index = path.length();
+    int lastIndex = index;
+    QString currentPath;
+    do {
+        currentPath = path.left(index);
+        foreach (QString suffix, QMPQFileEngineHandler::suffixes()) {
+            if (currentPath.endsWith(suffix, Qt::CaseInsensitive)) {
+                QFileInfo info(currentPath);
+                if (info.isFile() && info.exists()) {
+                    return currentPath;
+                }
+            }
+        }
+        lastIndex = index;
+        index = currentPath.lastIndexOf('/', index - lastIndex - 1);
+    } while (index != -1);
 }
 
 QMPQFileEngine::QMPQFileEngine()
@@ -53,21 +61,14 @@ bool QMPQFileEngine::close()
     Q_D(QMPQFileEngine);
 
     if (d->openMode & QIODevice::WriteOnly) {
-//        QString filepath = d->innerPath;
-//        filepath = filepath.mid(filepath.lastIndexOf('\\') + 1);
-//        QString tempPath = QDir::tempPath() + "/" + filepath;
-//        QFile file(tempPath);
-//        file.open(QFile::WriteOnly);
-//        file.write(d->fileData);
-//        file.close();
         if (!d->archive->remove(d->innerPath)) {
             qDebug() << "QMPQFileEngine::close - can't remove";
         }
+
         if (!d->archive->add(d->fileData, d->innerPath)) {
             qDebug() << "QMPQFileEngine::close - can't add";
             return false;
         }
-//        file.remove();
     }
 
     d->openMode = QIODevice::NotOpen;
@@ -224,7 +225,7 @@ bool QMPQFileEngine::remove()
     Q_D(QMPQFileEngine);
     if (d->innerPath=="") {
         QFile file(d->archiveFilePath);
-        d->archive->closeArchive();
+        d->archive->close();
         return file.remove();
     } else {
         return d->archive->remove(d_func()->innerPath);
@@ -236,7 +237,7 @@ bool QMPQFileEngine::rename(const QString & newName)
     Q_D(const QMPQFileEngine);
     if (d->innerPath=="") {
         QFile file(d->archiveFilePath);
-        d->archive->closeArchive();
+        d->archive->close();
         return file.rename(newName);
     } else {
         QString newInnerPath = newName.mid(d->archiveFilePath.length() + 5);
@@ -249,38 +250,35 @@ bool QMPQFileEngine::rmdir(const QString & dirName, bool /*recurseParentDirector
 {
     Q_D(const QMPQFileEngine);
     QString realName;
+
     if (dirName.startsWith("mpq:" + d->archiveFilePath))
         realName = dirName.mid(d->archiveFilePath.length() + 5);
     else
         realName = dirName;
+
     if (!d->archive->isDir(realName))
         return false;
+
     return d_func()->archive->remove(realName);
 }
 
 void QMPQFileEngine::initArchive()
 {
     Q_D(QMPQFileEngine);
+
     QString archiveFilePath = d->filePath.mid(4);
-    while (1) {
-        archiveFilePath = d->getArchiveFilePath(archiveFilePath);
-        d->archive = QMPQArchiveCache::instance()->value(archiveFilePath);
-        if (d->archive && d->archive->isOpened()) {
-            d->isCreated = true;
-            break;
-        }
-        if ( archiveFilePath == "" )
-            break;
-        QMPQArchiveCache::instance()->remove(d->archiveFilePath);
-        d->archive = 0;
-        int index = archiveFilePath.lastIndexOf("/");
-        if (index != -1)
-            archiveFilePath = archiveFilePath.mid(0, index + 1);
-        else
-            archiveFilePath = "";
+    archiveFilePath = d->getArchiveFilePath(archiveFilePath);
+
+    if (archiveFilePath == "")
+        return;
+
+    d->archive = QMPQArchiveCache::instance()->value(archiveFilePath);
+
+    if (d->archive && d->archive->isOpened()) {
+        d->isCreated = true;
     }
+
     d->archiveFilePath = archiveFilePath;
-//    qDebug() << "d->archiveFilePath" << d->archiveFilePath;
 }
 
 void QMPQFileEngine::setFileName(const QString & fileName)
@@ -290,9 +288,7 @@ void QMPQFileEngine::setFileName(const QString & fileName)
     const QString file = QDir::fromNativeSeparators(fileName);
     if (d->filePath == file)
         return;
-//    qDebug() << "QMPQFileEngine::setFileName" << file;
     QMPQArchiveCache::instance()->remove(d->archiveFilePath);
-//    d->filePath = file.mid(0, file.lastIndexOf('/')+1);
     d->filePath = file;
     initArchive();
     d->baseName = file.mid(file.lastIndexOf('/') + 1);
@@ -314,7 +310,6 @@ bool QMPQFileEngine::setSize(qint64 /*size*/)
 qint64 QMPQFileEngine::size() const
 {
     Q_D(const QMPQFileEngine);
-//    return d->archive->compressedSize(d->innerPath);
     return d->archive->size(d->innerPath);
 }
 
