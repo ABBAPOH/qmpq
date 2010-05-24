@@ -11,9 +11,8 @@
 QString QMPQFileEnginePrivate::getArchiveFilePath(const QString & path)
 {
     int index = path.length();
-    int lastIndex = index;
     QString currentPath;
-    do {
+    while (index != -1) {
         currentPath = path.left(index);
         foreach (QString suffix, QMPQFileEngineHandler::suffixes()) {
             if (currentPath.endsWith(suffix, Qt::CaseInsensitive)) {
@@ -23,9 +22,9 @@ QString QMPQFileEnginePrivate::getArchiveFilePath(const QString & path)
                 }
             }
         }
-        lastIndex = index;
-        index = currentPath.lastIndexOf('/', index - lastIndex - 1);
-    } while (index != -1);
+        index = currentPath.lastIndexOf('/');
+    }
+    return "";
 }
 
 QMPQFileEngine::QMPQFileEngine()
