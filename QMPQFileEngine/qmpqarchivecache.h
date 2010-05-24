@@ -5,7 +5,7 @@
 
 #include "objectcache.h"
 
-class SharedMPQArchive;
+class QMPQArchiveEx;
 class QMPQFILEENGINESHARED_EXPORT QMPQArchiveCache : public ObjectCache
 {
 Q_OBJECT
@@ -15,7 +15,7 @@ public:
     static void init();
     static QMPQArchiveCache * instance();
     void remove(QString file);
-    SharedMPQArchive * value(QString file);
+    QMPQArchiveEx * value(QString file);
 
 private:
     static QMPQArchiveCache * m_instance;

@@ -1,6 +1,7 @@
 #include "qmpqarchivecache.h"
 
-#include "sharedmpqarchive.h"
+//#include "sharedmpqarchive.h"
+#include "qmpqarchiveex.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
@@ -14,7 +15,9 @@ QMPQArchiveCache::QMPQArchiveCache(QObject *parent) :
 
 QObject * QMPQArchiveCache::create(QVariant key)
 {
-    SharedMPQArchive * result = new SharedMPQArchive(key.toString());
+//    SharedMPQArchive * result = new SharedMPQArchive(key.toString());
+    QMPQArchiveEx * result = new QMPQArchiveEx();
+    result->open(key.toString());
     if (result->isOpened()) {
         qDebug() << "QMPQArchiveCache::create" << key;
         return result;
@@ -24,9 +27,9 @@ QObject * QMPQArchiveCache::create(QVariant key)
     }
 }
 
-SharedMPQArchive * QMPQArchiveCache::value(QString key)
+QMPQArchiveEx * QMPQArchiveCache::value(QString key)
 {
-    return ObjectCache::value<SharedMPQArchive>(key);
+    return ObjectCache::value<QMPQArchiveEx>(key);
 }
 
 void QMPQArchiveCache::init()

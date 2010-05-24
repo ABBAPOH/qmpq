@@ -15,7 +15,7 @@ class QMPQFileEnginePrivate
 //    QString filePath; // The path to the file excluding the base name.
     QString filePath; // The path to the file including the base name.
     QString baseName; // The name of the file excluding the path.
-    SharedMPQArchive * archive;
+    QMPQArchiveEx * archive;
 //    QBuffer buffer;
     QIODevice::OpenMode openMode;
     uint mappedCnt;

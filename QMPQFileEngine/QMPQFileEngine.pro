@@ -19,7 +19,6 @@ DEFINES += QMPQFILEENGINE_LIBRARY
 SOURCES += qmpqfileengine.cpp \
     qmpqfileenginehandler.cpp \
     mpqfileengineiterator.cpp \
-    sharedmpqarchive.cpp \
     objectcache.cpp \
     qmpqarchivecache.cpp \
     mpqsettings.cpp \
@@ -33,7 +32,6 @@ HEADERS += qmpqfileengine.h \
     qmpqfileenginehandler.h \
     mpqfileengineiterator.h \
     qmpqarchive_p.h \
-    sharedmpqarchive.h \
     qmpqfileengine_p.h \
     objectcache.h \
     qmpqarchivecache.h \

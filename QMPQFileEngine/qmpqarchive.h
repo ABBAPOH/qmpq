@@ -122,6 +122,7 @@ public:
     bool createAttributes(Attributes);
     bool close();
     bool compact();
+    const QList<MPQFileInfo> entryList(const QStringList & listfile = QStringList(), bool includeUnknowns = true);
     QString errorString();
     QString errorString(Error code);
     MPQFileInfo fileInfo(const QString & file);

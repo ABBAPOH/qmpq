@@ -138,6 +138,17 @@ bool QMPQArchive::compact()
     return true;
 }
 
+const QList<MPQFileInfo> QMPQArchive::entryList(const QStringList & listfile, bool includeUnknowns)
+{
+    QList<MPQFileInfo> result;
+    MPQFileInfoIterator * iterator = beginFileInfoList(listfile, includeUnknowns);
+    while (iterator->hasNext()) {
+        result.append(iterator->next());
+    }
+    delete iterator;
+    return result;
+}
+
 /*!
   \fn QString QMPQArchive2::errorString()
   \brief Returns message of last occured error.
