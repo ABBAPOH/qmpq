@@ -2,7 +2,7 @@
 #define QMPQFILEENGINE_P_H
 
 #include <QtCore/QString>
-#include "sharedmpqarchive.h"
+#include "qmpqarchiveex.h"
 
 class QMPQFileEnginePrivate
 {

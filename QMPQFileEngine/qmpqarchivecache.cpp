@@ -1,6 +1,5 @@
 #include "qmpqarchivecache.h"
 
-//#include "sharedmpqarchive.h"
 #include "qmpqarchiveex.h"
 
 #include <QtCore/QCoreApplication>
@@ -15,7 +14,6 @@ QMPQArchiveCache::QMPQArchiveCache(QObject *parent) :
 
 QObject * QMPQArchiveCache::create(QVariant key)
 {
-//    SharedMPQArchive * result = new SharedMPQArchive(key.toString());
     QMPQArchiveEx * result = new QMPQArchiveEx();
     result->open(key.toString());
     if (result->isOpened()) {
