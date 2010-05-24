@@ -1,17 +1,9 @@
 #include "mpqeditor.h"
 
-#include <QtGui/QListView>
-#include <QtGui/QColumnView>
-#include <QtGui/QTableView>
-#include <QtGui/QTreeView>
 #include <QtGui/QHBoxLayout>
-//#include <QtGui/QDirModel>
-#include <QtGui/QApplication>
 #include <QtCore/QAbstractItemModel>
 #include <QtGui/QMessageBox>
-#include <QtGui/QDesktopServices>
 #include <QtGui/QAction>
-#include <QtGui/QMenu>
 
 #include <QDebug>
 
@@ -19,12 +11,9 @@
 
 #include "../../../../QMPQFileEngine/qmpqfileengine.h"
 #include "../../../../QMPQFileEngine/qmpqarchiveex.h"
-#include "../../../../3rdParty/FileSystemModel/filesystemmodel.h"
 
 #include "universalview.h"
 #include "idirmodel.h"
-
-//QDirModel * MPQEditor::m_model = 0;
 
 MPQEditor::MPQEditor(QWidget *parent) :
     QWidget(parent),
@@ -32,12 +21,9 @@ MPQEditor::MPQEditor(QWidget *parent) :
     m_layout(new QHBoxLayout(this)),
     m_model(0)
 {
-    initModel();
     initViews();
 
     setViewMode(UniversalView::ListView);
-
-    initActions();
 
     m_layout->setContentsMargins(0, 0, 0, 0);
     m_layout->addWidget(m_view);
@@ -47,18 +33,6 @@ MPQEditor::MPQEditor(QWidget *parent) :
 MPQEditor::~MPQEditor()
 {
     MPQEditorError error;
-}
-
-void MPQEditor::initModel()
-{
-//    if (!m_model) {
-////        m_model = new QDirModel;
-//        m_model = new FileSystemModel;
-//        m_model->setReadOnly(false);
-//        m_model->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
-//        m_model->Path("");
-////        m_model->setSorting(QDir::DirsFirst);
-//    }
 }
 
 MPQEditor::ModelType MPQEditor::getModelType(const QString & path)
@@ -94,20 +68,6 @@ void MPQEditor::initModel(const QString & path)
         m_view->setModel(m_model->model());
         resizeColumns();
     }
-}
-
-void MPQEditor::initActions()
-{
-//    openAction = new QAction("open", this);
-//#ifdef Q_OS_WIN
-//    openAction->setShortcut(tr("Return"));
-//#endif
-//#ifdef Q_OS_MAC
-//    openAction->setShortcut(tr("Ctrl+O"));
-//#endif
-//    openAction->setShortcutContext(Qt::ApplicationShortcut);
-//    connect(openAction, SIGNAL(triggered()), SLOT(onOpenRequest()));
-//    addAction(openAction);
 }
 
 void MPQEditor::initViews()
@@ -298,11 +258,6 @@ void MPQEditor::rename()
     }
 }
 
-bool MPQEditor::canUp()
-{
-//    return m_model->filePath(currentView->rootIndex().parent()).startsWith(m_currentFile);
-}
-
 void MPQEditor::refresh(const QString & path)
 {
     //  we manually refresh model if it is QDirModel or it's subclass
@@ -322,25 +277,6 @@ QStringList MPQEditor::selectedPaths()
     return result;
 }
 
-void MPQEditor::showColumns(bool show)
-{
-//    if (show) {
-//        treeView->setColumnHidden(1, false);
-//        treeView->setColumnHidden(2, false);
-//        treeView->setColumnHidden(3, false);
-//        tableView->setColumnHidden(1, false);
-//        tableView->setColumnHidden(2, false);
-//        tableView->setColumnHidden(3, false);
-//    } else {
-//        treeView->setColumnHidden(1, true);
-//        treeView->setColumnHidden(2, true);
-//        treeView->setColumnHidden(3, true);
-//        tableView->setColumnHidden(1, true);
-//        tableView->setColumnHidden(2, true);
-//        tableView->setColumnHidden(3, true);
-//    }
-}
-
 bool MPQEditor::isMPQArchive(const QString & file)
 {
     QMPQFileEngine * engine = dynamic_cast<QMPQFileEngine*>(QFile(file).fileEngine());
@@ -349,13 +285,6 @@ bool MPQEditor::isMPQArchive(const QString & file)
         return true;
     }
     return false;
-}
-
-
-void MPQEditor::up()
-{
-    if (canUp())
-        m_view->setRootIndex(m_view->rootIndex().parent());
 }
 
 void MPQEditor::newFolder(const QString & name)

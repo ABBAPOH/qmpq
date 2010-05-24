@@ -48,13 +48,11 @@ public:
     ~MPQEditor();
 //    enum ViewMode { ListView = 0, IconView, TableView, ColumnView, TreeView };
 
-    bool canUp();
     QString currentFile() { return m_currentFile; }
     bool isMPQArchive(const QString & file);
     const MPQEditorError & lastError() const { return m_lastError; }
     void refresh(const QString & path);
     QStringList selectedPaths();
-    void showColumns(bool show);
     ArchiveSuffixesManager * suffixesManager() const { return m_suffixesManager; }
 
     static QAbstractItemModel * model();
@@ -63,7 +61,6 @@ private:
 	UniversalView * m_view;
     QHBoxLayout * m_layout;
     QString m_currentFile;
-//    static FileSystemModel * m_model;
     QAction * openAction;
 	IDirModel * m_model;
     ArchiveSuffixesManager * m_suffixesManager;
@@ -71,9 +68,7 @@ private:
 
     ModelType getModelType(const QString & path);
     void initModel(const QString & path);
-    void initModel();
     void initViews();
-    void initActions();
     void resizeColumns();
     QModelIndexList selectedIndexes();
     QString selectedDir();
@@ -94,7 +89,6 @@ public slots:
     void remove();
     void rename();
     void setViewMode(UniversalView::ViewMode mode);
-    void up();
     void newFolder(const QString & name = "");
     void setNameFilter(const QString & filter);
 //    void remove();
