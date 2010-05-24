@@ -19,7 +19,7 @@ public:
     bool open(const QString & name, OpenFlags flags = OpenFlagNone, QByteArray listfile = QByteArray());
     bool close();
 
-    bool add(const QString & file, const QString & path);
+//    bool add(const QString & file, const QString & path);
     QStringList entryList(const QString & name);
     bool exists(const QString & path);
     bool isDir(const QString & path);

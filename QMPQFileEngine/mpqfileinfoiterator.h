@@ -15,7 +15,7 @@ class MPQFileInfoIterator
     bool m_includeUnknowns;
     quint32 index;
     quint32 filesFound;
-    quint32 listfileIndex;
+    int listfileIndex;
     quint32 hashIndex;
     quint32 filesCount;
     quint32 hashTableSize;

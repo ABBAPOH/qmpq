@@ -23,7 +23,7 @@ public:
 protected:
     void fixup(QString & input) const;
     void stepBy(int steps);
-    QValidator::State validate(QString & text, int & pos) const;
+//    QValidator::State validate(QString & text, int & pos) const;
 
 signals:
 

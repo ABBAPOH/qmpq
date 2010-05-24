@@ -42,16 +42,16 @@ void PowerSpinBox::stepBy(int steps)
     setValue(newValue);
 }
 
-QValidator::State PowerSpinBox::validate(QString & text, int & pos) const
-{
-    bool ok;
-    int value = text.toInt(&ok);
-    int pow = getPow(value);
-//    qDebug() << text << pos << value << pow;
-    if (!ok && text != "")
-        return QValidator::Invalid;
-    if ((int)::pow(base(), pow) != value) {
-        return QValidator::Intermediate;
-    }
-    return QValidator::Acceptable;
-}
+//QValidator::State PowerSpinBox::validate(QString & text, int & pos) const
+//{
+//    bool ok;
+//    int value = text.toInt(&ok);
+//    int pow = getPow(value);
+////    qDebug() << text << pos << value << pow;
+//    if (!ok && text != "")
+//        return QValidator::Invalid;
+//    if ((int)::pow(base(), pow) != value) {
+//        return QValidator::Intermediate;
+//    }
+//    return QValidator::Acceptable;
+//}

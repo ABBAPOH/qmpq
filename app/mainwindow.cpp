@@ -131,7 +131,7 @@ void MainWindow::openManual(const QString & path)
     ICore::instance()->windowManager()->open(QDir::fromNativeSeparators(path));
 }
 
-void MainWindow::tabChanged(int index)
+void MainWindow::tabChanged(int /*index*/)
 {
 //    qDebug() << "MainWindow::tabChanged" << index;
     TabContext * context = tabManager->context();

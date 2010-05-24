@@ -156,6 +156,7 @@ ImageViewer * ImageViewerPlugin::editorWidget()
     ImageViewerInterface * editor = this->editor();
     if (editor)
         return static_cast<ImageViewer*>(editor->widget());
+    return 0;
 }
 
 void ImageViewerPlugin::updateActions()

@@ -100,9 +100,9 @@ bool QMPQArchiveEx::close()
     return QMPQArchive::close();
 }
 
-bool QMPQArchiveEx::add(const QString & file, const QString & path)
-{
-}
+//bool QMPQArchiveEx::add(const QString & file, const QString & path)
+//{
+//}
 
 QStringList QMPQArchiveEx::entryList(const QString & name)
 {

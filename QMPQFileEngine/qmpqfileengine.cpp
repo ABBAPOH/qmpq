@@ -1,9 +1,10 @@
 #include "qmpqfileengine.h"
 #include "qmpqfileengine_p.h"
 
-#include "mpqfileengineiterator.h"
-#include "qmpqfileenginehandler.h"
 #include "qmpqarchivecache.h"
+#include "mpqfileengineiterator.h"
+#include "mpqsettings.h"
+#include "qmpqfileenginehandler.h"
 
 #include <QtCore/QDirIterator>
 #include <QtCore/QDateTime>
@@ -64,7 +65,11 @@ bool QMPQFileEngine::close()
             qDebug() << "QMPQFileEngine::close - can't remove";
         }
 
-        if (!d->archive->add(d->fileData, d->innerPath)) {
+        QString suffix = QFileInfo(fileName(AbsoluteName)).suffix();
+        MPQSettings * settings = MPQSettings::instance();
+        QMPQArchive::FileFlags flags = settings->fileFlags(suffix);
+        QMPQArchive::CompressionFlags compression = settings->compressionFlags(suffix);
+        if (!d->archive->add(d->fileData, d->innerPath, flags, compression)) {
             qDebug() << "QMPQFileEngine::close - can't add";
             return false;
         }

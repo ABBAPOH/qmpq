@@ -284,8 +284,6 @@ void MPQEditor::remove(const QModelIndex & index)
 void MPQEditor::remove()
 {
     foreach (QModelIndex index, selectedIndexes()) {
-//        QFile file(m_model->filePath(index));
-        bool result;
         remove(index);
     }
 }

@@ -12,7 +12,7 @@ MPQSettingsWidget::MPQSettingsWidget(QWidget *parent) :
     ui(new Ui::MPQSettings)
 {
     m_extensionManager = MPQSettings::instance();
-    MPQSettings::CompressionFlags types;
+    QMPQArchive::CompressionFlags types;
     qDebug() << types;
     ui->setupUi(this);
     const QMetaObject &mo = m_extensionManager->staticMetaObject;
@@ -53,7 +53,7 @@ MPQSettingsWidget::~MPQSettingsWidget()
 
 void MPQSettingsWidget::addExtension(const QString & key, int options, int value)
 {
-    extensionManager()->addFileExtension(key, (MPQSettings::FileFlag)options, (MPQSettings::CompressionFlag)value);
+    extensionManager()->addFileExtension(key, (QMPQArchive::FileFlag)options, (QMPQArchive::CompressionFlag)value);
 
     QTreeWidgetItem * item = new QTreeWidgetItem;
     ui->treeWidget->addTopLevelItem(item);
@@ -131,7 +131,7 @@ void MPQSettingsWidget::onEditText(const QString & text)
     QModelIndex index = selectedIndexes.first();
 
     QString previousText = index.data(Qt::DisplayRole).toString();
-    MPQSettings::CompressionFlags previousTypes = m_extensionManager->compressionTypes(previousText);
+    QMPQArchive::CompressionFlags previousTypes = m_extensionManager->compressionFlags(previousText);
     m_extensionManager->removeFileExtension(previousText);
     m_extensionManager->addFileExtension(text, 0, previousTypes);
     model->setData(index, text, Qt::DisplayRole);
@@ -155,7 +155,7 @@ void MPQSettingsWidget::onActivate(int index)
 
     model->setData(compressionIndex, compressionEnum.valueToKeys(compressionTypes), Qt::DisplayRole);
     model->setData(compressionIndex, compressionTypes, Qt::UserRole);
-    m_extensionManager->setCompressionTypes(text, (MPQSettings::CompressionFlag)compressionTypes);
+    m_extensionManager->setCompressionFlags(text, (QMPQArchive::CompressionFlag)compressionTypes);
 }
 
 void MPQSettingsWidget::onCheck()
@@ -172,7 +172,7 @@ void MPQSettingsWidget::onCheck()
 
     model->setData(optionsIndex, optionsEnum.valueToKeys(options), Qt::DisplayRole);
     model->setData(optionsIndex, options, Qt::UserRole);
-    m_extensionManager->setFileFlags(extension, MPQSettings::FileFlags(options));
+    m_extensionManager->setFileFlags(extension, QMPQArchive::FileFlags(options));
 }
 
 
@@ -198,36 +198,36 @@ int MPQSettingsWidget::compresionValueToIndex(int value)
 
 int MPQSettingsWidget::getCurrentOptions()
 {
-    MPQSettings::FileFlags flags = 0;
+    QMPQArchive::FileFlags flags = 0;
 
     if (ui->checkBox_Implode->isChecked())
-        flags |= MPQSettings::Implode;
+        flags |= QMPQArchive::Implode;
     if (ui->checkBox_Compress->isChecked())
-        flags |= MPQSettings::Compress;
+        flags |= QMPQArchive::Compress;
     if (ui->checkBox_Encrypt->isChecked())
-        flags |= MPQSettings::Encrypted;
+        flags |= QMPQArchive::Encrypted;
     if (ui->checkBox_File_Key->isChecked())
-        flags |= MPQSettings::FixKey;
+        flags |= QMPQArchive::FixKey;
     if (ui->checkBox_SingleUnit->isChecked())
-        flags |= MPQSettings::SingleUnit;
+        flags |= QMPQArchive::SingleUnit;
     if (ui->checkBox_Deleted->isChecked())
-        flags |= MPQSettings::DeleteMarker;
+        flags |= QMPQArchive::DeleteMarker;
     if (ui->checkBox_CheckSum->isChecked())
-        flags |= MPQSettings::SectorCRC;
+        flags |= QMPQArchive::SectorCRC;
     return flags;
 }
 
 void MPQSettingsWidget::setCurrentOptions(int value)
 {
-    MPQSettings::FileFlags flags(value);
+    QMPQArchive::FileFlags flags(value);
 
-    ui->checkBox_Implode->setChecked(flags.testFlag(MPQSettings::Implode));
-    ui->checkBox_Compress->setChecked(flags.testFlag(MPQSettings::Compress));
-    ui->checkBox_Encrypt->setChecked(flags.testFlag(MPQSettings::Encrypted));
-    ui->checkBox_File_Key->setChecked(flags.testFlag(MPQSettings::FixKey));
-    ui->checkBox_SingleUnit->setChecked(flags.testFlag(MPQSettings::SingleUnit));
-    ui->checkBox_Deleted->setChecked(flags.testFlag(MPQSettings::DeleteMarker));
-    ui->checkBox_CheckSum->setChecked(flags.testFlag(MPQSettings::SectorCRC));
+    ui->checkBox_Implode->setChecked(flags.testFlag(QMPQArchive::Implode));
+    ui->checkBox_Compress->setChecked(flags.testFlag(QMPQArchive::Compress));
+    ui->checkBox_Encrypt->setChecked(flags.testFlag(QMPQArchive::Encrypted));
+    ui->checkBox_File_Key->setChecked(flags.testFlag(QMPQArchive::FixKey));
+    ui->checkBox_SingleUnit->setChecked(flags.testFlag(QMPQArchive::SingleUnit));
+    ui->checkBox_Deleted->setChecked(flags.testFlag(QMPQArchive::DeleteMarker));
+    ui->checkBox_CheckSum->setChecked(flags.testFlag(QMPQArchive::SectorCRC));
 }
 
 #include <QtGui>
@@ -315,7 +315,7 @@ void MPQSettingsPage::setDefaults()
 QVariant MPQSettingsPage::value(const QString & key)
 {
     int options = m_widget->extensionManager()->fileFlags(key);
-    int compresssion = m_widget->extensionManager()->compressionTypes(key);
+    int compresssion = m_widget->extensionManager()->compressionFlags(key);
 
     QMetaObject mo = m_widget->extensionManager()->staticMetaObject;
     QMetaEnum me1 = mo.enumerator(mo.indexOfEnumerator("AddFileOptions"));

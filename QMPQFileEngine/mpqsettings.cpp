@@ -33,9 +33,9 @@ void MPQSettings::removeMPQExtension(const QString & extension)
 MPQSettings::FileFlags MPQSettings::fileFlags(const QString & extension) const
 {
     if (m_addFileOptions.contains(extension))
-        return m_addFileOptions.value(extension, None);
+        return m_addFileOptions.value(extension, QMPQArchive::None);
     else
-        return m_addFileOptions.value("*", None);
+        return m_addFileOptions.value("*", QMPQArchive::None);
 }
 
 void MPQSettings::setFileFlags(const QString & extension, const FileFlags & options)
@@ -43,15 +43,15 @@ void MPQSettings::setFileFlags(const QString & extension, const FileFlags & opti
     m_addFileOptions.insert(extension, options);
 }
 
-MPQSettings::CompressionFlags MPQSettings::compressionTypes(const QString & extension) const
+MPQSettings::CompressionFlags MPQSettings::compressionFlags(const QString & extension) const
 {
     if (m_compressionTypes.contains(extension))
-        return m_compressionTypes.value(extension, NONE);
+        return m_compressionTypes.value(extension, QMPQArchive::NoCompression);
     else
-        return m_compressionTypes.value("*", NONE);
+        return m_compressionTypes.value("*", QMPQArchive::NoCompression);
 }
 
-void MPQSettings::setCompressionTypes(const QString & extension, const CompressionFlags & types)
+void MPQSettings::setCompressionFlags(const QString & extension, const CompressionFlags & types)
 {
     m_compressionTypes.insert(extension, types);
 }
