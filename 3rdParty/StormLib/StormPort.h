@@ -47,6 +47,7 @@
     #define PLATFORM_32BIT
   #endif
 
+  #define PLATFORM_WINDOWS
   #define PLATFORM_DEFINED                  // The platform is known now
 
 #endif
@@ -74,12 +75,12 @@
     #define PLATFORM_32BIT
   #endif
   
+  #define PLATFORM_MAC
   #define PLATFORM_DEFINED                  // The platform is known now
 
 #endif
 
 // Assumption: we are not on Windows nor Macintosh, so this must be linux *grin*
-// Ladik : Why the hell Linux does not use some OS-dependent #define ?
 #if !defined(PLATFORM_DEFINED)
 
   #include <sys/types.h>
@@ -95,18 +96,34 @@
   #include <assert.h>
 
   #define PLATFORM_LITTLE_ENDIAN  1
+  #define PLATFORM_LINUX
   #define PLATFORM_DEFINED
   #define LANG_NEUTRAL   0
 
-#endif  /* not __powerc */
+#endif
 
-
-#if !defined(WIN32) && !defined(WIN64)
-
-  // Typedefs for ANSI C
+// Definitions of data types under Linux
+#ifdef PLATFORM_LINUX
   typedef unsigned char  BYTE;
-  typedef int16_t        SHORT;
-  typedef uint16_t       WORD;
+  typedef unsigned short USHORT;
+  typedef int32_t        LONG;
+  typedef unsigned int   DWORD;
+  typedef intptr_t       DWORD_PTR;
+  typedef intptr_t       LONG_PTR;
+  typedef intptr_t       INT_PTR;
+  typedef int64_t        LONGLONG;
+  typedef unsigned char  BOOL;
+  typedef void         * HANDLE;
+  typedef void         * LPOVERLAPPED;
+  typedef uint32_t       LCID;
+  typedef LONG         * PLONG;
+  typedef DWORD        * LPDWORD;
+  typedef BYTE         * LPBYTE;
+#endif
+
+// Definitions of data types under Mac
+#ifdef PLATFORM_MAC
+  typedef unsigned char  BYTE;
   typedef uint16_t       USHORT;
   typedef int32_t        LONG;
   typedef uint32_t       DWORD;
@@ -116,14 +133,15 @@
   typedef int64_t        LONGLONG;
   typedef signed char    BOOL;
   typedef void         * HANDLE;
-  typedef void         * LPOVERLAPPED; // Unsupported on Linux and Mac
-  typedef char           TCHAR;
+  typedef void         * LPOVERLAPPED;
   typedef uint32_t       LCID;
-  typedef unsigned int   UINT;
   typedef LONG         * PLONG;
   typedef DWORD        * LPDWORD;
   typedef BYTE         * LPBYTE;
-  
+#endif
+
+// Definition of Windows-specific structures for non-Windows platforms
+#ifndef PLATFORM_WINDOWS
   typedef struct _FILETIME
   { 
       DWORD dwLowDateTime; 
@@ -167,7 +185,6 @@
     #define FALSE (BOOL)0
   #endif
 
-  #define VOID     void
   #define WINAPI 
 
   #define FILE_BEGIN    SEEK_SET

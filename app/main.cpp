@@ -32,11 +32,11 @@ int main(int argc, char *argv[])
     app.installTranslator(&translator);
     app.installTranslator(&qtTranslator);
 
+    QMPQFileEngineHandler h;
+
     CoreImpl core;
     MainWindowPlugin plugin;
     plugin.initialize();
-
-    QMPQFileEngineHandler h;
 
     int code = app.exec();
     return code;

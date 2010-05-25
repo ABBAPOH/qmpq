@@ -83,7 +83,9 @@ bool QMPQArchiveEx::open(const QString & name, OpenFlags flags, QByteArray listf
     if (isOpened())
         close();
     bool result = QMPQArchive::open(name, flags);
-    initialize(QString(listfile).split("\r\n"));
+    if (result) {
+        initialize(QString(listfile).split("\r\n"));
+    }
 
     return result;
 }

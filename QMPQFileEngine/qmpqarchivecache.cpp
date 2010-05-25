@@ -20,6 +20,7 @@ QObject * QMPQArchiveCache::create(QVariant key)
         qDebug() << "QMPQArchiveCache::create" << key;
         return result;
     } else {
+        emit objectCreated(result);
         delete result;
         return 0;
     }

@@ -36,7 +36,8 @@ HEADERS += mainwindow.h \
     archivesuffixesmanager.h \
     preferenceswidget.h \
     mpqsettings.h \
-    mpqextensionssettings.h
+    mpqextensionssettings.h \
+    mpqarchiveerrorhandler.h
 SOURCES += mainwindow.cpp \
     main.cpp \
     editormanager.cpp \
@@ -49,9 +50,11 @@ SOURCES += mainwindow.cpp \
     historymanager.cpp \
     preferenceswidget.cpp \
     mpqsettings.cpp \
-    mpqextensionssettings.cpp
+    mpqextensionssettings.cpp \
+    mpqarchiveerrorhandler.cpp
 FORMS += createarchivedialog.ui \
     preferenceswidget.ui \
     mpqsettings.ui \
-    mpqextensionssettings.ui
+    mpqextensionssettings.ui \
+    errorsdialog.ui
 RESOURCES += qmq.qrc

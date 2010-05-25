@@ -127,7 +127,7 @@
 #define SFILE_OPEN_LOCAL_FILE    0xFFFFFFFF // Open the file from the MPQ archive
 
 // Flags for TMPQArchive::dwFlags
-#define MPQ_FLAG_OPEN_FOR_WRITE  0x00000001 // If set, the MPQ has been open for write access
+#define MPQ_FLAG_READ_ONLY       0x00000001 // If set, the MPQ has been open for read-only access
 #define MPQ_FLAG_NO_HEADER       0x00000002 // The MPQ header was not written yet
 #define MPQ_FLAG_CHANGED         0x00000004 // If set, the MPQ tables have been changed
 #define MPQ_FLAG_PROTECTED       0x00000008 // Set on protected MPQs (like W3M maps)
@@ -136,6 +136,7 @@
 // Return value for SFilGetFileSize and SFileSetFilePointer
 #define SFILE_INVALID_SIZE       0xFFFFFFFF
 #define SFILE_INVALID_POS        0xFFFFFFFF
+#define SFILE_INVALID_ATTRIBUTES 0xFFFFFFFF
 
 // Flags for SFileAddFile
 #define MPQ_FILE_IMPLODE         0x00000100 // Implode method (By PKWARE Data Compression Library)
@@ -212,16 +213,17 @@
 #define SIGNATURE_NAME        "(signature)" // Name of internal signature
 #define ATTRIBUTES_NAME      "(attributes)" // Name of internal attributes file
 
-#define STORMLIB_VERSION             0x0700 // Current version of StormLib (7.00)
-#define STORMLIB_VERSION_STRING      "7.00"
+#define STORMLIB_VERSION             0x0701 // Current version of StormLib (7.01)
+#define STORMLIB_VERSION_STRING      "7.01"
 
 #define MPQ_FORMAT_VERSION_1              0 // Up to The Burning Crusade
 #define MPQ_FORMAT_VERSION_2              1 // The Burning Crusade and newer 
 
 // Flags for MPQ attributes
-#define MPQ_ATTRIBUTE_CRC32      0x00000001 // The "(attributes)" contain array of CRC32s
-#define MPQ_ATTRIBUTE_FILETIME   0x00000002 // The "(attributes)" contain array of FILETIMEs
-#define MPQ_ATTRIBUTE_MD5        0x00000004 // The "(attributes)" contain array of MD5s
+#define MPQ_ATTRIBUTE_CRC32      0x00000001 // The "(attributes)" contains array of CRC32s
+#define MPQ_ATTRIBUTE_FILETIME   0x00000002 // The "(attributes)" contains array of FILETIMEs
+#define MPQ_ATTRIBUTE_MD5        0x00000004 // The "(attributes)" contains array of MD5s
+#define MPQ_ATTRIBUTE_ALL        0x00000007 // Summary mask
 
 #define MPQ_ATTRIBUTES_V1               100 // (attributes) format version 1.00
 
@@ -510,7 +512,7 @@ struct TMPQFile
 
     DWORD          dwHashIndex;         // Index to Hash table
     DWORD          dwBlockIndex;        // Index to Block table
-    BOOL           bCheckSectorCRCs;    // If TRUE, then SFileReadFile will check sector CRCs when reading the file
+    bool           bCheckSectorCRCs;    // If true, then SFileReadFile will check sector CRCs when reading the file
     char           szFileName[1];       // File name (variable length)
 };
 
@@ -582,7 +584,7 @@ typedef BOOL  (WINAPI * SFILEOPENFILEEX)(HANDLE, const char *, DWORD, HANDLE *);
 typedef BOOL  (WINAPI * SFILECLOSEFILE)(HANDLE);
 typedef DWORD (WINAPI * SFILEGETFILESIZE)(HANDLE, DWORD *);
 typedef DWORD (WINAPI * SFILESETFILEPOINTER)(HANDLE, LONG, LONG *, DWORD);
-typedef BOOL  (WINAPI * SFILEREADFILE)(HANDLE, VOID *, DWORD, DWORD *, LPOVERLAPPED);
+typedef BOOL  (WINAPI * SFILEREADFILE)(HANDLE, void *, DWORD, DWORD *, LPOVERLAPPED);
 
 //-----------------------------------------------------------------------------
 // Functions for archive manipulation
@@ -603,7 +605,14 @@ int    WINAPI SFileAddListFile(HANDLE hMpq, const char * szListFile);
 BOOL   WINAPI SFileSetCompactCallback(HANDLE hMpq, SFILE_COMPACT_CALLBACK CompactCB, void * pvData);
 BOOL   WINAPI SFileCompactArchive(HANDLE hMpq, const char * szListFile = NULL, BOOL bReserved = 0);
 
+// Changing hash table size
 BOOL   WINAPI SFileSetHashTableSize(HANDLE hMpq, DWORD dwHashTableSize);
+
+// Changing extended attributes
+BOOL   WINAPI SFileCreateAttributes(HANDLE hMpq, DWORD dwFlags);
+DWORD  WINAPI SFileGetAttributes(HANDLE hMpq);
+BOOL   WINAPI SFileSetAttributes(HANDLE hMpq, DWORD dwFlags);
+BOOL   WINAPI SFileUpdateFileAttributes(HANDLE hMpq, const char * szFileName);
 
 //-----------------------------------------------------------------------------
 // Functions for file manipulation
@@ -612,7 +621,7 @@ BOOL   WINAPI SFileSetHashTableSize(HANDLE hMpq, DWORD dwHashTableSize);
 BOOL   WINAPI SFileOpenFileEx(HANDLE hMpq, const char * szFileName, DWORD dwSearchScope, HANDLE * phFile);
 DWORD  WINAPI SFileGetFileSize(HANDLE hFile, DWORD * pdwFileSizeHigh = NULL);
 DWORD  WINAPI SFileSetFilePointer(HANDLE hFile, LONG lFilePos, LONG * plFilePosHigh, DWORD dwMoveMethod);
-BOOL   WINAPI SFileReadFile(HANDLE hFile, VOID * lpBuffer, DWORD dwToRead, DWORD * pdwRead = NULL, LPOVERLAPPED lpOverlapped = NULL);
+BOOL   WINAPI SFileReadFile(HANDLE hFile, void * lpBuffer, DWORD dwToRead, DWORD * pdwRead = NULL, LPOVERLAPPED lpOverlapped = NULL);
 BOOL   WINAPI SFileCloseFile(HANDLE hFile);
 
 // Retrieving info about the file
@@ -625,7 +634,7 @@ BOOL   WINAPI SFileGetFileName(HANDLE hFile, char * szFileName);
 // This older version WILL be removed from StormLib at some point in the future.
 DWORD_PTR WINAPI SFileGetFileInfo(HANDLE hMpqOrFile, DWORD dwInfoType);
 #else
-BOOL   WINAPI SFileGetFileInfo(HANDLE hMpqOrFile, DWORD dwInfoType, VOID * pvFileInfo, DWORD cbFileInfo, DWORD * pcbLengthNeeded = NULL);
+BOOL   WINAPI SFileGetFileInfo(HANDLE hMpqOrFile, DWORD dwInfoType, void * pvFileInfo, DWORD cbFileInfo, DWORD * pcbLengthNeeded = NULL);
 #endif
 
 // High-level extract function

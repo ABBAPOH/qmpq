@@ -26,7 +26,29 @@ class QMPQFILEENGINESHARED_EXPORT QMPQArchive : public QObject
 public:
     enum Error
     {
-        NoError = 0
+        NoError = 0,
+        ArchiveNotOpened,
+        InvalidFunction,
+        FileNotFound,
+        AccessDenied,
+        InvalidHandle,
+        NotEnoughMemory,
+        BadFormat,
+        NoMoreFiles,
+        WriteFault,
+//        ReadFault,
+        GenerateFailure,
+        HandleEndOfFile,
+        HandleDiskFull,
+//        NotSupported,
+        InvalidParameter,
+        DiskFull,
+//        CallNotImplemented,
+        AlreadyExists,
+        CanNotComplete,
+//        ParameterQuotaExceeded,
+//        FileCorrupt,
+        InsufficientBuffer
     };
     Q_ENUMS(Error);
 
@@ -167,6 +189,7 @@ protected:
 private:
     static void addFileCallBack(void *, quint32 bytesWritten, quint32 totalBytes, bool finalCall);
     static void compactCallBack(void *, int, qint64 * bytesProcessed, qint64 * bytesTotal);
+    bool checkOpened();
     void getArchiveInfo();
     quint32 getAddFileOptionFlags(FileFlags options);
     quint32 getCompressionFlags(CompressionFlags types);
@@ -175,6 +198,7 @@ private:
     Error lastError(int errorCode); // converts StormLib error to our enum
     bool openFile(const QString & name, void ** hFile);
     void setLastError();
+    void unsetError();
 };
 
 #endif // QMPQARCHIVE2_H

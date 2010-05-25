@@ -58,6 +58,7 @@ protected:
     virtual QObject * create(QVariant key) = 0;
 
 signals:
+    void objectCreated(QObject *);
 
 private slots:
     void clear();

@@ -54,6 +54,7 @@ QObject * ObjectCache::value(QVariant key)
         } else {
             object = create(key);
             if (object) {
+                emit objectCreated(object);
                 data  = new ObjectData();
                 data->object = object;
             }

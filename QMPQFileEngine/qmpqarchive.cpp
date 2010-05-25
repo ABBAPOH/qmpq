@@ -33,7 +33,7 @@ QMPQArchive::~QMPQArchive()
 */
 bool QMPQArchive::add(const QString & fileName, const QString & archivedName, FileFlags flags, CompressionFlags compression/*, DWORD dwCompressionNext = 0xFFFFFFFF*/)
 {
-    SFileSetAddFileCallback(d_func()->mpq, addFileCallBack, this);
+    SFileSetAddFileCallback(d_func()->mpq, (SFILE_ADDFILE_CALLBACK)addFileCallBack, this);
     bool result = SFileAddFileEx(d_func()->mpq,
                                  fileName.toLocal8Bit().data(),
                                  archivedName.toLocal8Bit().data(),
@@ -84,6 +84,9 @@ bool QMPQArchive::create(const QString & name, int hashTableSize, CreateFlags fl
 
 bool QMPQArchive::createAttributes(Attributes flags)
 {
+    if (!checkOpened())
+        return false;
+
     if (!SFileCreateAttributes(d_func()->mpq, flags)) {
         setLastError();
         return false;
@@ -128,6 +131,7 @@ bool QMPQArchive::close()
 bool QMPQArchive::compact()
 {
     Q_D(QMPQArchive);
+    checkOpened();
     SFileSetCompactCallback(d->mpq,
                             reinterpret_cast<SFILE_COMPACT_CALLBACK>(&QMPQArchive::compactCallBack),
                             this);
@@ -166,7 +170,44 @@ QString QMPQArchive::errorString()
 */
 QString QMPQArchive::errorString(QMPQArchive::Error code)
 {
-    return "";
+    switch (code) {
+    case NoError:
+        return "";
+    case ArchiveNotOpened:
+        return tr("archive not opened");
+    case InvalidFunction:
+        return tr("function not implemented");
+    case FileNotFound:
+        return tr("file not found");
+    case AccessDenied:
+        return tr("access denied");
+    case InvalidHandle:
+        return tr("invalid handle");
+    case NotEnoughMemory:
+        return tr("not enough memory");
+    case BadFormat:
+        return tr("bad format");
+    case NoMoreFiles:
+        return tr("no more files");
+    case WriteFault:
+        return tr("unable to write to device");
+    case HandleEndOfFile:
+        return tr("access beyond end of file");
+    case HandleDiskFull:
+        return tr("no space left on device");
+    case InvalidParameter:
+        return tr("invalid parameter");
+    case DiskFull:
+        return tr("no space left on device");
+    case AlreadyExists:
+        return tr("file already exists");
+    case CanNotComplete:
+        return tr("operation cannot be completed");
+    case InsufficientBuffer:
+        return tr("insufficient buffer");
+    default:
+        return tr("unknown error");
+    }
 }
 
 /*!
@@ -179,7 +220,7 @@ MPQFileInfo QMPQArchive::fileInfo(const QString & fileName)
 {
     MPQFileInfo resultInfo;
 
-    if (!isOpened())
+    if (!checkOpened())
         return resultInfo;
 
     void * hFile;
@@ -201,7 +242,7 @@ MPQFileInfo QMPQArchive::fileInfo(quint32 index)
 {
     MPQFileInfo resultInfo;
 
-    if (!isOpened())
+    if (!checkOpened())
         return resultInfo;
 
     void * hFile;
@@ -234,6 +275,8 @@ bool QMPQArchive::flush()
 */
 bool QMPQArchive::exists(const QString & file)
 {
+    if (!checkOpened())
+        return false;
     return SFileHasFile(d_func()->mpq, file.toLocal8Bit().data());
 }
 
@@ -294,6 +337,9 @@ bool QMPQArchive::open(const QString & name, OpenFlags flags)
 */
 QByteArray QMPQArchive::read(const QString &file)
 {
+    if (!checkOpened())
+        return QByteArray();
+
     void * filePointer = 0;
     bool result;
     result = openFile(file, &filePointer);
@@ -322,6 +368,9 @@ QByteArray QMPQArchive::read(const QString &file)
 */
 bool QMPQArchive::remove(const QString & fileName)
 {
+    if (!checkOpened())
+        return false;
+
     if (!SFileRemoveFile(d_func()->mpq, fileName.toLocal8Bit().data(), 0)) {
         setLastError();
         return false;
@@ -336,6 +385,9 @@ bool QMPQArchive::remove(const QString & fileName)
 */
 bool QMPQArchive::rename(const QString & oldFileName, const QString & newFileName)
 {
+    if (!checkOpened())
+        return false;
+
     bool result = SFileRenameFile(d_func()->mpq, oldFileName.toLocal8Bit().data(), newFileName.toLocal8Bit().data());
     if (!result) {
         setLastError();
@@ -345,16 +397,25 @@ bool QMPQArchive::rename(const QString & oldFileName, const QString & newFileNam
 
 QMPQArchive::VerifyArchiveError QMPQArchive::verifyArchive()
 {
+    if (!checkOpened())
+        return NoSignature;
+
     return (VerifyArchiveError)SFileVerifyArchive(d_func()->mpq);
 }
 
 QMPQArchive::VerifyFileError QMPQArchive::verifyFile(const QString & file, Attributes attributes)
 {
+    if (!checkOpened())
+        return ErrorOpenFile;
+
     return (VerifyFileError)SFileVerifyFile(d_func()->mpq, file.toLocal8Bit().data(), attributes);
 }
 
 bool QMPQArchive::updateFileAttributes(const QString & fileName)
 {
+    if (!checkOpened())
+        return false;
+
     if (!SFileUpdateFileAttributes(d_func()->mpq, fileName.toLocal8Bit().data())) {
         setLastError();
         return false;
@@ -369,6 +430,9 @@ QMPQArchive::Attributes QMPQArchive::attributes() const
 
 bool QMPQArchive::setAttributes(Attributes attributes)
 {
+    if (!checkOpened())
+        return false;
+
     return SFileSetAttributes(d_func()->mpq, attributes);
 }
 
@@ -423,8 +487,9 @@ quint32 QMPQArchive::hashTableSize() const
 */
 bool QMPQArchive::setHashTableSize(quint32 size)
 {
-    if (!isOpened())
+    if (!checkOpened())
         return false;
+
     bool result = SFileSetHashTableSize(d_func()->mpq, size);
     if (!result) {
         setLastError();
@@ -455,6 +520,17 @@ void QMPQArchive::compactCallBack(void * o , int op, qint64 * bytesProcessed, qi
 {
     QMPQArchive * q = reinterpret_cast<QMPQArchive *>(o);
     emit q->compactProgressChanged((QMPQArchive::CompactOperation)op, *bytesProcessed, *bytesTotal);
+}
+
+bool QMPQArchive::checkOpened()
+{
+    unsetError();
+    if (!isOpened()) {
+        d_func()->error = ArchiveNotOpened;
+        d_func()->errorString = errorString(ArchiveNotOpened);
+        return false;
+    }
+    return true;
 }
 
 void QMPQArchive::getArchiveInfo()
@@ -560,6 +636,30 @@ MPQFileInfo QMPQArchive::getFileInfo_p(void * hFile)
 
 QMPQArchive::Error QMPQArchive::lastError(int errorCode)
 {
+    switch (errorCode) {
+    case ERROR_SUCCESS : return NoError;
+    case ERROR_INVALID_FUNCTION : return InvalidFunction;
+    case ERROR_FILE_NOT_FOUND : return FileNotFound;
+    case ERROR_ACCESS_DENIED : return AccessDenied;
+    case ERROR_INVALID_HANDLE : return InvalidHandle;
+    case ERROR_NOT_ENOUGH_MEMORY : return NotEnoughMemory;
+    case ERROR_BAD_FORMAT : return BadFormat;
+    case ERROR_NO_MORE_FILES : return NoMoreFiles;
+    case ERROR_WRITE_FAULT : return WriteFault;
+//    case ERROR_READ_FAULT : return ReadFault;
+    case ERROR_GEN_FAILURE : return GenerateFailure;
+    case ERROR_HANDLE_EOF : return HandleEndOfFile;
+    case ERROR_HANDLE_DISK_FULL : return HandleDiskFull;
+//    case ERROR_NOT_SUPPORTED : return NotSupported;
+    case ERROR_INVALID_PARAMETER : return InvalidParameter;
+    case ERROR_DISK_FULL : return DiskFull;
+//    case ERROR_CALL_NOT_IMPLEMENTED : return CallNotImplemented;
+    case ERROR_ALREADY_EXISTS : return AlreadyExists;
+    case ERROR_CAN_NOT_COMPLETE : return CanNotComplete;
+//    case ERROR_PARAMETER_QUOTA_EXCEEDED : return ParameterQuotaExceeded;
+//    case ERROR_FILE_CORRUPT : return FileCorrupt;
+    case ERROR_INSUFFICIENT_BUFFER : return InsufficientBuffer;
+    }
     return NoError;
 }
 
@@ -577,9 +677,15 @@ void QMPQArchive::setLastError()
 {
     int errorCode = GetLastError();
     d_func()->error = lastError(errorCode);
-    d_func()->errorString = ErrString(errorCode);
     qWarning() << "Mpq Error: " << d_func()->errorString;
-//    d_func()->errorString = errorString(d_func()->error);
+    d_func()->errorString = errorString(d_func()->error);
     emit error();
 }
+
+void QMPQArchive::unsetError()
+{
+    d_func()->error = NoError;
+    d_func()->errorString = "";
+}
+
 

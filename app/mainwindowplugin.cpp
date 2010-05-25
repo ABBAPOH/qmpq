@@ -15,6 +15,7 @@
 #include "mpqextensionssettings.h"
 #include "preferenceswidget.h"
 #include "windowmanager.h"
+#include "mpqarchiveerrorhandler.h"
 
 #include "../QMPQFileEngine/qmpqarchiveex.h"
 //#include "../QMPQFileEngine/mpqextensionmanager.h"
@@ -47,10 +48,14 @@ void MainWindowPlugin::initialize()
 //    core->addObject(MPQExtensionManager::instance());
 
     PreferencesManager * preferencesManager = qobject_cast<PreferencesManager *>(core->getObject("PreferencesManager"));
-    preferencesManager->addPreferencesPage(new MPQSettingsPage);
-    preferencesManager->addPreferencesPage(new MPQExtensionsPage);
+    preferencesManager->addPreferencesPage(new MPQSettingsPage(preferencesManager));
+    preferencesManager->addPreferencesPage(new MPQExtensionsPage(preferencesManager));
 
 //    preferencesManager->loadSettings();
+
+    MPQArchiveErrorHandler * handler = new MPQArchiveErrorHandler;
+    handler->setObjectName("MPQArchiveErrorHandler");
+    core->addObject(handler);
 
     m_preferencesWidget = new PreferencesWidget(preferencesManager);
 
