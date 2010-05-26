@@ -173,6 +173,10 @@ QString QMPQArchive::errorString(QMPQArchive::Error code)
     switch (code) {
     case NoError:
         return "";
+#ifdef Q_OS_WIN
+    case SharingViolation :
+        return tr("sharing violation");
+#endif
     case ArchiveNotOpened:
         return tr("archive not opened");
     case InvalidFunction:
@@ -205,6 +209,7 @@ QString QMPQArchive::errorString(QMPQArchive::Error code)
         return tr("operation cannot be completed");
     case InsufficientBuffer:
         return tr("insufficient buffer");
+    case UnknownError:
     default:
         return tr("unknown error");
     }
@@ -638,6 +643,9 @@ QMPQArchive::Error QMPQArchive::lastError(int errorCode)
 {
     switch (errorCode) {
     case ERROR_SUCCESS : return NoError;
+#ifdef Q_OS_WIN
+    case ERROR_SHARING_VIOLATION : return SharingViolation;
+#endif
     case ERROR_INVALID_FUNCTION : return InvalidFunction;
     case ERROR_FILE_NOT_FOUND : return FileNotFound;
     case ERROR_ACCESS_DENIED : return AccessDenied;
@@ -660,7 +668,7 @@ QMPQArchive::Error QMPQArchive::lastError(int errorCode)
 //    case ERROR_FILE_CORRUPT : return FileCorrupt;
     case ERROR_INSUFFICIENT_BUFFER : return InsufficientBuffer;
     }
-    return NoError;
+    return UnknownError;
 }
 
 bool QMPQArchive::openFile(const QString & fileName, void ** hFile)

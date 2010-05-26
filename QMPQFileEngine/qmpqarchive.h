@@ -27,6 +27,9 @@ public:
     enum Error
     {
         NoError = 0,
+#ifdef Q_OS_WIN
+        SharingViolation,
+#endif
         ArchiveNotOpened,
         InvalidFunction,
         FileNotFound,
@@ -48,7 +51,8 @@ public:
         CanNotComplete,
 //        ParameterQuotaExceeded,
 //        FileCorrupt,
-        InsufficientBuffer
+        InsufficientBuffer,
+        UnknownError
     };
     Q_ENUMS(Error);
 
