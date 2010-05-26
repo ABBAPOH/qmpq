@@ -53,6 +53,7 @@ public:
 
     QString name() { return "MPQ"; }
     QString key() { return "MPQ"; }
+    QString groupKey() { return "MPQ"; }
     QWidget * widget() { return m_widget; }
 
 private:

@@ -48,8 +48,8 @@ void MainWindowPlugin::initialize()
 //    core->addObject(MPQExtensionManager::instance());
 
     PreferencesManager * preferencesManager = qobject_cast<PreferencesManager *>(core->getObject("PreferencesManager"));
-    preferencesManager->addPreferencesPage(new MPQSettingsPage(preferencesManager));
     preferencesManager->addPreferencesPage(new MPQExtensionsPage(preferencesManager));
+    preferencesManager->addPreferencesPage(new MPQSettingsPage(preferencesManager));
 
 //    preferencesManager->loadSettings();
 

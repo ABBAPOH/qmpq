@@ -13,6 +13,7 @@ MOC_DIR = build
 
 INCLUDEPATH += ../3rdParty
 LIBS += -lStormLib
+mac:LIBS = -framework StormLib
 
 DEFINES += QMPQFILEENGINE_LIBRARY
 

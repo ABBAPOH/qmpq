@@ -12,60 +12,37 @@ PreferencesWidget::PreferencesWidget(PreferencesManager * manager, QWidget *pare
 {
     ui->setupUi(this);
     ui->splitter->setSizes(QList<int>() << 140 << 400);
-    ui->stackedWidget->addWidget(new QWidget);
+//    ui->stackedWidget->addWidget(new QWidget);
 
-    connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), SLOT(onItemClick(QTreeWidgetItem*,int)));
+    foreach (IPreferencesPage * page, manager->pages()) {
+//        IPreferencesPage * page = manager->page(pageKey);
+        QString groupKey = page->groupKey();
+        addGroup(groupKey);
 
-    QStringList keys = manager->pagesKeys();
-    //  we sort list to have root items ve created BEFORE their childs
-    keys.sort();
-    foreach (QString pageKey, keys) {
-        IPreferencesPage * page = manager->page(pageKey);
-
-        int length = pageKey.length();
-        QList<int> indexes;
-        indexes.append(-1);
-        for (int i = 0; i < length; i++) {
-            if (pageKey.at(i) == '/')
-                indexes.append(i);
-        }
-        indexes.append(length);
-
-        QString parentPageKey = "";
-        for (int i = 1; i < indexes.count(); i++) {
-            QString currentPageKey = pageKey.mid(0, indexes.at(i));
-            QString shortPageKey = pageKey.mid(indexes.at(i - 1) + 1, indexes.at(i));
-
-            QTreeWidgetItem * parent = 0;
-            if (parentPageKey != "")
-                parent = m_items.value(parentPageKey);
-            QTreeWidgetItem * item = m_items.value(currentPageKey);
-            if (!item) {
-                item = new QTreeWidgetItem(parent);
-                m_items.insert(currentPageKey, item);
-                item->setText(0, shortPageKey);
-                item->setData(0, Qt::UserRole, 0);
-           }
-            parentPageKey = currentPageKey;
-        }
-        //  creates tree of items (does not fill item with pages)
-        QTreeWidgetItem * item = m_items.value(pageKey);
-        Q_ASSERT(item);
-        int widgetIndex = ui->stackedWidget->addWidget(page->widget());
-        item->setData(0, Qt::UserRole, widgetIndex);
-        item->setText(0, page->name());
-//        ui->treeWidget->addTopLevelItem(item);
+        QTabWidget * tabWidget = m_tabWidgets.value(groupKey);
+        tabWidget->addTab(page->widget(), page->name());
     }
-	foreach(QTreeWidgetItem * item, m_items.values()) {
-		if (!item->parent())
-            ui->treeWidget->addTopLevelItem(item);
-	}
-    ui->treeWidget->setColumnWidth(0, 300);
+    connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), SLOT(onItemClick(QTreeWidgetItem*,int)));
 }
 
 PreferencesWidget::~PreferencesWidget()
 {
     delete ui;
+}
+
+void PreferencesWidget::addGroup(const QString & name)
+{
+    if (m_items.contains(name))
+        return;
+    QTreeWidgetItem * item = new QTreeWidgetItem();
+    QTabWidget * tabWidget = new QTabWidget();
+    m_tabWidgets.insert(name, tabWidget);
+    int index = ui->stackedWidget->addWidget(tabWidget);
+    m_items.insert(name, item);
+    item->setText(0, name);
+    item->setData(0, Qt::UserRole, index);
+    m_indexes.insert(name, index);
+    ui->treeWidget->addTopLevelItem(item);
 }
 
 void PreferencesWidget::changeEvent(QEvent *e)

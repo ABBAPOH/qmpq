@@ -158,7 +158,7 @@ const QList<MPQFileInfo> QMPQArchive::entryList(const QStringList & listfile, bo
   \brief Returns message of last occured error.
 
 */
-QString QMPQArchive::errorString()
+QString QMPQArchive::errorString() const
 {
     return d_func()->errorString;
 }
@@ -168,7 +168,7 @@ QString QMPQArchive::errorString()
   \brief Converts Error \a code to human-readable string.
 
 */
-QString QMPQArchive::errorString(QMPQArchive::Error code)
+QString QMPQArchive::errorString(QMPQArchive::Error code) const
 {
     switch (code) {
     case NoError:

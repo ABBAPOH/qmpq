@@ -15,11 +15,11 @@ MPQSettingsWidget::MPQSettingsWidget(QWidget *parent) :
     QMPQArchive::CompressionFlags types;
     qDebug() << types;
     ui->setupUi(this);
-    const QMetaObject &mo = m_extensionManager->staticMetaObject;
-    int index = mo.indexOfEnumerator("CompressionTypes");
+    const QMetaObject &mo = QMPQArchive::staticMetaObject;
+    int index = mo.indexOfEnumerator("CompressionFlags");
     QMetaEnum me = mo.enumerator(index);
 
-    optionsEnum = mo.enumerator(mo.indexOfEnumerator("AddFileOptions"));
+    optionsEnum = mo.enumerator(mo.indexOfEnumerator("FileFlags"));
     compressionEnum = mo.enumerator(index);
 
     for (int index = 0; index < me.keyCount(); index++) {
@@ -149,8 +149,8 @@ void MPQSettingsWidget::onActivate(int index)
     QString text = extensionIndex.data(Qt::DisplayRole).toString();
     int compressionTypes = ui->comboBox->itemData(index, Qt::UserRole).toInt();
 
-    const QMetaObject &mo = m_extensionManager->staticMetaObject;
-    int indexOfEnumerator = mo.indexOfEnumerator("CompressionTypes");
+    const QMetaObject &mo = QMPQArchive::staticMetaObject;
+    int indexOfEnumerator = mo.indexOfEnumerator("CompressionFlags");
     QMetaEnum me = mo.enumerator(indexOfEnumerator);
 
     model->setData(compressionIndex, compressionEnum.valueToKeys(compressionTypes), Qt::DisplayRole);
@@ -317,9 +317,9 @@ QVariant MPQSettingsPage::value(const QString & key)
     int options = m_widget->extensionManager()->fileFlags(key);
     int compresssion = m_widget->extensionManager()->compressionFlags(key);
 
-    QMetaObject mo = m_widget->extensionManager()->staticMetaObject;
-    QMetaEnum me1 = mo.enumerator(mo.indexOfEnumerator("AddFileOptions"));
-    QMetaEnum me2 = mo.enumerator(mo.indexOfEnumerator("CompressionTypes"));
+    QMetaObject mo = QMPQArchive::staticMetaObject;
+    QMetaEnum me1 = mo.enumerator(mo.indexOfEnumerator("FileFlags"));
+    QMetaEnum me2 = mo.enumerator(mo.indexOfEnumerator("CompressionFlags"));
 
     QStringList result;
     result << me1.valueToKeys(options);
@@ -333,9 +333,9 @@ void MPQSettingsPage::setValue(const QString & key, const QVariant & value)
 {
     QStringList data = value.toStringList();
 
-    QMetaObject mo = m_widget->extensionManager()->staticMetaObject;
-    QMetaEnum me1 = mo.enumerator(mo.indexOfEnumerator("AddFileOptions"));
-    QMetaEnum me2 = mo.enumerator(mo.indexOfEnumerator("CompressionTypes"));
+    QMetaObject mo = QMPQArchive::staticMetaObject;
+    QMetaEnum me1 = mo.enumerator(mo.indexOfEnumerator("FileFlags"));
+    QMetaEnum me2 = mo.enumerator(mo.indexOfEnumerator("CompressionFlags"));
 
     int options = 0;
     int compresssion = 0;

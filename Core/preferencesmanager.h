@@ -16,12 +16,14 @@ public:
     void addPreferencesPage(IPreferencesPage * preferencesPage);
     void loadSettings();
     QStringList keys();// { return QStringList(); }
-    IPreferencesPage * page(const QString & key);
+    IPreferencesPage * page(const QString & groupKey, const QString & key);
+    QList<IPreferencesPage *> pages();
     QStringList pagesKeys();
     QVariant value(const QString & key);
 
 private:
     QHash<QString, IPreferencesPage *> m_pages;
+    QList<IPreferencesPage *> m_pagesList;
     QSettings * m_settings;
 };
 

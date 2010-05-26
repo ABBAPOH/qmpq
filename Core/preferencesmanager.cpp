@@ -47,7 +47,7 @@ QStringList PreferencesManager::keys()
     QStringList keys;
     foreach (IPreferencesPage * preferencesPage, m_pages) {
         foreach (QString key, preferencesPage->keys()) {
-            keys.append(preferencesPage->key() + '/' + key);
+            keys.append(preferencesPage->groupKey() + '/' + preferencesPage->key() + '/' + key);
         }
     }
     return keys;
@@ -55,12 +55,15 @@ QStringList PreferencesManager::keys()
 
 void PreferencesManager::addPreferencesPage(IPreferencesPage * preferencesPage)
 {
-    QString pageKey = preferencesPage->key();
-    m_pages.insert(pageKey, preferencesPage);
-    m_settings->beginGroup(pageKey);
+    QString groupKey = preferencesPage->groupKey();
+    QString fullKey = groupKey + '/' + preferencesPage->key();
+    m_pagesList.append(preferencesPage);
+    m_pages.insert(fullKey, preferencesPage);
+
+    m_settings->beginGroup(fullKey);
     QStringList keys = m_settings->childKeys();
     if (keys.isEmpty()) { // we set default values
-        preferencesPage->setDefaults();        
+        preferencesPage->setDefaults();
     } else { // we read them from QSettings
         foreach (QString key, m_settings->childKeys()) {
 //            qDebug() << key;
@@ -70,9 +73,16 @@ void PreferencesManager::addPreferencesPage(IPreferencesPage * preferencesPage)
     m_settings->endGroup();
 }
 
-IPreferencesPage * PreferencesManager::page(const QString & key)
+IPreferencesPage * PreferencesManager::page(const QString & groupKey, const QString & key)
 {
-    return m_pages.value(key);
+    return m_pages.value(groupKey + '/' + key);
+}
+
+QList<IPreferencesPage *> PreferencesManager::pages()
+{
+//    return m_pages.values();
+    //  i return list to make sure pages will be in order they were added
+    return m_pagesList;
 }
 
 QStringList PreferencesManager::pagesKeys()

@@ -62,7 +62,8 @@ public:
     void setValue(const QString & key, const QVariant & value);
 
     virtual QString name() { return "Rules for adding file to MPQ"; }
-    virtual QString key() { return "MPQ/rules"; }
+    virtual QString key() { return "rules"; }
+    virtual QString groupKey() { return "MPQ"; }
     virtual QWidget * widget() { return m_widget; }
 
 private:

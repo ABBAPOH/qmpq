@@ -149,8 +149,8 @@ public:
     bool close();
     bool compact();
     const QList<MPQFileInfo> entryList(const QStringList & listfile = QStringList(), bool includeUnknowns = true);
-    QString errorString();
-    QString errorString(Error code);
+    QString errorString() const;
+    QString errorString(Error code) const;
     MPQFileInfo fileInfo(const QString & file);
     MPQFileInfo fileInfo(quint32 index);
     bool flush();

@@ -26,6 +26,7 @@ public:
     virtual void setDefaults() {}
     virtual void setValue(const QString & key, const QVariant & value) = 0;
     virtual QString name() = 0;
+    virtual QString groupKey() = 0;
     virtual QString key() = 0;
     virtual QWidget * widget() = 0;
 };
