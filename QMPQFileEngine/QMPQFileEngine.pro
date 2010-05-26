@@ -12,7 +12,7 @@ OBJECTS_DIR = build
 MOC_DIR = build
 
 INCLUDEPATH += ../3rdParty
-LIBS += -lStorm
+LIBS += -lStormLib
 
 DEFINES += QMPQFILEENGINE_LIBRARY
 
