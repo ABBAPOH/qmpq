@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-11-19T09:03:48
 # -------------------------------------------------
-#QT -= gui
+QT -= gui
 TARGET = QMPQFileEngine
 TEMPLATE = lib
 

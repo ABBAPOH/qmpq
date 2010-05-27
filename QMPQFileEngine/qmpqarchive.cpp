@@ -3,7 +3,6 @@
 
 #include "mpqfileinfoiterator.h"
 
-#include <QtGui/QDesktopServices>
 #include <QtCore/QFile>
 #include <StormLib/StormLib.h>
 #include <QDebug>
@@ -37,7 +36,7 @@ bool QMPQArchive::add(const QString & fileName, const QString & archivedName, Fi
     bool result = SFileAddFileEx(d_func()->mpq,
                                  fileName.toLocal8Bit().data(),
                                  archivedName.toLocal8Bit().data(),
-                                 getAddFileOptionFlags(flags) | MPQ_FILE_REPLACEEXISTING,
+                                 getFileFlags(flags) | MPQ_FILE_REPLACEEXISTING,
                                  getCompressionFlags(compression));
     if (!result) {
         setLastError();
@@ -53,15 +52,38 @@ bool QMPQArchive::add(const QString & fileName, const QString & archivedName, Fi
 */
 bool QMPQArchive::add(const QByteArray & data, const QString & archivedName, FileFlags flags, CompressionFlags compression/*, DWORD dwCompressionNext = 0xFFFFFFFF*/)
 {
-    QString temp = QDesktopServices::storageLocation(QDesktopServices::TempLocation);
-    QString fileName = temp + '/' + archivedName;
+    Q_D(QMPQArchive);
+    void * hFile;
+    bool result = true;
+    int size = data.size();
 
-    QFile file(fileName);
-    file.open(QFile::WriteOnly);
-    file.write(data);
-    file.close();
+    if (!checkOpened())
+        return false;
 
-    return add(fileName, archivedName, flags, compression);
+    result = SFileCreateFile(d->mpq,
+                             archivedName.toLocal8Bit().data(),
+                             0,
+                             size,
+                             0,
+                             getFileFlags(flags) | MPQ_FILE_REPLACEEXISTING,
+                             &hFile);
+    if (!result) {
+        setLastError();
+        return result;
+    }
+
+    result = SFileWriteFile(hFile, (void*)(data.data()), size, getCompressionFlags(compression));
+    if (!result) {
+        setLastError();
+        return result;
+    }
+
+    result = SFileFinishFile(hFile);
+    if (!result) {
+        setLastError();
+        return result;
+    }
+    return result;
 }
 
 MPQFileInfoIterator * QMPQArchive::beginFileInfoList(const QStringList & listfile, bool includeUnknowns)
@@ -571,7 +593,7 @@ void QMPQArchive::getArchiveInfo()
     }
 }
 
-quint32 QMPQArchive::getAddFileOptionFlags(FileFlags options)
+quint32 QMPQArchive::getFileFlags(FileFlags options)
 {
     switch (options) {
     case None : return 0;
@@ -646,7 +668,7 @@ QMPQArchive::Error QMPQArchive::lastError(int errorCode)
 #ifdef Q_OS_WIN
     case ERROR_SHARING_VIOLATION : return SharingViolation;
 #endif
-    case ERROR_INVALID_FUNCTION : return InvalidFunction;
+//    case ERROR_INVALID_FUNCTION : return InvalidFunction;
     case ERROR_FILE_NOT_FOUND : return FileNotFound;
     case ERROR_ACCESS_DENIED : return AccessDenied;
     case ERROR_INVALID_HANDLE : return InvalidHandle;
@@ -657,7 +679,7 @@ QMPQArchive::Error QMPQArchive::lastError(int errorCode)
 //    case ERROR_READ_FAULT : return ReadFault;
     case ERROR_GEN_FAILURE : return GenerateFailure;
     case ERROR_HANDLE_EOF : return HandleEndOfFile;
-    case ERROR_HANDLE_DISK_FULL : return HandleDiskFull;
+//    case ERROR_HANDLE_DISK_FULL : return HandleDiskFull;
 //    case ERROR_NOT_SUPPORTED : return NotSupported;
     case ERROR_INVALID_PARAMETER : return InvalidParameter;
     case ERROR_DISK_FULL : return DiskFull;

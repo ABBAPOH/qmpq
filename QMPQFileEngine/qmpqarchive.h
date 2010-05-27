@@ -195,7 +195,7 @@ private:
     static void compactCallBack(void *, int, qint64 * bytesProcessed, qint64 * bytesTotal);
     bool checkOpened();
     void getArchiveInfo();
-    quint32 getAddFileOptionFlags(FileFlags options);
+    quint32 getFileFlags(FileFlags options);
     quint32 getCompressionFlags(CompressionFlags types);
     quint32 getOpenFlags(OpenFlags options);
     MPQFileInfo getFileInfo_p(void *);
