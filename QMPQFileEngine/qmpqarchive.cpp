@@ -24,7 +24,7 @@ QMPQArchive::~QMPQArchive()
 }
 
 /*!
-  \fn bool QMPQArchive2::add(const QString & fileName, const QString & archivedName, FileFlags flags, CompressionFlags compression)
+  \fn bool QMPQArchive::add(const QString & fileName, const QString & archivedName, FileFlags flags, CompressionFlags compression)
   \brief Adds filem specified by \a fileName to archive using \a archivedName.
 
   Returns true if successful; otherwise returns false.
@@ -45,7 +45,7 @@ bool QMPQArchive::add(const QString & fileName, const QString & archivedName, Fi
 }
 
 /*!
-  \fn bool QMPQArchive2::add(const QByteArray data, const QString & archivedName, FileFlags flags, CompressionFlags compression)
+  \fn bool QMPQArchive::add(const QByteArray data, const QString & archivedName, FileFlags flags, CompressionFlags compression)
   \brief Adds \a data to archive specified by \a archivedName.
 
   Returns true if successful; otherwise returns false.
@@ -86,6 +86,12 @@ bool QMPQArchive::add(const QByteArray & data, const QString & archivedName, Fil
     return result;
 }
 
+/*!
+  \fn MPQFileInfoIterator * QMPQArchive::beginFileInfoList(const QStringList & listfile, bool includeUnknowns)
+  \brief Return class to iterate over files in arcvhive.
+
+  NOTE: this object must be deleted manually after being used.
+*/
 MPQFileInfoIterator * QMPQArchive::beginFileInfoList(const QStringList & listfile, bool includeUnknowns)
 {
     return new MPQFileInfoIterator(this, listfile, includeUnknowns);
@@ -117,7 +123,7 @@ bool QMPQArchive::createAttributes(Attributes flags)
 }
 
 /*!
-  \fn bool QMPQArchive2::close()
+  \fn bool QMPQArchive::close()
   \brief Closes currently open archive.
 
   Returns true on success.
@@ -141,7 +147,7 @@ bool QMPQArchive::close()
 }
 
 /*!
-  \fn bool QMPQArchive2::compact()
+  \fn bool QMPQArchive::compact()
   \brief Compacts currently open archive.
 
   Returns true on success.
@@ -164,6 +170,13 @@ bool QMPQArchive::compact()
     return true;
 }
 
+/*!
+  \fn const QList<MPQFileInfo> QMPQArchive::entryList(const QStringList & listfile, bool includeUnknowns)
+  \brief Returns list of filsinfos for every file in archive.
+
+  \a listfile is used with internal listfile.
+  If \a includeUnknowns is true, also includes entries for unknown files.
+*/
 const QList<MPQFileInfo> QMPQArchive::entryList(const QStringList & listfile, bool includeUnknowns)
 {
     QList<MPQFileInfo> result;
@@ -176,7 +189,7 @@ const QList<MPQFileInfo> QMPQArchive::entryList(const QStringList & listfile, bo
 }
 
 /*!
-  \fn QString QMPQArchive2::errorString()
+  \fn QString QMPQArchive::errorString()
   \brief Returns message of last occured error.
 
 */
@@ -186,7 +199,7 @@ QString QMPQArchive::errorString() const
 }
 
 /*!
-  \fn QString QMPQArchive2::errorString(QMPQArchive2::Error code)
+  \fn QString QMPQArchive::errorString(QMPQArchive::Error code)
   \brief Converts Error \a code to human-readable string.
 
 */
@@ -238,7 +251,7 @@ QString QMPQArchive::errorString(QMPQArchive::Error code) const
 }
 
 /*!
-  \fn MPQFileInfo QMPQArchive2::fileInfo(const QString & fileName)
+  \fn MPQFileInfo QMPQArchive::fileInfo(const QString & fileName)
   \brief Returns information about \a fileName.
 
   If archive is not opened or error occured, the result will be invalid.
@@ -286,6 +299,11 @@ MPQFileInfo QMPQArchive::fileInfo(quint32 index)
     return resultInfo;
 }
 
+/*!
+  \fn bool QMPQArchive::flush()
+  \brief Flushes currently opened archive
+
+*/
 bool QMPQArchive::flush()
 {
     if (!SFileFlushArchive(d_func()->mpq)) {
@@ -296,7 +314,7 @@ bool QMPQArchive::flush()
 }
 
 /*!
-  \fn bool QMPQArchive2::exists(const QString & file)
+  \fn bool QMPQArchive::exists(const QString & file)
   \brief Returns true if archive contains file \a file
 
 */
@@ -308,7 +326,7 @@ bool QMPQArchive::exists(const QString & file)
 }
 
 /*!
-  \fn bool QMPQArchive2::isOpened() const
+  \fn bool QMPQArchive::isOpened() const
   \brief Returns true if archive is opened
 
 */
@@ -318,7 +336,7 @@ bool QMPQArchive::isOpened() const
 }
 
 /*!
-  \fn QMPQArchive2::Error QMPQArchive2::lastError()
+  \fn QMPQArchive::Error QMPQArchive::lastError()
   \brief Returns error code of last occured error
 
 */
@@ -328,7 +346,7 @@ QMPQArchive::Error QMPQArchive::lastError()
 }
 
 /*!
-  \fn bool QMPQArchive2::open(const QString & name, OpenFlags flags)
+  \fn bool QMPQArchive::open(const QString & name, OpenFlags flags)
   \brief Opens archive specified by \a name with flags \a flags.
 
   Returns true if successful; otherwise returns false.
@@ -357,7 +375,7 @@ bool QMPQArchive::open(const QString & name, OpenFlags flags)
 }
 
 /*!
-  \fn QByteArray QMPQArchive2::read(const QString &file)
+  \fn QByteArray QMPQArchive::read(const QString &file)
   \brief Opens archive specified by \a name with flags \a flags.
 
   Returns true if successful; otherwise returns false.
@@ -406,7 +424,7 @@ bool QMPQArchive::remove(const QString & fileName)
 }
 
 /*!
-  \fn bool QMPQArchive2::rename(const QString & oldFileName, const QString & newFileName)
+  \fn bool QMPQArchive::rename(const QString & oldFileName, const QString & newFileName)
   \brief Renames the file \a oldFileName to \a newFileName. Returns true if successful; otherwise returns false.
 
 */
@@ -464,7 +482,7 @@ bool QMPQArchive::setAttributes(Attributes attributes)
 }
 
 /*!
-  \fn quint32 QMPQArchive2::blockTableSize() const
+  \fn quint32 QMPQArchive::blockTableSize() const
   \brief Returns number of entries in block table
 
   Returns 0 if no archive opened.
@@ -475,7 +493,7 @@ quint32 QMPQArchive::blockTableSize() const
 }
 
 /*!
-  \fn QString QMPQArchive2::file() const
+  \fn QString QMPQArchive::file() const
   \brief Returns name of currently opened file
 
 */
@@ -485,7 +503,7 @@ QString QMPQArchive::file() const
 }
 
 /*!
-  \fn quint32 QMPQArchive2::filesCount() const
+  \fn quint32 QMPQArchive::filesCount() const
   \brief Returns number of files in archive
 
   Returns 0 if no archive opened.
@@ -496,7 +514,7 @@ quint32 QMPQArchive::filesCount() const
 }
 
 /*!
-  \fn quint32 QMPQArchive2::hashTableSize() const
+  \fn quint32 QMPQArchive::hashTableSize() const
   \brief Returns size of hash table for currently opened archive.
 
   Returns 0 if no archive opened.
@@ -507,7 +525,7 @@ quint32 QMPQArchive::hashTableSize() const
 }
 
 /*!
-  \fn bool QMPQArchive2::setHashTableSize(quint32 size)
+  \fn bool QMPQArchive::setHashTableSize(quint32 size)
   \brief Changes the size of hash table for currently opened archive to \a size.
 
   Returns true if successful; otherwise returns false.
@@ -525,7 +543,7 @@ bool QMPQArchive::setHashTableSize(quint32 size)
 }
 
 /*!
-  \fn quint32 QMPQArchive2::sectorSize() const
+  \fn quint32 QMPQArchive::sectorSize() const
   \brief Returns size of file sector in bytes.
 
   Returns 0 if no archive opened.
