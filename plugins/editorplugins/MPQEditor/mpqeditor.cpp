@@ -311,8 +311,6 @@ void MPQEditor::setNameFilter(const QString & filter)
 
 void MPQEditor::onDoubleClick(const QModelIndex & index)
 {
-//    qDebug() << "MPQEditor::onDoubleClick";
-    qDebug() << m_model->filePath(index);
     QString path = m_model->filePath(index);
     QFileInfo info(path);
     if (info.isDir()/* && m_viewMode < 3*/) {

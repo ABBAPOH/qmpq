@@ -11,8 +11,6 @@
 #include "mainwindow.h"
 #include "archivesuffixesmanager.h"
 
-#include <QDebug>
-
 WindowManager::WindowManager(QObject *parent) :
     IWindowManager(parent)
 {

@@ -45,12 +45,14 @@ MPQArchiveErrorHandler::~MPQArchiveErrorHandler()
 
 void MPQArchiveErrorHandler::onError(QMPQArchive * archive)
 {
+
     if (!dialog->isVisible()) {
         dialog->clearErrors();
     }
     dialog->addError(archive->errorString());
     dialog->show();
-    qApp->processEvents();
+    //  dunno why but cause deadlock in signal-slot system
+//    qApp->processEvents();
 }
 
 void MPQArchiveErrorHandler::onError()

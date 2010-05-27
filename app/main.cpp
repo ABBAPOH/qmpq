@@ -19,6 +19,7 @@ Q_IMPORT_PLUGIN(MPQEditorPlugin)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+
     app.setApplicationName("QMPQ");
     app.setOrganizationName("QMPQ");
 

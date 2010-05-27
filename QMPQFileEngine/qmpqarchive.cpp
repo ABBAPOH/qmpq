@@ -685,8 +685,8 @@ void QMPQArchive::setLastError()
 {
     int errorCode = GetLastError();
     d_func()->error = lastError(errorCode);
-    qWarning() << "Mpq Error: " << d_func()->errorString;
     d_func()->errorString = errorString(d_func()->error);
+    qWarning() << "Mpq Error: " << d_func()->errorString;
     emit error();
 }
 

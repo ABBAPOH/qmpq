@@ -78,8 +78,6 @@ QMPQArchiveEx::~QMPQArchiveEx()
 
 bool QMPQArchiveEx::open(const QString & name, OpenFlags flags, QByteArray listfile)
 {
-//    Q_D(QMPQArchiveEx);
-
     if (isOpened())
         close();
     bool result = QMPQArchive::open(name, flags);

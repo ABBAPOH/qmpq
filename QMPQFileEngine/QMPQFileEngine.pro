@@ -5,6 +5,9 @@
 TARGET = QMPQFileEngine
 TEMPLATE = lib
 
+mac: {
+    CONFIG += lib_bundle
+}
 #TEMPLATE = app
 
 DESTDIR = bin
