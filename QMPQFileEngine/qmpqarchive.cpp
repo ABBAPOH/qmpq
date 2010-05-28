@@ -60,7 +60,7 @@ bool QMPQArchive::add(const QByteArray & data, const QString & archivedName, Fil
     if (!checkOpened())
         return false;
 
-    result = SFileCreateFile(d->mpq,
+    result &= SFileCreateFile(d->mpq,
                              archivedName.toLocal8Bit().data(),
                              0,
                              size,
@@ -72,13 +72,13 @@ bool QMPQArchive::add(const QByteArray & data, const QString & archivedName, Fil
         return result;
     }
 
-    result = SFileWriteFile(hFile, (void*)(data.data()), size, getCompressionFlags(compression));
+    result &= SFileWriteFile(hFile, (void*)(data.data()), size, getCompressionFlags(compression));
     if (!result) {
         setLastError();
-        return result;
+        // we have to free resources so we continue operation
     }
 
-    result = SFileFinishFile(hFile);
+    result &= SFileFinishFile(hFile);
     if (!result) {
         setLastError();
         return result;
@@ -274,6 +274,7 @@ MPQFileInfo QMPQArchive::fileInfo(const QString & fileName)
         SFileGetFileName(hFile, buffer);
         resultInfo.data->name = QString(buffer);
     }
+    SFileCloseFile(hFile);
 
     return resultInfo;
 }
@@ -295,6 +296,7 @@ MPQFileInfo QMPQArchive::fileInfo(quint32 index)
         SFileGetFileName(hFile, buffer);
         resultInfo.data->name = QString(buffer);
     }
+    SFileCloseFile(hFile);
 
     return resultInfo;
 }
@@ -385,24 +387,27 @@ QByteArray QMPQArchive::read(const QString &file)
     if (!checkOpened())
         return QByteArray();
 
-    void * filePointer = 0;
-    bool result;
-    result = openFile(file, &filePointer);
+    void * hFile = 0;
+    bool ok;
+    ok = openFile(file, &hFile);
 
-    if (!result) {
+    if (!ok) {
         setLastError();
         return QByteArray();
     }
-    unsigned size = SFileGetFileSize(filePointer, 0);
+
+    unsigned size = SFileGetFileSize(hFile, 0);
     char * buffer = new char[size];
-    result = SFileReadFile(filePointer, buffer, size, 0, 0);
-    if (!result) {
+    ok = SFileReadFile(hFile, buffer, size, 0, 0);
+    QByteArray result;
+    if (!ok) {
         setLastError();
-        return QByteArray();
+    } else {
+        result = QByteArray(buffer, size);
     }
-    QByteArray arr(buffer, size);
+    SFileCloseFile(hFile);
     delete [] buffer;
-    return arr;
+    return result;
 }
 
 /*!
