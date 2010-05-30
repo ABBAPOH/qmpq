@@ -37,6 +37,7 @@ QMPQFileEngine::~QMPQFileEngine()
 {
     Q_D(QMPQFileEngine);
     QMPQArchiveCache::instance()->remove(d->archiveFilePath);
+    delete d_ptr;
 }
 
 QMPQArchiveEx * QMPQFileEngine::archive()

@@ -46,11 +46,11 @@ bool QXMLViewer::setContent(const QString & text, bool namespaceProcessing)
 bool QXMLViewer::setContent(QIODevice * dev, bool namespaceProcessing)
 {
     qDebug("test");
-    QDomDocument * document = new QDomDocument;
-    bool result = document->setContent(dev, namespaceProcessing);
+    QDomDocument document;
+    bool result = document.setContent(dev, namespaceProcessing);
     if(!result)
         qDebug("AAAA");
-    setDocument(*document);
+    setDocument(document);
     return result;
 }
 

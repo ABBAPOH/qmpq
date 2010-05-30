@@ -19,6 +19,7 @@ void EditorView::setEditor(IEditor * editor)
     QLayoutItem * child = 0;
     while ((child = layout->takeAt(0)) != 0) {
         child->widget()->hide();
+        delete child;
     }
     layout->addWidget(m_editor->toolBar());
     layout->addWidget(m_editor->widget());

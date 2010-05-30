@@ -273,8 +273,8 @@ MPQFileInfo QMPQArchive::fileInfo(const QString & fileName)
         char buffer[255];
         SFileGetFileName(hFile, buffer);
         resultInfo.data->name = QString(buffer);
+        SFileCloseFile(hFile);
     }
-    SFileCloseFile(hFile);
 
     return resultInfo;
 }
@@ -295,8 +295,8 @@ MPQFileInfo QMPQArchive::fileInfo(quint32 index)
         char buffer[255];
         SFileGetFileName(hFile, buffer);
         resultInfo.data->name = QString(buffer);
+        SFileCloseFile(hFile);
     }
-    SFileCloseFile(hFile);
 
     return resultInfo;
 }

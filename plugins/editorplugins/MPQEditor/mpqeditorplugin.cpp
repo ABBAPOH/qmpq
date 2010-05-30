@@ -370,12 +370,14 @@ void MPQEditorPlugin::setHashTableSize()
     MPQEditor * editor = editorWidget();
     QMPQArchiveEx * archive = getArchive(editor->currentFile());
     if (archive) {
-        HashTableSizeDialog dlg;
-        dlg.setHashTableSize(archive->hashTableSize());
-        int result = dlg.exec();
-        if (result == QDialog::Rejected)
-            return;
-        archive->setHashTableSize(dlg.hashTableSize());
+        HashTableSizeDialog * dlg = new HashTableSizeDialog;
+        dlg->setHashTableSize(archive->hashTableSize());
+        int result = dlg->exec();
+        if (result == QDialog::Accepted) {
+            archive->setHashTableSize(dlg->hashTableSize());
+        }
+//        archive->setHashTableSize(512);
+        delete dlg;
     }
 }
 

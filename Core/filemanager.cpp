@@ -11,7 +11,6 @@ FileManager::FileManager(QObject *parent) :
 
 QStringList FileManager::getOpenFileNames()
 {
-
     QStringList result = QFileDialog::getOpenFileNames((QWidget*)0, tr("Select File"), "", m_extensionString);
     //        fileName = QFileDialog::getOpenFileName(this, tr("Select Archive File"));
 
