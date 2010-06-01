@@ -77,7 +77,7 @@ void MPQEditorInterface::initActions()
     m_toolBar->addWidget(filterLineEdit);
 
     actionOpen = new QAction(tr("Open"), this);
-    actionOpen->setShortcut(tr("Return"));
+//    actionOpen->setShortcut(tr("Return"));
     connect(actionOpen, SIGNAL(triggered()), SLOT(open()));
     m_editor->addAction(actionOpen);
 
@@ -370,14 +370,12 @@ void MPQEditorPlugin::setHashTableSize()
     MPQEditor * editor = editorWidget();
     QMPQArchiveEx * archive = getArchive(editor->currentFile());
     if (archive) {
-        HashTableSizeDialog * dlg = new HashTableSizeDialog;
-        dlg->setHashTableSize(archive->hashTableSize());
-        int result = dlg->exec();
+        HashTableSizeDialog dlg;
+        dlg.setHashTableSize(archive->hashTableSize());
+        int result = dlg.exec();
         if (result == QDialog::Accepted) {
-            archive->setHashTableSize(dlg->hashTableSize());
+            archive->setHashTableSize(dlg.hashTableSize());
         }
-//        archive->setHashTableSize(512);
-        delete dlg;
     }
 }
 

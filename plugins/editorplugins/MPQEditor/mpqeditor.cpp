@@ -72,7 +72,7 @@ void MPQEditor::initModel(const QString & path)
 
 void MPQEditor::initViews()
 {
-    m_view->setEditTriggers(QAbstractItemView::SelectedClicked);
+    m_view->setEditTriggers(QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed);
 //    m_view->setDragDropMode(QAbstractItemView::DropOnly);
     m_view->setDragDropMode(QAbstractItemView::DragDrop);
     m_view->setAcceptDrops(true);

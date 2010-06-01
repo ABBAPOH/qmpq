@@ -100,9 +100,23 @@ bool QMPQArchiveEx::close()
     return QMPQArchive::close();
 }
 
-//bool QMPQArchiveEx::add(const QString & file, const QString & path)
-//{
-//}
+bool QMPQArchiveEx::add(const QByteArray & data, const QString & archivedName, FileFlags flags, CompressionFlags compression)
+{
+    bool result = QMPQArchive::add(data, archivedName, flags, compression);
+    if (result) {
+        initFile(fileInfo(archivedName));
+    }
+    return result;
+}
+
+bool QMPQArchiveEx::add(const QString & file, const QString & archivedName, FileFlags flags, CompressionFlags compression)
+{
+    bool result = QMPQArchive::add(file, archivedName, flags, compression);
+    if (result) {
+        initFile(fileInfo(archivedName));
+    }
+    return result;
+}
 
 QStringList QMPQArchiveEx::entryList(const QString & name)
 {
@@ -218,6 +232,30 @@ Node * QMPQArchiveEx::node(const QString & path) const
         return 0;
     }
 }
+
+//bool QMPQArchiveEx::add(const QString & file, Node * parent)
+//{
+//    Q_D(QMPQArchive);
+//    //    qDebug(QMPQArchive::add");
+//    if (!parent) {
+//        return false;
+//    }
+
+//    if (!parent->isDir()) {
+//        return false;
+//    } else {
+//        QString name = parent->data(FullPath).toString();
+//        name = (name == "" ? "" : name + "\\") + QFileInfo(file).fileName();
+//        //            qDebug () << "adding file " << file << " as " << name;
+////        d->addLocalFile(file, name);
+//        QMPQArchive::add(file, name);
+//        initFile(fileInfo(newName));
+
+////        d->initFile(name);
+////        d->m_listFile << name;
+//    }
+//    return true;
+//}
 
 bool QMPQArchiveEx::rename(Node * node, const QString & newName)
 {
