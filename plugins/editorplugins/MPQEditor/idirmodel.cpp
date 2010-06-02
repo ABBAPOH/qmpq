@@ -1,6 +1,6 @@
 #include "idirmodel.h"
 
-//#include "QtGui/QApplication"
+#include "myfileiconprovider.h"
 
 QFileSystemModel * FileSystemModelWrapper::m_model = 0;
 
@@ -12,6 +12,7 @@ DirModelWrapper::DirModelWrapper(const QString & path)
     m_model = new QDirModel(path);
     m_model->setReadOnly(false);
     m_model->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
+    m_model->setIconProvider(new MyFileIconProvider);
 }
 
 bool DirModelWrapper::remove(const QModelIndex & index) const
@@ -43,6 +44,7 @@ FileSystemModelWrapper::FileSystemModelWrapper()
         m_model->setReadOnly(false);
         m_model->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
         m_model->setNameFilterDisables(false);
+        m_model->setIconProvider(new MyFileIconProvider);
     }
 }
 
