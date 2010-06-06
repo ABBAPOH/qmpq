@@ -30,7 +30,6 @@ INCLUDEPATH += -I \
 HEADERS += mainwindow.h \
     editormanager.h \
     editorview.h \
-    tabwidget.h \
     windowmanager.h \
     tabcontext.h \
     tabmanager.h \
@@ -41,12 +40,13 @@ HEADERS += mainwindow.h \
     preferenceswidget.h \
     mpqsettings.h \
     mpqextensionssettings.h \
-    mpqarchiveerrorhandler.h
+    mpqarchiveerrorhandler.h \
+    qtabbarex.h \
+    mytabwidget.h
 SOURCES += mainwindow.cpp \
     main.cpp \
     editormanager.cpp \
     editorview.cpp \
-    tabwidget.cpp \
     windowmanager.cpp \
     tabcontext.cpp \
     tabmanager.cpp \
@@ -55,7 +55,9 @@ SOURCES += mainwindow.cpp \
     preferenceswidget.cpp \
     mpqsettings.cpp \
     mpqextensionssettings.cpp \
-    mpqarchiveerrorhandler.cpp
+    mpqarchiveerrorhandler.cpp \
+    qtabbarex.cpp \
+    mytabwidget.cpp
 FORMS += createarchivedialog.ui \
     preferenceswidget.ui \
     mpqsettings.ui \

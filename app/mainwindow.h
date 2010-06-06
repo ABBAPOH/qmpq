@@ -8,6 +8,7 @@
 #include <QtGui/QMenuBar>
 #include <QtGui/QToolBar>
 #include <QtGui/QAction>
+#include "mytabwidget.h"
 
 namespace Ui {
     class MainWindow
@@ -15,7 +16,7 @@ namespace Ui {
     public:
         QLineEdit * lineEdit;
         QMenuBar * menuBar;
-        QTabWidget * tabWidget;
+        MyTabWidget * tabWidget;
         QToolBar * toolBar;
         QAction * actionBack;
         QAction * actionForward;
@@ -25,7 +26,7 @@ namespace Ui {
         {
             parent->resize(920, 690);
 
-            tabWidget = new QTabWidget(parent);
+            tabWidget = new MyTabWidget(parent);
             tabWidget->setDocumentMode(true);
             tabWidget->setTabsClosable(true);
 

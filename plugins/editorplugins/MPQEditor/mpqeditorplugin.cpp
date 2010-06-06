@@ -11,6 +11,7 @@
 #include <QtGui/QMenu>
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QLineEdit>
+#include <QMessageBox>
 //#include <QDebug>
 
 #include "mpqeditor.h"
@@ -77,7 +78,7 @@ void MPQEditorInterface::initActions()
     m_toolBar->addWidget(filterLineEdit);
 
     actionOpen = new QAction(tr("Open"), this);
-//    actionOpen->setShortcut(tr("Return"));
+    actionOpen->setShortcut(tr("Enter"));
     connect(actionOpen, SIGNAL(triggered()), SLOT(open()));
     m_editor->addAction(actionOpen);
 
@@ -129,7 +130,13 @@ void MPQEditorInterface::setViewMode(int mode)
 
 void MPQEditorInterface::openRequest(const QString & path)
 {
-    ICore::instance()->windowManager()->open(path);
+    bool result = ICore::instance()->windowManager()->open(path);
+    if (!result) {
+        result = ICore::instance()->windowManager()->openExternally(path);
+        if (!result) {
+            QMessageBox::warning(0, "Warning", tr("Can't open file"));
+        }
+    }
 }
 
 void MPQEditorInterface::open()
