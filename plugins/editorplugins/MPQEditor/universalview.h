@@ -64,7 +64,8 @@ private:
     QListView * listView;
     QListView * iconView;
     QColumnView * columnView;
-    QTableView * tableView;
+//    QTableView * tableView;
+    QTreeView * tableView;
     QTreeView * treeView;
     QAbstractItemView * views[MaxViews];
     QAbstractItemView * m_currentView;

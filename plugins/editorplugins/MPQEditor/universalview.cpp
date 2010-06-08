@@ -11,7 +11,8 @@ UniversalView::UniversalView(QWidget *parent) :
     listView(new QListView(this)),
     iconView(new QListView(this)),
     columnView(new QColumnView(this)),
-    tableView(new QTableView(this)),
+//    tableView(new QTableView(this)),
+    tableView(new QTreeView(this)),
     treeView(new QTreeView(this)),
     m_currentView(0),
     layout(new QStackedLayout(this)),
@@ -46,6 +47,7 @@ void UniversalView::setAcceptDrops(bool on)
 
 void UniversalView::setColumnWidth(int column, int width)
 {
+    tableView->setColumnWidth(column, width);
     treeView->setColumnWidth(column, width);
 }
 
@@ -132,11 +134,11 @@ void UniversalView::initViews()
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
 
-    listView->setUniformItemSizes(true);
-    iconView->setUniformItemSizes(true);
+    iconView->setGridSize(QSize(150, 100));
+    iconView->setWordWrap(true);
     iconView->setViewMode(QListView::IconMode);
-    iconView->setSpacing(24);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    tableView->setRootIsDecorated(false);
 
     for (int i = 0; i < MaxViews; i++) {
 //        views[i]->setEditTriggers(QAbstractItemView::SelectedClicked);
@@ -149,7 +151,4 @@ void UniversalView::initViews()
 //        views[i]->setSelectionMode(QAbstractItemView::ExtendedSelection);
         connect(views[i], SIGNAL(doubleClicked(const QModelIndex &)), SIGNAL(doubleClicked(const QModelIndex &)));
     }
-    tableView->setColumnWidth(0, 300);
-    tableView->setColumnWidth(3, 125);
-    treeView->setColumnWidth(0, 300);
 }
