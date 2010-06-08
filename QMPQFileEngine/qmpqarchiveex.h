@@ -22,6 +22,7 @@ public:
     bool add(const QByteArray & data, const QString & archivedName, FileFlags flags = None, CompressionFlags compression = NoCompression);
     bool add(const QString & file, const QString & archivedName, FileFlags flags = None, CompressionFlags compression = NoCompression);
     QStringList entryList(const QString & name);
+    const QList<MPQFileInfo> entryList();
     bool exists(const QString & path);
     bool isDir(const QString & path);
     bool mkdir(const QString & path, bool createParentDirectories);
@@ -35,6 +36,7 @@ public slots:
 
 protected:
     QMPQArchiveExPrivate * d_ptr;
+
 private:
     QString getFileName(const QString & path) const;
     QString getFilePath(const QString & path) const;
@@ -57,6 +59,7 @@ public:
 
     Node * rootNode;
     QHash<QString, Node*> hash;
+    QList<MPQFileInfo> infoList;
 };
 
 #endif // QMPQARCHIVEEX_H

@@ -453,12 +453,12 @@ QMPQArchive::VerifyArchiveError QMPQArchive::verifyArchive()
     return (VerifyArchiveError)SFileVerifyArchive(d_func()->mpq);
 }
 
-QMPQArchive::VerifyFileError QMPQArchive::verifyFile(const QString & file, Attributes attributes)
+QMPQArchive::VerifyFileFlags QMPQArchive::verifyFile(const QString & file, Attributes attributes)
 {
     if (!checkOpened())
         return ErrorOpenFile;
 
-    return (VerifyFileError)SFileVerifyFile(d_func()->mpq, file.toLocal8Bit().data(), attributes);
+    return (VerifyFileFlag)SFileVerifyFile(d_func()->mpq, file.toLocal8Bit().data(), attributes);
 }
 
 bool QMPQArchive::updateFileAttributes(const QString & fileName)

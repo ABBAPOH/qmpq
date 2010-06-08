@@ -129,6 +129,11 @@ QStringList QMPQArchiveEx::entryList(const QString & name)
 
 }
 
+const QList<MPQFileInfo> QMPQArchiveEx::entryList()
+{
+    return d_func()->infoList;
+}
+
 bool QMPQArchiveEx::exists(const QString & path)
 {
     return node(path);
@@ -188,11 +193,15 @@ void QMPQArchiveEx::initFile(const MPQFileInfo & info)
 
 void QMPQArchiveEx::initialize(QStringList listfile)
 {
+    Q_D(QMPQArchiveEx);
+
     MPQFileInfoIterator * iterator = beginFileInfoList(listfile, true);
+    d->infoList.clear();
 
     while (iterator->hasNext()) {
          MPQFileInfo info = iterator->next();
          initFile(info);
+         d->infoList.append(info);
     }
 
     delete iterator;

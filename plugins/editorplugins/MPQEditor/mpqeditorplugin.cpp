@@ -1,6 +1,7 @@
 #include "mpqeditorplugin.h"
 
 #include <QtCore/QtPlugin>
+#include <QtCore/QMetaEnum>
 
 #include <QtGui/QApplication>
 #include <QtGui/QToolBar>
@@ -18,6 +19,7 @@
 #include "idirmodel.h"
 #include "compactprocessdialog.h"
 #include "hashtablesizedialog.h"
+#include "verifyfilesdialog.h"
 
 #include "../../../../QMPQFileEngine/qmpqfileengine.h"
 #include "../../../../QMPQFileEngine/qmpqarchiveex.h"
@@ -410,13 +412,33 @@ void MPQEditorPlugin::verifyArchive()
             message = tr("Strong signature error."); break;
         }
 
-        QMessageBox::information(editor, "Verify Archive", message);
+        QMessageBox::information(editor, tr("Verify Archive"), message);
     }
 }
 
 void MPQEditorPlugin::verifyFiles()
 {
+    MPQEditor * editor = editorWidget();
+    QMPQArchiveEx * archive = getArchive(editor->currentFile());
+    if (!archive)
+        return;
 
+    bool ok = true;
+    VerifyFilesDialog * dlg = new VerifyFilesDialog;
+    dlg->setAttribute(Qt::WA_DeleteOnClose, true);
+    dlg->show();
+    foreach (MPQFileInfo info, archive->entryList()) {
+        QMPQArchive::VerifyFileFlags result = archive->verifyFile(info.name(), QFlag(QMPQArchive::CRC32 | QMPQArchive::MD5));
+        if (result != QMPQArchive::VerifyFileOk) {
+            ok = false;
+            QMetaObject mo = QMPQArchive::staticMetaObject;
+            QMetaEnum me = mo.enumerator(mo.indexOfEnumerator("VerifyFileFlags"));
+            QString message = me.valueToKeys(result);
+            dlg->addLine(info.name(), message);
+        }
+    }
+    if (ok)
+        dlg->addLine(tr("All files are ok"), "");
 }
 
 void MPQEditorPlugin::initActions()
@@ -463,7 +485,9 @@ void MPQEditorPlugin::initActions()
     connect(actionVerifyArchive, SIGNAL(triggered()), SLOT(verifyArchive()));
 
     actionVerifyFiles = manager->action(Core::ACTION_VERIFY_FILES);
-
+    actionVerifyFiles->setText(tr("Verify file(s) in archive..."));
+    actionVerifyFiles->setEnabled(false);
+    connect(actionVerifyFiles, SIGNAL(triggered()), SLOT(verifyFiles()));
 
     QMenu * toolsMenu = manager->menu(Core::MENU_TOOLS);
     QMenu * menu = new QMenu("MPQ Viewer");

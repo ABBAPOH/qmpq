@@ -15,7 +15,8 @@ HEADERS += mpqeditor.h \
     compactprocessdialog.h \
     hashtablesizedialog.h \
     powerspinbox.h \
-    myfileiconprovider.h
+    myfileiconprovider.h \
+    verifyfilesdialog.h
 SOURCES += mpqeditor.cpp \
     mpqeditorplugin.cpp \
     main.cpp \
@@ -24,7 +25,9 @@ SOURCES += mpqeditor.cpp \
     compactprocessdialog.cpp \
     hashtablesizedialog.cpp \
     powerspinbox.cpp \
-    myfileiconprovider.cpp
+    myfileiconprovider.cpp \
+    verifyfilesdialog.cpp
 RESOURCES += mpqeditor.qrc
 FORMS += compactprocessdialog.ui \
-    hashtablesizedialog.ui
+    hashtablesizedialog.ui \
+    verifyfilesdialog.ui

@@ -121,14 +121,16 @@ public:
     };
     Q_ENUMS(VerifyArchiveError);
 
-    enum VerifyFileError {
+    enum VerifyFileFlag {
+        VerifyFileOk = 0x00,
         ErrorOpenFile = 0x01,
         ErrorReadFile = 0x02,
         ErrorSectorChecksum = 0x04,
         ErrorFileChecksum = 0x08,
         ErrorMD5 = 0x10
     };
-    Q_ENUMS(VerifyArchiveError);
+    Q_DECLARE_FLAGS(VerifyFileFlags, VerifyFileFlag)
+    Q_FLAGS(VerifyFileFlags);
 
     enum Attribute {
         CRC32 = 1,
@@ -161,7 +163,7 @@ public:
     bool remove(const QString & fileName);
     bool rename(const QString & oldFileName, const QString & newFileName);
     VerifyArchiveError verifyArchive();
-    VerifyFileError verifyFile(const QString & file, Attributes attributes);
+    VerifyFileFlags verifyFile(const QString & file, Attributes attributes);
     bool updateFileAttributes(const QString & fileName);
 
     Attributes attributes() const;

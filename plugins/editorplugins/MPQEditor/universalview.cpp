@@ -23,12 +23,6 @@ UniversalView::UniversalView(QWidget *parent) :
     listView->setDragEnabled(true);
     listView->setDropIndicatorShown(true);
 
-    connect(listView, SIGNAL(pressed(QModelIndex)), this, SLOT(onActivate(QModelIndex)));
-}
-
-void UniversalView::onActivate(QModelIndex)
-{
-    qDebug("UniversalView::onActivate");
 }
 
 UniversalView::~UniversalView()
