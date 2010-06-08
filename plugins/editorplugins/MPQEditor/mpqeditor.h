@@ -77,6 +77,7 @@ private:
 
 signals:
     void openRequested(const QString &file);
+    void opened(const QString &file);
     void currentChanged(const QString &file);
     void errorOccured(const MPQEditorError & error);
 

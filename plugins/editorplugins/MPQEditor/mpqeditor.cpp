@@ -110,7 +110,7 @@ void MPQEditor::open(const QString &file)
         initModel(file);
         m_currentFile = file;
         m_view->setRootIndex(m_model->index(file));
-        emit currentChanged(file);
+        emit opened(file);
     }
 }
 

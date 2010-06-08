@@ -25,7 +25,10 @@ public:
     QString mapFromPath(QString path) const
     {
         QFileInfo info(path);
-        return m_prefixes.value(info.suffix().toLower());
+        if (info.isFile())
+            return m_prefixes.value(info.suffix().toLower());
+        else
+            return "";
     }
 
     void removeSuffix(const QString & suffix) {

@@ -39,8 +39,7 @@ bool WindowManager::openInNewTab(const QString path)
     ICore * core = ICore::instance();
     MainWindow * window = qobject_cast<MainWindow *>(core->context()->mainWindow());
     window->newTab();
-    return window->open(path);
-
+    return open(path);
 }
 
 bool WindowManager::openInNewWindow(const QString path)
@@ -48,7 +47,7 @@ bool WindowManager::openInNewWindow(const QString path)
     MainWindow * window = new MainWindow();
     window->show();
     window->newTab();
-    return window->open(path);
+    return open(path);
 }
 
 bool WindowManager::openExternally(const QString path)
