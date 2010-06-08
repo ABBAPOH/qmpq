@@ -5,6 +5,7 @@
 #include <QtCore/QDir>
 #include <QtGui/QToolBar>
 #include <QtGui/QMenuBar>
+#include <QtGui/QDesktopServices>
 #include <QDebug>
 
 //#include <qmpqfileenginehandler.h> // fix lock!!!!
@@ -43,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionBack, SIGNAL(triggered()), SLOT(back()));
     connect(ui->actionForward, SIGNAL(triggered()), SLOT(forward()));
     connect(ui->actionUp, SIGNAL(triggered()), SLOT(up()));
+
+    connect(ui->buttonCreateTab, SIGNAL(clicked()), SLOT(newTab()));
 }
 
 MainWindow::~MainWindow()
@@ -95,6 +98,10 @@ void MainWindow::newTab()
     int index = ui->tabWidget->addTab(context->widget(), "");
     tabManager->addContext(index, context);
     ui->tabWidget->setCurrentIndex(index);
+
+    #warning "TODO: think about double opening when opening in new tab"
+    QString homeDir = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+    open(homeDir);
 }
 
 void MainWindow::closeCurrentTab()

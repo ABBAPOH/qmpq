@@ -309,7 +309,6 @@ QMPQArchiveEx * MPQEditorPlugin::getArchive(const QString & filePath)
 
 void MPQEditorPlugin::updateActions()
 {
-    qDebug("MPQEditorPlugin::updateActions");
     ICore * core = ICore::instance();
     MPQEditorInterface * editor = this->editor();
     core->actionManager()->action(Core::ACTION_ADD)->setEnabled(editor);

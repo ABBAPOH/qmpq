@@ -13,5 +13,6 @@
         <file>images/up.png</file>
         <file>images/back.png</file>
         <file>images/forward.png</file>
+        <file>images/addtab.png</file>
     </qresource>
 </RCC>

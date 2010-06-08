@@ -8,6 +8,7 @@
 #include <QtGui/QMenuBar>
 #include <QtGui/QToolBar>
 #include <QtGui/QAction>
+#include <QtGui/QToolButton>
 #include "mytabwidget.h"
 
 namespace Ui {
@@ -21,6 +22,7 @@ namespace Ui {
         QAction * actionBack;
         QAction * actionForward;
         QAction * actionUp;
+        QToolButton * buttonCreateTab;
 
         void setupUi(QMainWindow * parent)
         {
@@ -69,6 +71,11 @@ namespace Ui {
 
             parent->addToolBar(toolBar);
             parent->setUnifiedTitleAndToolBarOnMac(true);
+
+            buttonCreateTab = new QToolButton();
+            buttonCreateTab->setIcon(QIcon(":/icons/images/addtab.png"));
+
+            tabWidget->setCornerWidget(buttonCreateTab);
         }
     };
 }
