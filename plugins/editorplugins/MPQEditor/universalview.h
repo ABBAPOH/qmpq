@@ -59,6 +59,7 @@ signals:
 
 public slots:
     void setViewMode(ViewMode mode);
+    void onActivate(QModelIndex);
 
 private:
     QListView * listView;

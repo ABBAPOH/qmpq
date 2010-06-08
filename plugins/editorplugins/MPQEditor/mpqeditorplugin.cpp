@@ -78,7 +78,7 @@ void MPQEditorInterface::initActions()
     m_toolBar->addWidget(filterLineEdit);
 
     actionOpen = new QAction(tr("Open"), this);
-    actionOpen->setShortcut(tr("Enter"));
+    actionOpen->setShortcut(tr("Return"));
     connect(actionOpen, SIGNAL(triggered()), SLOT(open()));
     m_editor->addAction(actionOpen);
 
@@ -319,6 +319,8 @@ void MPQEditorPlugin::updateActions()
     core->actionManager()->action(Core::ACTION_REOPEN)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_COMPACT)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_SET_HASH_TABLE_SIZE)->setEnabled(b);
+    core->actionManager()->action(Core::ACTION_VERIFY_ARCHIVE)->setEnabled(b);
+    core->actionManager()->action(Core::ACTION_VERIFY_FILES)->setEnabled(b);
 }
 
 void MPQEditorPlugin::add()
@@ -386,6 +388,37 @@ void MPQEditorPlugin::setHashTableSize()
     }
 }
 
+void MPQEditorPlugin::verifyArchive()
+{
+    MPQEditor * editor = editorWidget();
+    QMPQArchiveEx * archive = getArchive(editor->currentFile());
+    if (archive) {
+        QMPQArchive::VerifyArchiveError result = archive->verifyArchive();
+        QString message;
+        switch(result) {
+        case QMPQArchive::NoSignature :
+            message = tr("Archive has no digital signature."); break;
+        case QMPQArchive::VerifyFailed :
+            message = tr("Archive verification failed."); break;
+        case QMPQArchive::WeakSignatureOk :
+            message = tr("Weak signature is ok."); break;
+        case QMPQArchive::WeakSignatureError :
+            message = tr("Weak signature error."); break;
+        case QMPQArchive::StrongSignatureOk :
+            message = tr("Strong signature is ok."); break;
+        case QMPQArchive::StrongSignatureError :
+            message = tr("Strong signature error."); break;
+        }
+
+        QMessageBox::information(editor, "Verify Archive", message);
+    }
+}
+
+void MPQEditorPlugin::verifyFiles()
+{
+
+}
+
 void MPQEditorPlugin::initActions()
 {
     IActionManager * manager = ICore::instance()->actionManager();
@@ -424,6 +457,14 @@ void MPQEditorPlugin::initActions()
     actionSetHashTableSize->setEnabled(false);
     connect(actionSetHashTableSize, SIGNAL(triggered()), SLOT(setHashTableSize()));
 
+    actionVerifyArchive = manager->action(Core::ACTION_VERIFY_ARCHIVE);
+    actionVerifyArchive->setText(tr("Verify archive..."));
+    actionVerifyArchive->setEnabled(false);
+    connect(actionVerifyArchive, SIGNAL(triggered()), SLOT(verifyArchive()));
+
+    actionVerifyFiles = manager->action(Core::ACTION_VERIFY_FILES);
+
+
     QMenu * toolsMenu = manager->menu(Core::MENU_TOOLS);
     QMenu * menu = new QMenu("MPQ Viewer");
 
@@ -437,6 +478,8 @@ void MPQEditorPlugin::initActions()
     menu->addAction(actionReopen);
     menu->addAction(actionCompact);
     menu->addAction(actionSetHashTableSize);
+    menu->addAction(actionVerifyArchive);
+    menu->addAction(actionVerifyFiles);
 
     toolsMenu->addMenu(menu);
 }
