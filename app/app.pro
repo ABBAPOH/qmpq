@@ -27,6 +27,8 @@ INCLUDEPATH += -I \
 INCLUDEPATH += -I \
     ../Core
 
+PRE_TARGETDEPS += ../plugins/editorplugins/MPQEditor/bin/libMPQEditor.a
+
 HEADERS += mainwindow.h \
     editormanager.h \
     editorview.h \

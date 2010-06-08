@@ -93,7 +93,7 @@ void MPQEditorInterface::initActions()
     m_editor->addAction(actionOpenInNewWindow);
 
     actionOpenExternally = new QAction(tr("Open in External Program"), this);
-    actionOpenExternally->setShortcut(tr("Meta+Return"));
+    actionOpenExternally->setShortcut(tr("Alt+Return"));
     connect(actionOpenExternally, SIGNAL(triggered()), SLOT(openExternally()));
     m_editor->addAction(actionOpenExternally);
 
@@ -427,18 +427,17 @@ void MPQEditorPlugin::initActions()
     QMenu * toolsMenu = manager->menu(Core::MENU_TOOLS);
     QMenu * menu = new QMenu("MPQ Viewer");
 
-    QMenu * mpqMenu = new QMenu;
-    mpqMenu->setTitle("MPQ");
-    mpqMenu->addAction(actionReopen);
-    mpqMenu->addAction(actionCompact);
-    mpqMenu->addAction(actionSetHashTableSize);
-
-    menu->addMenu(mpqMenu);
-    menu->addSeparator();
     menu->addAction(actionAdd);
     menu->addAction(actionExtract);
     menu->addAction(actionRename);
     menu->addAction(actionRemove);
+
+    menu->addSeparator();
+
+    menu->addAction(actionReopen);
+    menu->addAction(actionCompact);
+    menu->addAction(actionSetHashTableSize);
+
     toolsMenu->addMenu(menu);
 }
 

@@ -2,7 +2,6 @@
 
 #include <QDragEnterEvent>
 #include <QTimer>
-#include <QDebug>
 
 QTabBarEx::QTabBarEx(QWidget *parent) :
     QTabBar(parent),
@@ -71,7 +70,6 @@ void QTabBarEx::setSwitchTimeout(int milliseconds)
  */
 void QTabBarEx::dragEnterEvent(QDragEnterEvent *event)
 {
-    qDebug() << "QTabBarEx::dragEnterEvent";
     if (m_switchTabsOnDrag)
         event->accept();
     else
@@ -82,7 +80,6 @@ void QTabBarEx::dragEnterEvent(QDragEnterEvent *event)
  */
 void QTabBarEx::dragMoveEvent(QDragMoveEvent *event)
 {
-    qDebug() << "QTabBarEx::dragMoveEvent";
     event->ignore();
     int tabIndex = tabAt(event->pos());
     if (!m_switchOnHover || m_tabIndex != tabIndex) {
@@ -101,7 +98,6 @@ void QTabBarEx::dragLeaveEvent(QDragLeaveEvent * event)
 
 void QTabBarEx::changeTab()
 {
-//    qDebug() << "QTabBarEx::changeTab";
     setCurrentIndex(m_tabIndex);
     m_timer->stop();
 }
