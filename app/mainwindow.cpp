@@ -46,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionUp, SIGNAL(triggered()), SLOT(up()));
 
     connect(ui->buttonCreateTab, SIGNAL(clicked()), SLOT(newTab()));
+    connect(ui->tabWidget, SIGNAL(tabBarDoubleClicked()), SLOT(newTab()));
+
 }
 
 MainWindow::~MainWindow()

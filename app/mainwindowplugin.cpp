@@ -221,7 +221,6 @@ void MainWindowPlugin::initializeMenus()
     QMenu * toolsMenu = core->actionManager()->menu(Core::MENU_TOOLS);
     toolsMenu->setTitle(tr("Tools"));
 
-
     QMenu * helpMenu = core->actionManager()->createMenu(Core::MENU_HELP);
     helpMenu->setTitle(tr("Help"));
 
