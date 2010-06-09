@@ -42,7 +42,6 @@ ImageViewerInterface::~ImageViewerInterface()
 
 bool ImageViewerInterface::open(const QString &file)
 {
-    qDebug() << "ImageViewerPlugin::open" << file;
     if (!file.isEmpty()) {
         m_currentFile = file;
         QImage image(file);
@@ -125,13 +124,17 @@ void ImageViewerPlugin::initialize()
     core->editorFactoryManager()->addFactory(new ImageViewerFactory);
     core->fileManager()->registerExtensionString("Image Files (*.blp *.tga *.jpg *.bmp *.png)");
 
-    QAction * actionZoomIn = new QAction(QIcon(":/icons/images/zoomin.png"), "Zoom In", this);
-    QAction * actionZoomOut = new QAction(QIcon(":/icons/images/zoomout.png"), "Zoom Out", this);
-    QAction * actionZoomReset = new QAction(QIcon(":/icons/images/resetzoom.png"), "Reset Zoom", this);
+    QAction * actionZoomIn = new QAction(QIcon(":/icons/images/zoomin.png"), tr("Zoom In"), this);
+    QAction * actionZoomOut = new QAction(QIcon(":/icons/images/zoomout.png"), tr("Zoom Out"), this);
+    QAction * actionZoomReset = new QAction(QIcon(":/icons/images/resetzoom.png"), tr("Reset Zoom"), this);
 
     connect(actionZoomIn, SIGNAL(triggered()), SLOT(zoomIn()));
     connect(actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
     connect(actionZoomReset, SIGNAL(triggered()), SLOT(zoomReset()));
+
+    actionZoomIn->setShortcut(tr("Ctrl+="));
+    actionZoomOut->setShortcut(tr("Ctrl+-"));
+    actionZoomReset->setShortcut(tr("Ctrl+0"));
 
     QMenu * menuTools = core->actionManager()->menu(Core::MENU_TOOLS);
     QMenu * menu = menuTools->addMenu(tr("Image Viewer"));
