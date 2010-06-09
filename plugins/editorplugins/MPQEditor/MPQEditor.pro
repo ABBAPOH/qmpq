@@ -17,7 +17,9 @@ HEADERS += mpqeditor.h \
     powerspinbox.h \
     myfileiconprovider.h \
     verifyfilesdialog.h \
-    changeattributesdialog.h
+    changeattributesdialog.h \
+    archivepropertiesdialog.h \
+    filepropertiesdialog.h
 SOURCES += mpqeditor.cpp \
     mpqeditorplugin.cpp \
     main.cpp \
@@ -28,9 +30,13 @@ SOURCES += mpqeditor.cpp \
     powerspinbox.cpp \
     myfileiconprovider.cpp \
     verifyfilesdialog.cpp \
-    changeattributesdialog.cpp
+    changeattributesdialog.cpp \
+    archivepropertiesdialog.cpp \
+    filepropertiesdialog.cpp
 RESOURCES += mpqeditor.qrc
 FORMS += compactprocessdialog.ui \
     hashtablesizedialog.ui \
     verifyfilesdialog.ui \
-    changeattributesdialog.ui
+    changeattributesdialog.ui \
+    archivepropertiesdialog.ui \
+    filepropertiesdialog.ui

@@ -37,7 +37,22 @@ bool MPQFileInfo::isValid() const
     return data->valid;
 }
 
-unsigned MPQFileInfo::localeId() const
+quint32 MPQFileInfo::hashIndex() const
+{
+    return data->hashIndex;
+}
+
+quint32 MPQFileInfo::codename1() const
+{
+    return data->codename1;
+}
+
+quint32 MPQFileInfo::codename2() const
+{
+    return data->codename2;
+}
+
+quint32 MPQFileInfo::localeId() const
 {
     return data->localeId;
 }
@@ -50,6 +65,11 @@ quint32 MPQFileInfo::fileSize() const
 quint32 MPQFileInfo::compressedSize() const
 {
     return data->compressedSize;
+}
+
+QMPQArchive::FileFlags MPQFileInfo::fileFlags() const
+{
+    return data->fileFlags;
 }
 
 quint32 MPQFileInfo::blockIndex() const

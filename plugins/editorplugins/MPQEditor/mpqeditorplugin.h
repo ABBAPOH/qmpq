@@ -19,6 +19,8 @@ namespace Core {
     const char * const ACTION_VERIFY_ARCHIVE = "VERIFY ARCHIVE";
     const char * const ACTION_VERIFY_FILES = "VERIFY FILES";
 
+    const char * const ACTION_ARCHIVE_PROPERTIES = "ARCHIVE PROPERTIES";
+    const char * const ACTION_FILE_PROPERTIES = "FILE PROPERTIES";
 }
 
 class MPQEditor;
@@ -93,8 +95,8 @@ public:
 
     void initialize();
     void shutdown();
-    QString name() { return "MPQ Editor plugin"; };
-    QString description() { return QString(); };
+    QString name() { return "MPQ Editor plugin"; }
+    QString description() { return QString(); }
 
     static bool canHandle(const QString &file);
 
@@ -110,6 +112,8 @@ private slots:
     void changeAttributes();
     void verifyArchive();
     void verifyFiles();
+    void archiveProperties();
+    void fileProperties();
 
 private:
     MPQEditorInterface * editor();
@@ -130,6 +134,9 @@ private:
 
     QAction * actionVerifyArchive;
     QAction * actionVerifyFiles;
+
+    QAction * actionArchiveProperties;
+    QAction * actionFileProperties;
 };
 
 #endif // MPQEDITORPLUGIN_H

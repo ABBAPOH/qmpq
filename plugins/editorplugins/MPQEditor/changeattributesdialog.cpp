@@ -17,19 +17,19 @@ QMPQArchive::Attributes ChangeAttributesDialog::attributes()
 {
     QMPQArchive::Attributes attributes;
     if (ui->checkBox_inludeTime->isChecked())
-        attributes |= QMPQArchive::A_FileTime;
+        attributes |= QMPQArchive::FileTime;
     if (ui->checkBox_includeCRC32->isChecked())
-        attributes |= QMPQArchive::A_CRC32;
+        attributes |= QMPQArchive::CRC32;
     if (ui->checkBox_includeMD5->isChecked())
-        attributes |= QMPQArchive::A_MD5;
+        attributes |= QMPQArchive::MD5;
     return attributes;
 }
 
 void ChangeAttributesDialog::setAttributes(QMPQArchive::Attributes attributes)
 {
-    ui->checkBox_inludeTime->setChecked(attributes.testFlag(QMPQArchive::A_FileTime));
-    ui->checkBox_includeCRC32->setChecked(attributes.testFlag(QMPQArchive::A_CRC32));
-    ui->checkBox_includeMD5->setChecked(attributes.testFlag(QMPQArchive::A_MD5));
+    ui->checkBox_inludeTime->setChecked(attributes.testFlag(QMPQArchive::FileTime));
+    ui->checkBox_includeCRC32->setChecked(attributes.testFlag(QMPQArchive::CRC32));
+    ui->checkBox_includeMD5->setChecked(attributes.testFlag(QMPQArchive::MD5));
 }
 
 bool ChangeAttributesDialog::updateFiles()

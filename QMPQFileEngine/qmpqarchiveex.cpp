@@ -1,4 +1,8 @@
 #include "qmpqarchiveex.h"
+
+#include "mpqfileinfo.h"
+#include "mpqfileinfoiterator.h"
+
 #include <QDebug>
 
 class Node

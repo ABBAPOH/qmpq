@@ -5,10 +5,12 @@
 #include <QtCore/QStringList>
 
 #include "QMPQFileEngine_global.h"
-#include "mpqfileinfo.h"
-#include "mpqfileinfoiterator.h"
+//#include "mpqfileinfo.h"
+//#include "mpqfileinfoiterator.h"
 
 class QMPQArchivePrivate;
+class MPQFileInfo;
+class MPQFileInfoIterator;
 class QMPQFILEENGINESHARED_EXPORT QMPQArchive : public QObject
 {
     Q_OBJECT
@@ -133,10 +135,10 @@ public:
     Q_FLAGS(VerifyFileFlags);
 
     enum Attribute {
-        A_None = 0,
-        A_CRC32 = 1,
-        A_FileTime = 2,
-        A_MD5 = 4
+        AttributesNone = 0,
+        CRC32 = 1,
+        FileTime = 2,
+        MD5 = 4
     };
     Q_DECLARE_FLAGS(Attributes, Attribute)
     Q_FLAGS(Attributes)
@@ -198,7 +200,8 @@ private:
     static void compactCallBack(void *, int, qint64 * bytesProcessed, qint64 * bytesTotal);
     bool checkOpened();
     void getArchiveInfo();
-    quint32 getFileFlags(FileFlags options);
+    quint32 getFileFlags(FileFlags flags);
+    FileFlags getFileFlags(quint32 flags);
     quint32 getCompressionFlags(CompressionFlags types);
     quint32 getOpenFlags(OpenFlags options);
     MPQFileInfo getFileInfo_p(void *);

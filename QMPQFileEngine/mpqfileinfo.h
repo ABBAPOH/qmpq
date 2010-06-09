@@ -5,7 +5,13 @@
 
 #include "QMPQFileEngine_global.h"
 
+#include "qmpqarchive.h"
+
 class MPQFileInfoData;
+//class QMPQArchive;//{
+//class QMPQArchive::FileFlags;
+//class FileFlags;
+//}
 
 class QMPQFILEENGINESHARED_EXPORT MPQFileInfo
 {
@@ -19,10 +25,14 @@ public:
 
     QString name() const;
     bool isValid() const;
-    unsigned localeId() const;
+    quint32 hashIndex() const;
+    quint32 codename1() const;
+    quint32 codename2() const;
+    quint32 localeId() const;
+    quint32 blockIndex() const;
     quint32 fileSize() const;
     quint32 compressedSize() const;
-    quint32 blockIndex() const;
+    QMPQArchive::FileFlags fileFlags() const;
 
 private:
     QExplicitlySharedDataPointer<MPQFileInfoData> data;

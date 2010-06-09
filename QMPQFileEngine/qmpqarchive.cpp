@@ -1,6 +1,7 @@
 #include "qmpqarchive.h"
 #include "qmpqarchive_p.h"
 
+#include "mpqfileinfo.h"
 #include "mpqfileinfoiterator.h"
 
 #include <QtCore/QFile>
@@ -616,20 +617,48 @@ void QMPQArchive::getArchiveInfo()
     }
 }
 
-quint32 QMPQArchive::getFileFlags(FileFlags options)
+quint32 QMPQArchive::getFileFlags(FileFlags flags)
 {
-    switch (options) {
-    case None : return 0;
-    case Implode : return MPQ_FILE_IMPLODE;
-    case Compress : return MPQ_FILE_COMPRESS;
-    case Compressed : return MPQ_FILE_COMPRESSED;
-    case Encrypted : return MPQ_FILE_ENCRYPTED;
-    case FixKey : return MPQ_FILE_FIX_KEY;
-    case SingleUnit : return MPQ_FILE_SINGLE_UNIT;
-    case DeleteMarker : return MPQ_FILE_DELETE_MARKER;
-    case SectorCRC : return MPQ_FILE_SECTOR_CRC;
-    default: return 0;
-    }
+    quint32 result = 0;
+    if (flags & Implode)
+        result |= MPQ_FILE_IMPLODE;
+    if (flags & Compress)
+        result |= MPQ_FILE_COMPRESS;
+    if (flags & Compressed)
+        result |= MPQ_FILE_COMPRESSED;
+    if (flags & Encrypted)
+        result |= MPQ_FILE_ENCRYPTED;
+    if (flags & FixKey)
+        result |= MPQ_FILE_FIX_KEY;
+    if (flags & SingleUnit)
+        result |= MPQ_FILE_SINGLE_UNIT;
+    if (flags & DeleteMarker)
+        result |= MPQ_FILE_DELETE_MARKER;
+    if (flags & SectorCRC)
+        result |= MPQ_FILE_SECTOR_CRC;
+    return result;
+}
+
+QMPQArchive::FileFlags QMPQArchive::getFileFlags(quint32 flags)
+{
+    QMPQArchive::FileFlags result;
+    if (flags & MPQ_FILE_IMPLODE)
+        result |= Implode;
+    if (flags & MPQ_FILE_COMPRESS)
+        result |= Compress;
+    if (flags & MPQ_FILE_COMPRESSED)
+        result |= Compressed;
+    if (flags & MPQ_FILE_ENCRYPTED)
+        result |= Encrypted;
+    if (flags & MPQ_FILE_FIX_KEY)
+        result |= FixKey;
+    if (flags & MPQ_FILE_SINGLE_UNIT)
+        result |= SingleUnit;
+    if (flags & MPQ_FILE_DELETE_MARKER)
+        result |= DeleteMarker;
+    if (flags & MPQ_FILE_SECTOR_CRC)
+        result |= SectorCRC;
+    return result;
 }
 
 quint32 QMPQArchive::getCompressionFlags(CompressionFlags types)
@@ -669,6 +698,22 @@ MPQFileInfo QMPQArchive::getFileInfo_p(void * hFile)
 
     data->valid = true;
 
+    quint32 hashIndex = 0;
+    SFileGetFileInfo(hFile, SFILE_INFO_HASH_INDEX, &hashIndex, sizeof(hashIndex));
+    data->hashIndex = hashIndex;
+
+    quint32 codename1 = 0;
+    SFileGetFileInfo(hFile, SFILE_INFO_CODENAME1, &codename1, sizeof(codename1));
+    data->codename1 = codename1;
+
+    quint32 codename2 = 0;
+    SFileGetFileInfo(hFile, SFILE_INFO_CODENAME2, &codename2, sizeof(codename2));
+    data->codename1 = codename2;
+
+    quint32 localeId = 0;
+    SFileGetFileInfo(hFile, SFILE_INFO_LOCALEID, &localeId, sizeof(localeId));
+    data->localeId = localeId;
+
     quint32 index = 0;
     SFileGetFileInfo(hFile, SFILE_INFO_BLOCKINDEX, &index, sizeof(index));
     data->blockIndex = index;
@@ -680,6 +725,14 @@ MPQFileInfo QMPQArchive::getFileInfo_p(void * hFile)
     quint32 compressedSize = 0;
     SFileGetFileInfo(hFile, SFILE_INFO_COMPRESSED_SIZE, &compressedSize, sizeof(compressedSize));
     data->compressedSize = compressedSize;
+
+    quint32 fileFlags = 0;
+    SFileGetFileInfo(hFile, SFILE_INFO_FLAGS, &fileFlags, sizeof(fileFlags));
+    data->fileFlags = getFileFlags(fileFlags);
+
+    quint32 fileTime = 0;
+    SFileGetFileInfo(hFile, SFILE_INFO_FILETIME, &fileTime, sizeof(fileTime));
+    data->fileTime = fileTime;
 
     return resultInfo;
 }

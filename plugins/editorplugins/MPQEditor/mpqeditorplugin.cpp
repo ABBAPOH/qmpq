@@ -21,6 +21,8 @@
 #include "changeattributesdialog.h"
 #include "hashtablesizedialog.h"
 #include "verifyfilesdialog.h"
+#include "archivepropertiesdialog.h"
+#include "filepropertiesdialog.h"
 
 #include "../../../../QMPQFileEngine/qmpqfileengine.h"
 #include "../../../../QMPQFileEngine/qmpqarchiveex.h"
@@ -324,6 +326,8 @@ void MPQEditorPlugin::updateActions()
     core->actionManager()->action(Core::ACTION_CHANGE_ATTRIBUTES)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_VERIFY_ARCHIVE)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_VERIFY_FILES)->setEnabled(b);
+    core->actionManager()->action(Core::ACTION_ARCHIVE_PROPERTIES)->setEnabled(b);
+    core->actionManager()->action(Core::ACTION_FILE_PROPERTIES)->setEnabled(b);
 }
 
 void MPQEditorPlugin::add()
@@ -452,7 +456,7 @@ void MPQEditorPlugin::verifyFiles()
     dlg->setAttribute(Qt::WA_DeleteOnClose, true);
     dlg->show();
     foreach (MPQFileInfo info, archive->entryList()) {
-        QMPQArchive::VerifyFileFlags result = archive->verifyFile(info.name(), QFlag(QMPQArchive::A_CRC32 | QMPQArchive::A_MD5));
+        QMPQArchive::VerifyFileFlags result = archive->verifyFile(info.name(), QFlag(QMPQArchive::CRC32 | QMPQArchive::MD5));
         if (result != QMPQArchive::VerifyFileOk) {
             ok = false;
             QMetaObject mo = QMPQArchive::staticMetaObject;
@@ -463,6 +467,35 @@ void MPQEditorPlugin::verifyFiles()
     }
     if (ok)
         dlg->addLine(tr("All files are ok"), "");
+}
+
+void MPQEditorPlugin::archiveProperties()
+{
+    MPQEditor * editor = editorWidget();
+    QMPQArchiveEx * archive = getArchive(editor->currentFile());
+    if (!archive)
+        return;
+
+    ArchivePropertiesDialog dlg;
+    dlg.setArchive(archive);
+    dlg.exec();
+}
+
+void MPQEditorPlugin::fileProperties()
+{
+    MPQEditor * editor = editorWidget();
+    QMPQArchiveEx * archive = getArchive(editor->currentFile());
+    if (!archive)
+        return;
+    QStringList paths = editor->selectedPaths();
+    foreach (QString path, paths) {
+        FilePropertiesDialog dlg;
+        #warning "TODO: find other way of determining inner file path"
+        path = path.mid(archive->file().length()+5);
+        qDebug() << path;
+        dlg.setInfo(archive, path);
+        dlg.exec();
+    }
 }
 
 void MPQEditorPlugin::initActions()
@@ -518,6 +551,16 @@ void MPQEditorPlugin::initActions()
     actionVerifyFiles->setEnabled(false);
     connect(actionVerifyFiles, SIGNAL(triggered()), SLOT(verifyFiles()));
 
+    actionArchiveProperties = manager->action(Core::ACTION_ARCHIVE_PROPERTIES);
+    actionArchiveProperties->setText(tr("Archive properties..."));
+    actionArchiveProperties->setEnabled(false);
+    connect(actionArchiveProperties, SIGNAL(triggered()), SLOT(archiveProperties()));
+
+    actionFileProperties = manager->action(Core::ACTION_FILE_PROPERTIES);
+    actionFileProperties->setText(tr("File properties..."));
+    actionFileProperties->setEnabled(false);
+    connect(actionFileProperties, SIGNAL(triggered()), SLOT(fileProperties()));
+
     QMenu * toolsMenu = manager->menu(Core::MENU_TOOLS);
     QMenu * menu = new QMenu("MPQ Viewer");
 
@@ -534,6 +577,8 @@ void MPQEditorPlugin::initActions()
     menu->addAction(actionChangeAttributes);
     menu->addAction(actionVerifyArchive);
     menu->addAction(actionVerifyFiles);
+    menu->addAction(actionArchiveProperties);
+    menu->addAction(actionFileProperties);
 
     toolsMenu->addMenu(menu);
 }
