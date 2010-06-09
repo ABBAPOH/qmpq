@@ -133,9 +133,10 @@ public:
     Q_FLAGS(VerifyFileFlags);
 
     enum Attribute {
-        CRC32 = 1,
-        FileTime = 2,
-        MD5 = 4
+        A_None = 0,
+        A_CRC32 = 1,
+        A_FileTime = 2,
+        A_MD5 = 4
     };
     Q_DECLARE_FLAGS(Attributes, Attribute)
     Q_FLAGS(Attributes)

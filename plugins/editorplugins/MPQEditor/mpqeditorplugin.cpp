@@ -18,6 +18,7 @@
 #include "mpqeditor.h"
 #include "idirmodel.h"
 #include "compactprocessdialog.h"
+#include "changeattributesdialog.h"
 #include "hashtablesizedialog.h"
 #include "verifyfilesdialog.h"
 
@@ -320,6 +321,7 @@ void MPQEditorPlugin::updateActions()
     core->actionManager()->action(Core::ACTION_REOPEN)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_COMPACT)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_SET_HASH_TABLE_SIZE)->setEnabled(b);
+    core->actionManager()->action(Core::ACTION_CHANGE_ATTRIBUTES)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_VERIFY_ARCHIVE)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_VERIFY_FILES)->setEnabled(b);
 }
@@ -389,6 +391,29 @@ void MPQEditorPlugin::setHashTableSize()
     }
 }
 
+void MPQEditorPlugin::changeAttributes()
+{
+    MPQEditor * editor = editorWidget();
+    QMPQArchiveEx * archive = getArchive(editor->currentFile());
+    if (!archive) {
+        return;
+    }
+
+    ChangeAttributesDialog dlg;
+
+    dlg.setAttributes(archive->attributes());
+
+    int result = dlg.exec();
+    if (result == QDialog::Accepted) {
+        archive->setAttributes(dlg.attributes());
+        if (dlg.updateFiles()) {
+            foreach (MPQFileInfo info, archive->entryList()) {
+                archive->updateFileAttributes(info.name());
+            }
+        }
+    }
+}
+
 void MPQEditorPlugin::verifyArchive()
 {
     MPQEditor * editor = editorWidget();
@@ -427,7 +452,7 @@ void MPQEditorPlugin::verifyFiles()
     dlg->setAttribute(Qt::WA_DeleteOnClose, true);
     dlg->show();
     foreach (MPQFileInfo info, archive->entryList()) {
-        QMPQArchive::VerifyFileFlags result = archive->verifyFile(info.name(), QFlag(QMPQArchive::CRC32 | QMPQArchive::MD5));
+        QMPQArchive::VerifyFileFlags result = archive->verifyFile(info.name(), QFlag(QMPQArchive::A_CRC32 | QMPQArchive::A_MD5));
         if (result != QMPQArchive::VerifyFileOk) {
             ok = false;
             QMetaObject mo = QMPQArchive::staticMetaObject;
@@ -478,6 +503,11 @@ void MPQEditorPlugin::initActions()
     actionSetHashTableSize->setEnabled(false);
     connect(actionSetHashTableSize, SIGNAL(triggered()), SLOT(setHashTableSize()));
 
+    actionChangeAttributes = manager->action(Core::ACTION_CHANGE_ATTRIBUTES);
+    actionChangeAttributes->setText(tr("Change Attributes..."));
+    actionChangeAttributes->setEnabled(false);
+    connect(actionChangeAttributes, SIGNAL(triggered()), SLOT(changeAttributes()));
+
     actionVerifyArchive = manager->action(Core::ACTION_VERIFY_ARCHIVE);
     actionVerifyArchive->setText(tr("Verify archive..."));
     actionVerifyArchive->setEnabled(false);
@@ -501,6 +531,7 @@ void MPQEditorPlugin::initActions()
     menu->addAction(actionReopen);
     menu->addAction(actionCompact);
     menu->addAction(actionSetHashTableSize);
+    menu->addAction(actionChangeAttributes);
     menu->addAction(actionVerifyArchive);
     menu->addAction(actionVerifyFiles);
 

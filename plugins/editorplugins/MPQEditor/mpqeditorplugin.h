@@ -15,6 +15,7 @@ namespace Core {
     const char * const ACTION_REOPEN = "REOPEN";
     const char * const ACTION_COMPACT = "COMPACT";
     const char * const ACTION_SET_HASH_TABLE_SIZE = "SET HASH TABLE SIZE";
+    const char * const ACTION_CHANGE_ATTRIBUTES = "CHANGE ATTRIBUTES";
     const char * const ACTION_VERIFY_ARCHIVE = "VERIFY ARCHIVE";
     const char * const ACTION_VERIFY_FILES = "VERIFY FILES";
 
@@ -106,6 +107,7 @@ private slots:
     void reopen();
     void compact();
     void setHashTableSize();
+    void changeAttributes();
     void verifyArchive();
     void verifyFiles();
 
@@ -123,6 +125,8 @@ private:
     QAction * actionExtract;
     QAction * actionRename;
     QAction * actionRemove;
+
+    QAction * actionChangeAttributes;
 
     QAction * actionVerifyArchive;
     QAction * actionVerifyFiles;
