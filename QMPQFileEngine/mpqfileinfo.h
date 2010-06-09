@@ -3,9 +3,11 @@
 
 #include <QExplicitlySharedDataPointer>
 
+#include "QMPQFileEngine_global.h"
+
 class MPQFileInfoData;
 
-class MPQFileInfo
+class QMPQFILEENGINESHARED_EXPORT MPQFileInfo
 {
     friend class QMPQArchive;
 
