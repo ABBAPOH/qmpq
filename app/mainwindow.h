@@ -56,10 +56,15 @@ namespace Ui {
             actionUp = new QAction(parent);
             actionUp->setObjectName(QString::fromUtf8("actionUp"));
             actionUp->setEnabled(true);
-            actionUp->setShortcut(QApplication::translate("MainWindow", "Ctrl+Up", 0, QApplication::UnicodeUTF8));
             QIcon icon4;
             icon4.addFile(QString::fromUtf8(":/icons/images/up.png"), QSize(), QIcon::Normal, QIcon::Off);
             actionUp->setIcon(icon4);
+#ifdef Q_OS_WIN
+            actionUp->setShortcut(QApplication::translate("MainWindow", "Backspae", 0, QApplication::UnicodeUTF8));
+#endif
+#ifndef Q_OS_WIN
+            actionUp->setShortcut(QApplication::translate("MainWindow", "Ctrl+Up", 0, QApplication::UnicodeUTF8));
+#endif
 
             toolBar = new QToolBar(parent);
 
