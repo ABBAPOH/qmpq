@@ -33,7 +33,8 @@ QMPQArchive::~QMPQArchive()
 */
 bool QMPQArchive::add(const QString & fileName, const QString & archivedName, FileFlags flags, CompressionFlags compression/*, DWORD dwCompressionNext = 0xFFFFFFFF*/)
 {
-    SFileSetAddFileCallback(d_func()->mpq, (SFILE_ADDFILE_CALLBACK)addFileCallBack, this);
+    Q_D(QMPQArchive);
+    SFileSetAddFileCallback(d->mpq, (SFILE_ADDFILE_CALLBACK)addFileCallBack, this);
     bool result = SFileAddFileEx(d_func()->mpq,
                                  fileName.toLocal8Bit().data(),
                                  archivedName.toLocal8Bit().data(),
@@ -42,6 +43,7 @@ bool QMPQArchive::add(const QString & fileName, const QString & archivedName, Fi
     if (!result) {
         setLastError();
     }
+    d->filesCount++;
     return result;
 }
 
@@ -84,6 +86,7 @@ bool QMPQArchive::add(const QByteArray & data, const QString & archivedName, Fil
         setLastError();
         return result;
     }
+    d->filesCount++;
     return result;
 }
 
@@ -419,13 +422,15 @@ QByteArray QMPQArchive::read(const QString &file)
 */
 bool QMPQArchive::remove(const QString & fileName)
 {
+    Q_D(QMPQArchive);
     if (!checkOpened())
         return false;
 
-    if (!SFileRemoveFile(d_func()->mpq, fileName.toLocal8Bit().data(), 0)) {
+    if (!SFileRemoveFile(d->mpq, fileName.toLocal8Bit().data(), 0)) {
         setLastError();
         return false;
     }
+    d->filesCount--;
     return true;
 }
 
@@ -515,7 +520,7 @@ QString QMPQArchive::file() const
   Returns 0 if no archive opened.
 */
 quint32 QMPQArchive::filesCount() const
-{
+{    
     return d_func()->filesCount;
 }
 
@@ -609,10 +614,10 @@ void QMPQArchive::getArchiveInfo()
         }
         d_func()->sectorSize = result;
 
-        if (!SFileGetFileInfo(d_func()->mpq, SFILE_INFO_NUM_FILES, &result, sizeof(result))) {
-            setLastError();
-        }
-        d_func()->filesCount = result;
+//        if (!SFileGetFileInfo(d_func()->mpq, SFILE_INFO_NUM_FILES, &result, sizeof(result))) {
+//            setLastError();
+//        }
+//        d_func()->filesCount = result;
 
     }
 }
