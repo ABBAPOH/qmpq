@@ -26,6 +26,7 @@
 
 #include "../../../../QMPQFileEngine/qmpqfileengine.h"
 #include "../../../../QMPQFileEngine/qmpqarchiveex.h"
+#include "../../../../QMPQFileEngine/mpqfileinfo.h"
 
 //================================== MPQEditorPlugin ==================================
 

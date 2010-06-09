@@ -52,15 +52,15 @@
      </item>
      <item>
       <property name="text">
-       <string>Block table size</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
        <string>Block table position</string>
       </property>
       <property name="text">
        <string>N/A</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Block table size</string>
       </property>
      </item>
      <item>

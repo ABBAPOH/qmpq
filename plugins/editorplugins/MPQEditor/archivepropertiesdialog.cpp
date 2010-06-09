@@ -24,19 +24,19 @@ void ArchivePropertiesDialog::setArchive(QMPQArchive * archive)
     item = ui->treeWidget->topLevelItem(0);
     item->setText(1, archive->file());
 
-    item = ui->treeWidget->topLevelItem(1);
+    item = ui->treeWidget->topLevelItem(2);
     item->setData(1, Qt::DisplayRole, archive->hashTableSize());
 
-    item = ui->treeWidget->topLevelItem(2);
+    item = ui->treeWidget->topLevelItem(4);
     item->setData(1, Qt::DisplayRole, archive->blockTableSize());
 
-    item = ui->treeWidget->topLevelItem(3);
+    item = ui->treeWidget->topLevelItem(5);
     item->setData(1, Qt::DisplayRole, archive->filesCount());
 
-    item = ui->treeWidget->topLevelItem(4);
+    item = ui->treeWidget->topLevelItem(6);
     item->setData(1, Qt::DisplayRole, archive->sectorSize());
 
-    item = ui->treeWidget->topLevelItem(5);
+    item = ui->treeWidget->topLevelItem(7);
     QMetaObject mo = archive->staticMetaObject;
     QMetaEnum me = mo.enumerator(mo.indexOfEnumerator("Attributes"));
     item->setData(1, Qt::DisplayRole, me.valueToKeys(archive->attributes()));
