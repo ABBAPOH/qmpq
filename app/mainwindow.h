@@ -60,7 +60,8 @@ namespace Ui {
             icon4.addFile(QString::fromUtf8(":/icons/images/up.png"), QSize(), QIcon::Normal, QIcon::Off);
             actionUp->setIcon(icon4);
 #ifdef Q_OS_WIN
-            actionUp->setShortcut(QApplication::translate("MainWindow", "Backspae", 0, QApplication::UnicodeUTF8));
+
+            actionUp->setShortcut(QApplication::translate("MainWindow", "Backspace", 0, QApplication::UnicodeUTF8));
 #endif
 #ifndef Q_OS_WIN
             actionUp->setShortcut(QApplication::translate("MainWindow", "Ctrl+Up", 0, QApplication::UnicodeUTF8));
