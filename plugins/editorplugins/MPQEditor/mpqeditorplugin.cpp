@@ -255,6 +255,11 @@ bool MPQEditorFactory::canHandle(const QString &file) const
     return MPQEditorPlugin::canHandle(file);
 }
 
+QIcon MPQEditorFactory::icon() const
+{
+    return QIcon();
+}
+
 //================================== MPQEditorPlugin ==================================
 
 void MPQEditorPlugin::initialize()

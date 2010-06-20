@@ -38,6 +38,17 @@ IEditor * EditorFactoryManager::create(const QString & path)
     return 0;
 }
 
+QIcon EditorFactoryManager::icon(const QString & path)
+{
+    foreach (IEditorFactory * factory, m_factories) {
+        if (factory->canHandle(path)) {
+            return factory->icon();
+        }
+    }
+    return QIcon();
+
+}
+
 void EditorFactoryManager::setCurrentEditor(IEditor * editor)
 {
     m_editor = editor;

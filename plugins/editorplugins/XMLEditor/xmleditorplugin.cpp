@@ -55,19 +55,6 @@ XMLEditorFactory::XMLEditorFactory()
 
 }
 
-IEditor * XMLEditorFactory::createEditor(QWidget * parent)
-{
-//    qDebug("XMLEditorFactory::instance");
-    QXMLViewer * editor = new QXMLViewer(parent);
-    return new XMLEditorInterface(editor);
-}
-
-void XMLEditorFactory::shutdown()
-{
-//    qDebug("XMLEditorFactory::shutdown");
-//    delete MPQEditor::model();
-}
-
 bool XMLEditorFactory::canHandle(const QString &file) const
 {
     QStringList extensions;
@@ -77,6 +64,24 @@ bool XMLEditorFactory::canHandle(const QString &file) const
         if (suffix == extension)
             return true;
     return false;
+}
+
+IEditor * XMLEditorFactory::createEditor(QWidget * parent)
+{
+//    qDebug("XMLEditorFactory::instance");
+    QXMLViewer * editor = new QXMLViewer(parent);
+    return new XMLEditorInterface(editor);
+}
+
+QIcon XMLEditorFactory::icon() const
+{
+    return QIcon();
+}
+
+void XMLEditorFactory::shutdown()
+{
+//    qDebug("XMLEditorFactory::shutdown");
+//    delete MPQEditor::model();
 }
 
 //================================== XMLEditorPlugin ==================================

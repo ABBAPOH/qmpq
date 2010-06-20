@@ -77,9 +77,10 @@ class MPQEditorFactory : public QObject, public IEditorFactory
 public:
     virtual QString name() { return "MPQEditor"; }
 //    IEditor * instance(QWidget * parent);
-    IEditor * createEditor(QWidget * parent);
+    virtual IEditor * createEditor(QWidget * parent);
     void shutdown();
-    bool canHandle(const QString &file) const;
+    virtual bool canHandle(const QString &file) const;
+    virtual QIcon icon() const;
 
     MPQEditorFactory();
 };

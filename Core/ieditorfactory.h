@@ -4,6 +4,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QRegExp>
 #include <QtCore/QStringList>
+#include <QtGui/QIcon>
 #include "ieditor.h"
 
 //class IEditor;
@@ -22,6 +23,7 @@ public:
     virtual void shutdown() {}
 
     virtual bool canHandle(const QString &file) const = 0;
+    virtual QIcon icon() const = 0;
     virtual QString saveFilter() const { return ""; }
 
 private:

@@ -44,10 +44,12 @@ class ImageViewerFactory : public QObject, public IEditorFactory
 {
     Q_OBJECT
     Q_INTERFACES(IEditorFactory)
+
 public:
-    IEditor * createEditor(QWidget * parent);
-    void shutdown();
-    bool canHandle(const QString &file) const;
+    virtual bool canHandle(const QString &file) const;
+    virtual IEditor * createEditor(QWidget * parent);
+    virtual QIcon icon() const;
+    virtual void shutdown();
     virtual QString saveFilter() const { return tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)"); }
 
     ImageViewerFactory();

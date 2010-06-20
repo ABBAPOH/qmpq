@@ -14,6 +14,7 @@ public:
     bool close(IEditor * editor);
     IEditor * create(const QString & path);
     virtual IEditor * currentEditor() { return m_editor; }
+    virtual QIcon icon(const QString & path);
     void setCurrentEditor(IEditor * editor);
 
 private:

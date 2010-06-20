@@ -89,19 +89,6 @@ CodeEditorFactory::CodeEditorFactory()
 
 }
 
-IEditor * CodeEditorFactory::createEditor(QWidget * parent)
-{
-//    qDebug("CodeEditorFactory::instance");
-    CodeEditor * editor = new CodeEditor(parent);
-    return new CodeEditorInterface(editor);
-}
-
-void CodeEditorFactory::shutdown()
-{
-//    qDebug("CodeEditorFactory::shutdown");
-//    delete MPQEditor::model();
-}
-
 bool CodeEditorFactory::canHandle(const QString &file) const
 {
 //    qDebug("CodeEditorFactory::canHandle");
@@ -112,6 +99,25 @@ bool CodeEditorFactory::canHandle(const QString &file) const
         if (suffix == extension)
             return true;
     return false;
+}
+
+IEditor * CodeEditorFactory::createEditor(QWidget * parent)
+{
+//    qDebug("CodeEditorFactory::instance");
+    CodeEditor * editor = new CodeEditor(parent);
+    return new CodeEditorInterface(editor);
+}
+
+QIcon CodeEditorFactory::icon() const
+{
+    qDebug("CodeEditorFactory::icon");
+    return QIcon(":/icons/images/codeeditor.png");
+}
+
+void CodeEditorFactory::shutdown()
+{
+//    qDebug("CodeEditorFactory::shutdown");
+//    delete MPQEditor::model();
 }
 
 //================================== CodeEditorPlugin ==================================

@@ -94,16 +94,6 @@ ImageViewerFactory::ImageViewerFactory()
 
 }
 
-IEditor * ImageViewerFactory::createEditor(QWidget * parent)
-{
-    ImageViewer * editor = new ImageViewer(parent);
-    return new ImageViewerInterface(editor);
-}
-
-void ImageViewerFactory::shutdown()
-{
-}
-
 bool ImageViewerFactory::canHandle(const QString &file) const
 {
     QStringList extensions;
@@ -113,6 +103,21 @@ bool ImageViewerFactory::canHandle(const QString &file) const
         if (suffix == extension)
             return true;
     return false;
+}
+
+IEditor * ImageViewerFactory::createEditor(QWidget * parent)
+{
+    ImageViewer * editor = new ImageViewer(parent);
+    return new ImageViewerInterface(editor);
+}
+
+QIcon ImageViewerFactory::icon() const
+{
+    return QIcon();
+}
+
+void ImageViewerFactory::shutdown()
+{
 }
 
 //================================== ImageViewerPlugin ==================================

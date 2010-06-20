@@ -2,6 +2,7 @@
 #define IEDITORSFACTORY_H
 
 #include <QtCore/QObject>
+#include <QtGui/QIcon>
 
 class IEditor;
 class IEditorFactory;
@@ -16,6 +17,7 @@ public:
     virtual bool close(IEditor * editor) = 0;
     virtual IEditor * create(const QString & path) = 0;
     virtual IEditor * currentEditor() = 0;
+    virtual QIcon icon(const QString & path) = 0;
     virtual void setCurrentEditor(IEditor * editor) = 0;
 
 signals:
