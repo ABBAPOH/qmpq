@@ -14,11 +14,17 @@ namespace Core {
     const char * const ACTION_COPY = "COPY";
     const char * const ACTION_PASTE = "PASTE";
     const char * const ACTION_PREFERENCES = "PREFERENCES";
+    const char * const ACTION_GOTO_DRIVES = "GOTO DRIVES";
+    const char * const ACTION_GOTO_DESKTOP = "GOTO DESKTOP";
+    const char * const ACTION_GOTO_HOME = "GOTO HOME";
+    const char * const ACTION_GOTO_APPLICATIONS = "GOTO APPLICATIONS";
+    const char * const ACTION_GOTO_DOCUMENTS = "GOTO DOCUMENTS";
     const char * const ACTION_ABOUT = "ABOUT";
     const char * const ACTION_ABOUT_QT = "ABOUT_QT";
 
     const char * const MENU_FILE = "FILE";
     const char * const MENU_EDIT = "EDIT";
+    const char * const MENU_GOTO = "GOTO";
     const char * const MENU_TOOLS = "TOOLS";
     const char * const MENU_HELP = "HELP";
 }

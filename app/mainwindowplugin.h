@@ -26,6 +26,8 @@ private slots:
     void newTab();
     void closeTab();
 
+    void goTo();
+
 //    void closeTab();
 
     void about();

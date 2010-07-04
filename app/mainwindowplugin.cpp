@@ -125,6 +125,12 @@ void MainWindowPlugin::closeTab()
     ICore::instance()->windowManager()->close();
 }
 
+void MainWindowPlugin::goTo()
+{
+    QObject * action = sender();
+    ICore::instance()->windowManager()->open(action->property("path").toString());
+}
+
 void MainWindowPlugin::about()
 {
     QMessageBox::about(0, tr("About QMPQ"),
@@ -217,6 +223,34 @@ void MainWindowPlugin::initializeMenus()
     connect(preferencesAction, SIGNAL(triggered()), m_preferencesWidget, SLOT(show()));
     preferencesAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+,", 0, QApplication::UnicodeUTF8));
     core->actionManager()->registerAction(preferencesAction, Core::ACTION_PREFERENCES);
+
+    QMenu * goToMenu = core->actionManager()->menu(Core::MENU_GOTO);
+    goToMenu->setTitle(tr("Go To"));
+
+    QAction * drivesAction = goToMenu->addAction(tr("Drives"));
+    drivesAction->setProperty("path", "");
+    connect(drivesAction, SIGNAL(triggered()), SLOT(goTo()));
+    core->actionManager()->registerAction(drivesAction, Core::ACTION_GOTO_DRIVES);
+
+    QAction * goToDesktopAction = goToMenu->addAction(tr("Desktop"));
+    goToDesktopAction->setProperty("path", QDesktopServices::storageLocation(QDesktopServices::DesktopLocation));
+    connect(goToDesktopAction, SIGNAL(triggered()), SLOT(goTo()));
+    core->actionManager()->registerAction(goToDesktopAction, Core::ACTION_GOTO_DESKTOP);
+
+    QAction * goToHomeAction = goToMenu->addAction(tr("Home"));
+    goToHomeAction->setProperty("path", QDesktopServices::storageLocation(QDesktopServices::HomeLocation));
+    connect(goToHomeAction, SIGNAL(triggered()), SLOT(goTo()));
+    core->actionManager()->registerAction(goToHomeAction, Core::ACTION_GOTO_HOME);
+
+    QAction * goToApplicationsAction = goToMenu->addAction(tr("Applications"));
+    goToApplicationsAction->setProperty("path", QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation));
+    connect(goToApplicationsAction, SIGNAL(triggered()), SLOT(goTo()));
+    core->actionManager()->registerAction(goToApplicationsAction, Core::ACTION_GOTO_APPLICATIONS);
+
+    QAction * goToDocumentsAction = goToMenu->addAction(tr("Documents"));
+    goToDocumentsAction->setProperty("path", QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation));
+    connect(goToDocumentsAction, SIGNAL(triggered()), SLOT(goTo()));
+    core->actionManager()->registerAction(goToDocumentsAction, Core::ACTION_GOTO_DOCUMENTS);
 
     QMenu * toolsMenu = core->actionManager()->menu(Core::MENU_TOOLS);
     toolsMenu->setTitle(tr("Tools"));

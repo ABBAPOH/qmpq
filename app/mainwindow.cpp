@@ -28,10 +28,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QMenu * fileMenu = ICore::instance()->actionManager()->menu(Core::MENU_FILE);
     QMenu * editMenu = ICore::instance()->actionManager()->menu(Core::MENU_EDIT);
+    QMenu * goToMenu = ICore::instance()->actionManager()->menu(Core::MENU_GOTO);
     QMenu * toolsMenu = ICore::instance()->actionManager()->menu(Core::MENU_TOOLS);
     QMenu * helpMenu = ICore::instance()->actionManager()->menu(Core::MENU_HELP);
     menuBar()->addAction(fileMenu->menuAction());
     menuBar()->addAction(editMenu->menuAction());
+    menuBar()->addAction(goToMenu->menuAction());
     menuBar()->addAction(toolsMenu->menuAction());
     menuBar()->addAction(helpMenu->menuAction());
 
