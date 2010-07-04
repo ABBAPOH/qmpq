@@ -20,6 +20,7 @@
 #include "compactprocessdialog.h"
 #include "changeattributesdialog.h"
 #include "hashtablesizedialog.h"
+#include "setfilelocaledialog.h"
 #include "verifyfilesdialog.h"
 #include "archivepropertiesdialog.h"
 #include "filepropertiesdialog.h"
@@ -330,6 +331,7 @@ void MPQEditorPlugin::updateActions()
     core->actionManager()->action(Core::ACTION_COMPACT)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_SET_HASH_TABLE_SIZE)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_CHANGE_ATTRIBUTES)->setEnabled(b);
+    core->actionManager()->action(Core::ACTION_SET_FILE_LOCALE)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_VERIFY_ARCHIVE)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_VERIFY_FILES)->setEnabled(b);
     core->actionManager()->action(Core::ACTION_ARCHIVE_PROPERTIES)->setEnabled(b);
@@ -419,6 +421,34 @@ void MPQEditorPlugin::changeAttributes()
         if (dlg.updateFiles()) {
             foreach (MPQFileInfo info, archive->entryList()) {
                 archive->updateFileAttributes(info.name());
+            }
+        }
+    }
+}
+
+void MPQEditorPlugin::setFileLocale()
+{
+    MPQEditor * editor = editorWidget();
+    QMPQArchiveEx * archive = getArchive(editor->currentFile());
+    if (archive) {
+        QStringList paths = editor->selectedPaths();
+        if (paths.isEmpty())
+            return;
+        SetFileLocaleDialog dlg;
+        dlg.setArchive(archive);
+
+        if (paths.size() == 1) {
+            QString file = paths.at(0).mid(archive->file().length()+5).replace('/', '\\');
+            dlg.setFileLocale(archive->fileInfo(file).locale());
+        }
+
+        if (dlg.exec()) {
+            QLocale locale = dlg.fileLocale();
+            foreach (QString path, editor->selectedPaths()) {
+                QString file = path.mid(archive->file().length()+5).replace('/', '\\');
+                qDebug() << file;
+                qDebug() << locale.name();
+                qDebug() << archive->setFileLocale(file, locale);
             }
         }
     }
@@ -547,6 +577,11 @@ void MPQEditorPlugin::initActions()
     actionChangeAttributes->setEnabled(false);
     connect(actionChangeAttributes, SIGNAL(triggered()), SLOT(changeAttributes()));
 
+    actionSetFileLocale = manager->action(Core::ACTION_SET_FILE_LOCALE);;
+    actionSetFileLocale->setText(tr("Set File Locale..."));
+    actionSetFileLocale->setEnabled(false);
+    connect(actionSetFileLocale, SIGNAL(triggered()), SLOT(setFileLocale()));
+
     actionVerifyArchive = manager->action(Core::ACTION_VERIFY_ARCHIVE);
     actionVerifyArchive->setText(tr("Verify archive..."));
     actionVerifyArchive->setEnabled(false);
@@ -581,6 +616,7 @@ void MPQEditorPlugin::initActions()
     menu->addAction(actionCompact);
     menu->addAction(actionSetHashTableSize);
     menu->addAction(actionChangeAttributes);
+    menu->addAction(actionSetFileLocale);
     menu->addAction(actionVerifyArchive);
     menu->addAction(actionVerifyFiles);
     menu->addAction(actionArchiveProperties);

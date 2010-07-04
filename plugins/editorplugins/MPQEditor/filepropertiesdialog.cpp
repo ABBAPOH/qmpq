@@ -52,6 +52,9 @@ void FilePropertiesDialog::setInfo(QMPQArchive * archive, const QString & file)
     item = ui->treeWidget->topLevelItem(8);
     item->setData(1, Qt::DisplayRole, QString().sprintf("%d%%", (unsigned)(100.0*info.fileSize()/info.compressedSize())));
 
+    item = ui->treeWidget->topLevelItem(10);
+    item->setData(1, Qt::DisplayRole, info.locale().name());
+
     item = ui->treeWidget->topLevelItem(11);
     QMetaObject mo = archive->staticMetaObject;
     QMetaEnum me = mo.enumerator(mo.indexOfEnumerator("FileFlags"));

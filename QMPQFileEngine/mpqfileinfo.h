@@ -28,6 +28,7 @@ public:
     quint32 hashIndex() const;
     quint32 codename1() const;
     quint32 codename2() const;
+    QLocale locale() const;
     quint32 localeId() const;
     quint32 blockIndex() const;
     quint32 fileSize() const;

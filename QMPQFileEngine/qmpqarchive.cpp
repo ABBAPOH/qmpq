@@ -373,6 +373,13 @@ bool QMPQArchive::open(const QString & name, OpenFlags flags)
         return false;
     }
 
+    LCID arr[100];
+    DWORD maxLocales = 100;
+    SFileEnumLocales(d->mpq, "(listfile)", arr, &maxLocales, 0);
+    for(int i = 0; i < 100; i++) {
+        qDebug() << arr[i];
+    }
+
     d->file = name;
     d->isOpened = true;
     getArchiveInfo();
@@ -448,6 +455,25 @@ bool QMPQArchive::rename(const QString & oldFileName, const QString & newFileNam
     if (!result) {
         setLastError();
     }
+    return result;
+}
+
+bool QMPQArchive::setFileLocale(const QString & name, const QLocale & locale)
+{
+    int localeId = getLocaleId(locale);
+    void * hFile = 0;
+    bool result;
+    result = openFile(name, &hFile);
+    if (!result) {
+        setLastError();
+        return result;
+    }
+    result = SFileSetFileLocale(hFile, localeId);
+    if (!result) {
+        setLastError();
+//        return result;
+    }
+    SFileCloseFile(hFile);
     return result;
 }
 
@@ -680,6 +706,22 @@ quint32 QMPQArchive::getCompressionFlags(CompressionFlags types)
     }
 }
 
+QLocale QMPQArchive::getLocale(int localeId)
+{
+    switch (localeId) {
+    case 0x0409: return QLocale(QLocale::English, QLocale::UnitedStates);
+    default: return QLocale(QLocale::C);
+    }
+}
+
+int QMPQArchive::getLocaleId(const QLocale & locale)
+{
+    if (locale == QLocale(QLocale::English, QLocale::UnitedStates))
+        return 0x0409;
+    if (locale == QLocale(QLocale::C))
+        return 0;
+}
+
 quint32 QMPQArchive::getOpenFlags(OpenFlags flags)
 {
     switch (flags) {
@@ -717,7 +759,8 @@ MPQFileInfo QMPQArchive::getFileInfo_p(void * hFile)
 
     quint32 localeId = 0;
     SFileGetFileInfo(hFile, SFILE_INFO_LOCALEID, &localeId, sizeof(localeId));
-    data->localeId = localeId;
+//    data->localeId = localeId;
+    data->locale = getLocale(localeId);
 
     quint32 index = 0;
     SFileGetFileInfo(hFile, SFILE_INFO_BLOCKINDEX, &index, sizeof(index));

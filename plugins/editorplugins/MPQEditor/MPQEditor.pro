@@ -19,7 +19,8 @@ HEADERS += mpqeditor.h \
     verifyfilesdialog.h \
     changeattributesdialog.h \
     archivepropertiesdialog.h \
-    filepropertiesdialog.h
+    filepropertiesdialog.h \
+    setfilelocaledialog.h
 SOURCES += mpqeditor.cpp \
     mpqeditorplugin.cpp \
     main.cpp \
@@ -32,11 +33,13 @@ SOURCES += mpqeditor.cpp \
     verifyfilesdialog.cpp \
     changeattributesdialog.cpp \
     archivepropertiesdialog.cpp \
-    filepropertiesdialog.cpp
+    filepropertiesdialog.cpp \
+    setfilelocaledialog.cpp
 RESOURCES += mpqeditor.qrc
 FORMS += compactprocessdialog.ui \
     hashtablesizedialog.ui \
     verifyfilesdialog.ui \
     changeattributesdialog.ui \
     archivepropertiesdialog.ui \
-    filepropertiesdialog.ui
+    filepropertiesdialog.ui \
+    setfilelocaledialog.ui

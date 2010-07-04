@@ -14,6 +14,7 @@ public:
     quint32 codename1;
     quint32 codename2;
     quint32 localeId;
+    QLocale locale;
     quint32 blockIndex;
     quint32 fileSize;
     quint32 compressedSize;

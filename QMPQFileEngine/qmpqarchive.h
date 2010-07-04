@@ -3,6 +3,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
+#include <QtCore/QLocale>
 
 #include "QMPQFileEngine_global.h"
 //#include "mpqfileinfo.h"
@@ -165,6 +166,7 @@ public:
     QByteArray read(const QString &file);
     bool remove(const QString & fileName);
     bool rename(const QString & oldFileName, const QString & newFileName);
+    bool setFileLocale(const QString & name, const QLocale & locale);
     VerifyArchiveError verifyArchive();
     VerifyFileFlags verifyFile(const QString & file, Attributes attributes);
     bool updateFileAttributes(const QString & fileName);
@@ -203,6 +205,8 @@ private:
     quint32 getFileFlags(FileFlags flags);
     FileFlags getFileFlags(quint32 flags);
     quint32 getCompressionFlags(CompressionFlags types);
+    QLocale getLocale(int localeId);
+    int getLocaleId(const QLocale & locale);
     quint32 getOpenFlags(OpenFlags options);
     MPQFileInfo getFileInfo_p(void *);
     Error lastError(int errorCode); // converts StormLib error to our enum

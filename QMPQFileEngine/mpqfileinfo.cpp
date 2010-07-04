@@ -52,6 +52,11 @@ quint32 MPQFileInfo::codename2() const
     return data->codename2;
 }
 
+QLocale MPQFileInfo::locale() const
+{
+    return data->locale;
+}
+
 quint32 MPQFileInfo::localeId() const
 {
     return data->localeId;
