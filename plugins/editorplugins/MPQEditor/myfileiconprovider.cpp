@@ -16,7 +16,11 @@ QIcon MyFileIconProvider::icon(const QFileInfo & info) const
     QIcon icon = core->editorFactoryManager()->icon(info.absoluteFilePath());
     if (!icon.isNull())
         return icon;
-    if (info.absoluteFilePath().startsWith("mpq:"))
-        return QFileIconProvider::icon(QFileIconProvider::File);
+    if (info.absoluteFilePath().startsWith("mpq:")) {
+        if (info.isDir())
+            return QFileIconProvider::icon(QFileIconProvider::Folder);
+        else
+            return QFileIconProvider::icon(QFileIconProvider::File);
+    }
     return QFileIconProvider::icon(info);
 }
