@@ -26,9 +26,11 @@ bool WindowManager::open(const QString path)
     QString prefix = manager->mapFromPath(path);
 
     if (window) {
-        if (prefix != "")
-            return window->open(prefix + path);
-        else
+        if (prefix != "") {
+            window->open(prefix + path);
+#warning "think how to fix double warning with other way"
+            return true;
+        } else
             return window->open(path);
     }
     return false;

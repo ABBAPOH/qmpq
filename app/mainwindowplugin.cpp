@@ -134,7 +134,7 @@ void MainWindowPlugin::goTo()
 void MainWindowPlugin::about()
 {
     QMessageBox::about(0, tr("About QMPQ"),
-             tr("<b>QMPQ 1.6</b> is a Qt-based program that allows to manipulate "
+             tr("<b>QMPQ 1.7 alpha</b> is a Qt-based program that allows to manipulate "
                 "with Blizzard's MPQ-archives. "
                 "Copyright 2010 Nevermore (N) aka ABBAPOH"));
 }
