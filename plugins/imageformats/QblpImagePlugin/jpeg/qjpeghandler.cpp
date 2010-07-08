@@ -579,6 +579,7 @@ static bool write_jpeg_image(const QImage &sourceImage, QIODevice *device, int s
     cinfo.err = jpeg_std_error(&jerr);
     jerr.error_exit = my_error_exit;
 
+
     if (!setjmp(jerr.setjmp_buffer)) {
         // WARNING:
         // this if loop is inside a setjmp/longjmp branch
@@ -630,6 +631,9 @@ static bool write_jpeg_image(const QImage &sourceImage, QIODevice *device, int s
             cinfo.Y_density = (image.dotsPerMeterY()+50) / 100;
         }
 
+        cinfo.write_JFIF_header = true;
+        cinfo.JFIF_major_version = 1;
+        cinfo.JFIF_minor_version = 2;
 
         int quality = sourceQuality >= 0 ? qMin(sourceQuality,100) : 75;
 #if defined(Q_OS_UNIXWARE)

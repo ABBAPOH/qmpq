@@ -79,6 +79,26 @@ bool BLPHandler::loadJPEG(QDataStream & s, const BLPHeader & blp, QImage &img)
     //  Merges header and data
     data.mipMap[0].prepend(data.jpegHeader);
 
+//    for (int num = 0; num < 16; num++) {
+//        offset = blp.mipMapOffset[num];
+//        size = blp.mipMapSize[num];
+
+//        s.device()->seek(offset);
+//        //  Reads JPEG data (without header)
+//        for (unsigned i = 0; i < size; i++) {
+//            s >> byte;
+//            data.mipMap[num][i] = byte;
+//        }
+
+//        //  Merges header and data
+//        data.mipMap[num].prepend(data.jpegHeader);
+
+//        QFile f("/Users/arch/jpeg/" + QString::number(num) + ".jpg");
+//        f.open(QFile::WriteOnly);
+//        f.write(data.mipMap[num]);
+//        f.close();
+//    }
+
     if (!decompressImageJPEG(data.mipMap[0], img))
         return false;
 
@@ -232,14 +252,55 @@ QByteArray compressImageJPEG(const QImage &image, int quality)
 
 void cutJPEGHeader(/*BLPHeader & blp, */JPEGData & data)
 {
-    const int jpegHeaderSize = 4;
-    data.jpegHeaderSize = jpegHeaderSize;
-    data.jpegHeader = data.mipMap[0].left(jpegHeaderSize);
+    QByteArray mipMap = data.mipMap[0];
+    char marker = 0;
+    int pos = 0;
+
+    while (1) {
+        if (mipMap[pos] == (char)0xff) {
+            int size = 0;
+            marker = mipMap[pos+1];
+            if (marker == (char)0xd8) {
+                pos+=2;
+                continue;
+            } else if (marker == (char)0xc0) {
+                // read 3 extra bytes and exit loop
+                size = 3;
+                pos += 2 + size;
+                break;
+            } else if (marker == (char)0xdd) {
+                size = 4;
+                pos -= 2;
+            } else {
+                size = (mipMap[pos+2]&0xff<<8) + mipMap[pos+3]&0xff;
+            }
+            pos += 2 + size;
+        } else {
+            qWarning() << "error";
+//            return false;
+            break;
+        }
+    }
+
+    int i = 1;
+    while (!data.mipMap[i].isEmpty()) {
+        for (int j = 0; j < pos; j++) {
+            if (data.mipMap[0][j] != data.mipMap[i][j]) {
+                pos = j;
+                break;
+            }
+        }
+        i++;
+    }
+
+    data.jpegHeaderSize = pos;
+    data.jpegHeader = data.mipMap[0].left(data.jpegHeaderSize);
+
     for (int i = 0; i < 16; i++) {
         QByteArray bytes = data.mipMap[i];
         if (bytes.isEmpty())
             break;
-        data.mipMap[i] = bytes.mid(jpegHeaderSize);
+        data.mipMap[i] = bytes.mid(data.jpegHeaderSize);
     }
 }
 
@@ -309,7 +370,7 @@ bool BLPHandler::writeJPEG(const QImage &image)
 //    else
 //        header.flags = 0x0;
     blp.pictureType = 0x5;
-    blp.pictureSubType = 0x0;
+    blp.pictureSubType = 0x1;
 
     int numMipmaps = blp.pictureSubType == 0 ? 1 : calcMipMapsNumber(width, height);
     for (int k = 0; k < numMipmaps; k++) {
