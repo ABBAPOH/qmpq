@@ -32,8 +32,6 @@ PreferencesManager::PreferencesManager(QObject * parent)
 
 PreferencesManager::~PreferencesManager()
 {
-    qDebug() << "PreferencesManager::~PreferencesManager";
-//    QSettings settings("QMPQ", "app", this);
     m_settings->clear();
     foreach (QString key, keys()) {
 //        qDebug() << key << value(key);

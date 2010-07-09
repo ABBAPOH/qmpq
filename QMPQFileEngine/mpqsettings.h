@@ -24,7 +24,7 @@ public:
     void removeFileExtension(const QString & extension);
 
     QStringList MPQExtensions() const { return m_MPQExtensions; }
-    void setMPQExtensions(const QStringList & extensions) { m_MPQExtensions = extensions; }
+    void setMPQExtensions(const QStringList & extensions);
     void addMPQExtension(const QString & extension);
     void removeMPQExtension(const QString & extension);
 

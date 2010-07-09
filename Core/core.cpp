@@ -31,7 +31,7 @@ CoreImpl::CoreImpl()
     m_actionManager = new ActionManager(this); // must be initialized after EditorFactoryManager
     m_windowManager = 0;
 
-    PreferencesManager * preferenecesManager = new PreferencesManager;
+    PreferencesManager * preferenecesManager = new PreferencesManager(this);
     preferenecesManager->setObjectName("PreferencesManager");
     addObject(preferenecesManager);
 

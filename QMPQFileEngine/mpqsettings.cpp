@@ -1,4 +1,5 @@
 #include "mpqsettings.h"
+#include "../QMPQFileEngine/qmpqfileenginehandler.h"
 
 MPQSettings * MPQSettings::m_instance = 0;
 
@@ -17,6 +18,12 @@ void MPQSettings::removeFileExtension(const QString & extension)
 {
     m_compressionTypes.remove(extension);
     m_addFileOptions.remove(extension);
+}
+
+void MPQSettings::setMPQExtensions(const QStringList & extensions)
+{
+    m_MPQExtensions = extensions;
+    QMPQFileEngineHandler::setSufixes(extensions);
 }
 
 void MPQSettings::addMPQExtension(const QString & extension)

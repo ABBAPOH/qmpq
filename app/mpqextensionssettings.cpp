@@ -95,7 +95,7 @@ QStringList MPQExtensionsPage::keys()
 void MPQExtensionsPage::setDefaults()
 {
     QStringList extensions;
-    extensions <<  "mpq" << "w3x" << "w3m" << "s2ma" << "SC2Data" << "SC2Archive" << "SC2Assets"
+    extensions <<  "mpq" << "w3x" << "w3m" << "s2map" << "SC2Data" << "SC2Archive" << "SC2Assets"
                 << "SC2Replay" << "scx" << "w3n" << "snp" << "sv" << "hsv";
     setValue("extensions", extensions);
 }
