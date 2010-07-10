@@ -98,7 +98,7 @@ bool ImageViewerFactory::canHandle(const QString &file) const
 {
     QStringList extensions;
     QString suffix = QFileInfo(file).suffix().toLower();
-    extensions << "blp" << "tga" << "jpg" << "bmp" << "png";
+    extensions << "dds" << "blp" << "tga" << "jpg" << "bmp" << "png";
     foreach (QString extension, extensions)
         if (suffix == extension)
             return true;

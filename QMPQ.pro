@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 SUBDIRS = \
     3rdParty \
     plugins/imageformats/QblpImagePlugin \
+    plugins/imageformats/QddsImagePlugin \
     plugins/imageformats/QtgaImagePlugin \
     Core \
     QMPQFileEngine \

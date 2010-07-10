@@ -227,7 +227,6 @@ bool BLPHandler::read(QImage *outImage)
 
     *outImage = img;
     return true;
-
 }
 
 void BLPHandler::fillHeader(const QImage &image, BLPHeader & head)

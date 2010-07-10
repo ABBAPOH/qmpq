@@ -50,7 +50,7 @@ public:
     virtual IEditor * createEditor(QWidget * parent);
     virtual QIcon icon() const;
     virtual void shutdown();
-    virtual QString saveFilter() const { return tr("Images (*.blp *.bmp *.tga *.png *.xpm *.jpg)"); }
+    virtual QString saveFilter() const { return tr("Images (*.dds *.blp *.bmp *.tga *.png *.xpm *.jpg)"); }
 
     ImageViewerFactory();
 };
