@@ -33,6 +33,7 @@ private:
 
     void fillHeader(const QImage &image, BLPHeader & head);
     bool writeJPEG(const QImage &image);
+    bool writePaletted(const QImage &image);
     int quality;
 };
 

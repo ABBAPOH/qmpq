@@ -56,6 +56,11 @@ struct JPEGData
     QByteArray mipMap[16];
 };
 
+struct PalettedData
+{
+
+};
+
 void readHeader(QDataStream & s, BLPHeader & head);
 void writeHeader(QDataStream & s, const BLPHeader & head);
 
