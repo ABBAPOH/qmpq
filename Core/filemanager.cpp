@@ -36,9 +36,9 @@ void FileManager::registerExtensionString(const QString & extensionString)
 {
     m_registeredExtensionStrings.append(extensionString);
     m_extensionString = "";
-    foreach (QString extension, m_registeredExtensionStrings) {
-      m_extensionString.append(extension + ";;");
-    }
     m_extensionString.append("All Files (*.*)");
+    foreach (QString extension, m_registeredExtensionStrings) {
+      m_extensionString.append(";;" + extension);
+    }
 //    m_extensionString.prepend(extensionString + ";;");
 }
