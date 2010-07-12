@@ -27,4 +27,5 @@ SOURCES += xmleditorplugin.cpp \
 #    xmleditor.cpp \
 
 target.path += ../../../app/bin/plugins
+mac:target.path = ../../../app/bin/QMPQ.app/Contents/MacOS/qmpqplugins
 INSTALLS += target

@@ -3,6 +3,7 @@
 #include <QtCore/QPluginLoader>
 #include <QtCore/QDir>
 #include <QtGui/QApplication>
+#include <QDebug>
 
 #include "iplugin.h"
 //PluginManager * PluginManager::manager = 0;
@@ -34,11 +35,14 @@ void PluginManager::addPlugin(QObject * object)
        m_plugins.append(plugin);
 //       #warning TODO: sort plugin list before initialization
 //       plugin->initialize();
+   } else {
+        qWarning() << "PluginManager::addPlugin" << "not a plugin instance";
    }
 }
 
 bool PluginManager::load()
 {
+    qDebug() << "PluginManager::load";
 //    QObject * f = new Test;
 //    Q_ASSERT(qobject_cast<IEditorFactory *>(f));
 
@@ -46,25 +50,35 @@ bool PluginManager::load()
         addPlugin(object);
      }
 
-     QDir pluginsDir = QDir(qApp->applicationDirPath());
+    foreach (QString folder, qApp->libraryPaths()) {
+        qDebug() << folder;
+     QDir pluginsDir = QDir(folder);
+     if (!pluginsDir.cd("qmpqplugins"))
+         continue;
+     qDebug() << pluginsDir.absolutePath();
 
- #if defined(Q_OS_WIN)
-     if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-         pluginsDir.cdUp();
- #elif defined(Q_OS_MAC)
-     if (pluginsDir.dirName() == "MacOS") {
-         pluginsDir.cdUp();
-         pluginsDir.cdUp();
-         pluginsDir.cdUp();
-     }
- #endif
-     pluginsDir.cd("plugins");
+// #if defined(Q_OS_WIN)
+//     if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+//         pluginsDir.cdUp();
+// #elif defined(Q_OS_MAC)
+//     if (pluginsDir.dirName() == "MacOS") {
+//         pluginsDir.cdUp();
+//         pluginsDir.cdUp();
+//         pluginsDir.cdUp();
+//     }
+// #endif
+//     pluginsDir.cd("plugins");
+
 
      foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
+         qDebug() << "loading" << fileName;
          QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
          QObject * object = loader.instance();
+         if (!object)
+             qWarning() << "can't load library";
          addPlugin(object);
      }
+ }
 
      foreach (IPlugin * plugin, plugins()) {
          plugin->initialize();

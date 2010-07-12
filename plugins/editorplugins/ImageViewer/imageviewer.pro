@@ -23,5 +23,6 @@ FORMS += imageviewer.ui \
 RESOURCES += imageviewer.qrc
 
 target.path += ../../../app/bin/plugins
+mac:target.path = ../../../app/bin/QMPQ.app/Contents/MacOS/qmpqplugins
 INSTALLS += target
 

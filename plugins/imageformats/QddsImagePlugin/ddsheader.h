@@ -43,7 +43,7 @@ struct DDSHeader
     quint32           depth; // Depth of a volume texture (in pixels), otherwise unused.
     quint32           mipMapCount; // Number of mipmap levels, otherwise unused.
     quint32           reserved1[11]; // Unused.
-    DDSPixelFormat    ddsPixelFormat; // The pixel format (see DDSPixelFormat).
+    DDSPixelFormat    pixelFormat; // The pixel format (see DDSPixelFormat).
     quint32           caps; // Specifies the complexity of the surfaces stored.
     enum DDSCapsFlags { DDSCAPS_COMPLEX = 0x8, // Optional; must be used on any file that contains more than one surface (a mipmap, a cubic environment map, or volume texture).
                         DDSCAPS_MIPMAP = 0x400000, // Optional; should be used for a mipmap.

@@ -28,4 +28,5 @@ SOURCES += codeeditor.cpp \
 RESOURCES += codeeditor.qrc
 
 target.path += ../../../app/bin/plugins
+mac:target.path = ../../../app/bin/QMPQ.app/Contents/MacOS/qmpqplugins
 INSTALLS += target
