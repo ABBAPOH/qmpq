@@ -709,17 +709,45 @@ quint32 QMPQArchive::getCompressionFlags(CompressionFlags types)
 QLocale QMPQArchive::getLocale(int localeId)
 {
     switch (localeId) {
+    case 0x0407: return QLocale(QLocale::German, QLocale::Germany);
+    case 0x0809: return QLocale(QLocale::English, QLocale::UnitedKingdom);
     case 0x0409: return QLocale(QLocale::English, QLocale::UnitedStates);
+    case 0x040A: return QLocale(QLocale::Spanish, QLocale::Spain);
+    case 0x040C: return QLocale(QLocale::French, QLocale::France);
+    case 0x0410: return QLocale(QLocale::Italian, QLocale::Italy);
+    case 0x0412: return QLocale(QLocale::Korean, QLocale::DemocraticRepublicOfKorea);
+    case 0x0415: return QLocale(QLocale::Polish, QLocale::Poland);
+    case 0x0419: return QLocale(QLocale::Russian, QLocale::RussianFederation);
+    case 0x0404: return QLocale(QLocale::Chinese, QLocale::China);
     default: return QLocale(QLocale::C);
     }
 }
 
 int QMPQArchive::getLocaleId(const QLocale & locale)
 {
+    if (locale == QLocale(QLocale::German, QLocale::Germany))
+        return 0x0407;
+    if (locale == QLocale(QLocale::English, QLocale::UnitedKingdom))
+        return 0x0809;
     if (locale == QLocale(QLocale::English, QLocale::UnitedStates))
         return 0x0409;
+    if (locale == QLocale(QLocale::Spanish, QLocale::Spain))
+        return 0x040A;
+    if (locale == QLocale(QLocale::French, QLocale::France))
+        return 0x040C;
+    if (locale == QLocale(QLocale::Italian, QLocale::Italy))
+        return 0x0410;
+    if (locale == QLocale(QLocale::Korean, QLocale::DemocraticRepublicOfKorea))
+        return 0x0412;
+    if (locale == QLocale(QLocale::Polish, QLocale::Poland))
+        return 0x0415;
+    if (locale == QLocale(QLocale::Russian, QLocale::RussianFederation))
+        return 0x0419;
+    if (locale == QLocale(QLocale::Chinese, QLocale::China))
+        return 0x0404;
     if (locale == QLocale(QLocale::C))
         return 0;
+    return 0;
 }
 
 quint32 QMPQArchive::getOpenFlags(OpenFlags flags)
