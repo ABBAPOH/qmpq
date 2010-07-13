@@ -9,6 +9,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QAction>
 #include <QtGui/QToolButton>
+#include <QtGui/QStatusBar>
 #include "mytabwidget.h"
 
 namespace Ui {
@@ -23,6 +24,7 @@ namespace Ui {
         QAction * actionForward;
         QAction * actionUp;
         QToolButton * buttonCreateTab;
+        QStatusBar * statusBar;
 
         void setupUi(QMainWindow * parent)
         {
@@ -82,6 +84,9 @@ namespace Ui {
             buttonCreateTab->setIcon(QIcon(":/icons/images/addtab.png"));
 
             tabWidget->setCornerWidget(buttonCreateTab);
+
+            statusBar = new QStatusBar;
+            parent->setStatusBar(statusBar);
         }
     };
 }
