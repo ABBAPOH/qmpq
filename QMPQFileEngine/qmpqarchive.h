@@ -167,6 +167,8 @@ public:
     bool remove(const QString & fileName);
     bool rename(const QString & oldFileName, const QString & newFileName);
     bool setFileLocale(const QString & name, const QLocale & locale);
+    static QLocale locale();
+    static void setLocale(const QLocale & locale);
     VerifyArchiveError verifyArchive();
     VerifyFileFlags verifyFile(const QString & file, Attributes attributes);
     bool updateFileAttributes(const QString & fileName);
@@ -206,8 +208,9 @@ private:
     FileFlags getFileFlags(quint32 flags);
     quint32 getCompressionFlags(CompressionFlags types);
     QLocale getLocale(int localeId);
-    int getLocaleId(const QLocale & locale);
+    static int getLocaleId(const QLocale & locale);
     quint32 getOpenFlags(OpenFlags options);
+    MPQFileInfo getfileInfo(const QString & file);
     MPQFileInfo getFileInfo_p(void *);
     Error lastError(int errorCode); // converts StormLib error to our enum
     bool openFile(const QString & name, void ** hFile);

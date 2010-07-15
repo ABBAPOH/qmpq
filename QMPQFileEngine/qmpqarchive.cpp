@@ -8,6 +8,8 @@
 #include <StormLib/StormLib.h>
 #include <QDebug>
 
+QLocale QMPQArchivePrivate::staticLocale = QLocale(QLocale::C);
+
 QMPQArchivePrivate::QMPQArchivePrivate():
         isOpened(false), mpq(0), hashTableSize(0)
 {
@@ -477,6 +479,22 @@ bool QMPQArchive::setFileLocale(const QString & name, const QLocale & locale)
     return result;
 }
 
+QLocale QMPQArchive::locale()
+{
+//    Q_D(QMPQArchive);
+//    return d->locale;
+    return QMPQArchivePrivate::staticLocale;
+}
+
+void QMPQArchive::setLocale(const QLocale & locale)
+{
+//    Q_D(QMPQArchive);
+//    d->locale = locale;
+    QMPQArchivePrivate::staticLocale = locale;
+    int localeId = getLocaleId(locale);
+    SFileSetLocale(localeId);
+}
+
 QMPQArchive::VerifyArchiveError QMPQArchive::verifyArchive()
 {
     if (!checkOpened())
@@ -640,10 +658,10 @@ void QMPQArchive::getArchiveInfo()
         }
         d_func()->sectorSize = result;
 
-//        if (!SFileGetFileInfo(d_func()->mpq, SFILE_INFO_NUM_FILES, &result, sizeof(result))) {
-//            setLastError();
-//        }
-//        d_func()->filesCount = result;
+        if (!SFileGetFileInfo(d_func()->mpq, SFILE_INFO_NUM_FILES, &result, sizeof(result))) {
+            setLastError();
+        }
+        d_func()->filesCount = result;
 
     }
 }
@@ -851,7 +869,11 @@ bool QMPQArchive::openFile(const QString & fileName, void ** hFile)
         quint32 index = fileName.mid(4, 8).toInt(); // we get block index from file name
         return SFileOpenFileEx(d_func()->mpq, (const char *)index, SFILE_OPEN_BY_INDEX, hFile);
     } else {
-        return SFileOpenFileEx(d_func()->mpq, fileName.toLocal8Bit(), 0, hFile);
+        int localeId = getLocaleId(locale());
+        SFileSetLocale(localeId);
+        bool result = SFileOpenFileEx(d_func()->mpq, fileName.toLocal8Bit(), 0, hFile);
+        SFileSetLocale(0);
+        return result;
     }
 }
 

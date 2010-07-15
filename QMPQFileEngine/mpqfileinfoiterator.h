@@ -11,22 +11,21 @@ class MPQFileInfoIterator
 
     QMPQArchive * m_archive;
     void * mpq;
-    QStringList m_listfile;
     bool m_includeUnknowns;
     quint32 index;
-    quint32 filesFound;
-    int listfileIndex;
-    quint32 hashIndex;
     quint32 filesCount;
     quint32 hashTableSize;
-    MPQFileInfo nextInfo;
     QList<quint32> indexes;
+
+    void * hFind;
+    bool searching;
+    MPQFileInfo currentInfo;
+    quint32 filesFound;
 
     MPQFileInfoIterator(QMPQArchive * archive, const QStringList & listfile, bool includeUnknowns);
 
-    MPQFileInfo getNext();
 public:
-//    MPQFileInfoIterator();
+    ~MPQFileInfoIterator();
 
     bool hasNext();
     MPQFileInfo next();

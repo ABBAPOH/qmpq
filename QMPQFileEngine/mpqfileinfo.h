@@ -16,6 +16,7 @@ class MPQFileInfoData;
 class QMPQFILEENGINESHARED_EXPORT MPQFileInfo
 {
     friend class QMPQArchive;
+    friend class MPQFileInfoIterator;
 
 public:
     MPQFileInfo();

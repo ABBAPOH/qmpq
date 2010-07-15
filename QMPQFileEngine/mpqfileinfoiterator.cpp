@@ -3,58 +3,67 @@
 #include "qmpqarchive.h"
 #include "qmpqarchive_p.h"
 
+#include <StormLib/StormLib.h>
+
 MPQFileInfoIterator::MPQFileInfoIterator(QMPQArchive * archive, const QStringList & listfile, bool includeUnknowns) :
-        m_archive(archive)
+        m_archive(archive),
+        m_includeUnknowns(includeUnknowns)
 {
     mpq = m_archive->d_func()->mpq;
-    m_listfile << "(listfile)" << "(attributes)";
 
-    QString listfileString = m_archive->read("(listfile)");
-    if (!listfileString.isEmpty()) {
-        m_listfile.append(listfileString.split("\r\n"));
-    }
+    SFILE_FIND_DATA sf;
+//    HANDLE hFind;
 
-    m_listfile.append(listfile);
-    m_includeUnknowns = includeUnknowns;
+    hFind = SFileFindFirstFile(mpq, "*", &sf, 0);
+
+    searching = true;
+
+    m_archive->setLocale(m_archive->getLocale(sf.lcLocale)); // we open file in correct locale
+    currentInfo = m_archive->fileInfo(sf.cFileName);
+    m_archive->setLocale(QLocale(QLocale::C));
+
+    indexes.append(currentInfo.blockIndex());
     index = 0;
-    listfileIndex = 0;
-    hashIndex = 0;
+    filesFound = 1;
+    hashTableSize = m_archive->blockTableSize();
     filesCount = m_archive->filesCount();
-    hashTableSize = m_archive->hashTableSize();
 }
 
-MPQFileInfo MPQFileInfoIterator::getNext()
+MPQFileInfoIterator::~MPQFileInfoIterator()
 {
-    MPQFileInfo result;
-    for ( ; !result.isValid() && listfileIndex < m_listfile.size(); listfileIndex++) {
-        result = m_archive->fileInfo(m_listfile.at(listfileIndex));
-        if (result.isValid()) {
-            indexes.append(result.blockIndex());
-        }
-    }
-
-    if (result.isValid())
-        return result;
-
-    if (m_includeUnknowns)
-    {
-        for ( ; !result.isValid() && index < hashTableSize; index++) {
-            if (indexes.contains(index)) {
-                continue;
-            }
-            result = m_archive->fileInfo(index);
-        }
-    }
-    return result;
+    SFileFindClose(hFind);
 }
 
 bool MPQFileInfoIterator::hasNext()
 {
-    nextInfo = getNext();
-    return nextInfo.isValid();
+    return (hFind != 0 && searching) || (m_includeUnknowns && (filesFound <= filesCount));
 }
 
 MPQFileInfo MPQFileInfoIterator::next()
 {
-    return nextInfo;
+    MPQFileInfo info = currentInfo;
+    if (searching) {
+        SFILE_FIND_DATA sf;
+        searching = SFileFindNextFile(hFind, &sf);
+        if (searching) {
+            filesFound++;
+
+            m_archive->setLocale(m_archive->getLocale(sf.lcLocale)); // we open file in correct locale
+            currentInfo = m_archive->fileInfo(sf.cFileName);
+            m_archive->setLocale(QLocale(QLocale::C));
+
+            indexes.append(currentInfo.blockIndex());
+        }
+    } else {
+        currentInfo = MPQFileInfo();
+        for ( ; !currentInfo.isValid() && index < hashTableSize; index++) {
+            if (indexes.contains(index)) {
+                continue;
+            }
+            currentInfo = m_archive->fileInfo(index);
+        }
+        filesFound++;
+    }
+
+    return info;
 }

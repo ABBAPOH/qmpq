@@ -35,6 +35,8 @@ public:
     quint32 blockTableSize;
     quint32 sectorSize;
     quint32 filesCount;
+    QLocale locale;
+    static QLocale staticLocale;
 
     QMPQArchivePrivate();
 };
