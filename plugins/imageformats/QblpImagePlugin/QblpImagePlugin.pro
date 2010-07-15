@@ -11,7 +11,8 @@ LIBS += -L../../../3rdparty/libjpeg/bin -ljpeg
 
 HEADERS += blp.h \
     jpeg/qjpeghandler.h \
-    blpheader.h
+    blpheader.h \
+    octree.h
 SOURCES += blp.cpp \
     jpeg/qjpeghandler.cpp \
     blp2.cpp \

@@ -82,7 +82,7 @@ void ImageViewerInterface::save(const QString &file)
     //        writer.setQuality(m_settings->value("blpCompression").toInt());
     //    else if (info.suffix().toLower() == "jpg" || info.suffix().toLower() == "jpeg")
     //        writer.setQuality(m_settings->value("jpgCompression").toInt());
-        writer.setFormat("blp1jpeg");
+//        writer.setFormat("blp1jpeg");
     }
     writer.write(m_editor->image());
     m_editor->setModified(false);

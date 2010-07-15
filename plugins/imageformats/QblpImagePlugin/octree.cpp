@@ -1,3 +1,5 @@
+#include "octree.h"
+
 #include <QImage>
 #include <QDebug>
 #include <math.h>
@@ -12,12 +14,13 @@ struct ColorData
     red = 0;
     green = 0;
     blue = 0;
+    paletteIndex = 0;
     }
     unsigned long references;
     unsigned long red;
     unsigned long green;
     unsigned long blue;
-
+    int paletteIndex;
 };
 
 struct OcTreeNode
@@ -100,17 +103,53 @@ void findLeaves(OcTreeNode * node, QList<OcTreeNode*> &result)
         result.append(node);
 }
 
-void createPalette(const QImage & image, QRgb * palette)
+OcTree::OcTree(const QImage & image) :
+        m_image(image),
+        m_palette(new QRgb[256])
 {
-    OcTreeNode * rootNode = new OcTreeNode(0);
+    rootNode = new OcTreeNode(0);
+    createPalette();
+}
+
+OcTree::~OcTree()
+{
+    delete m_palette;
+}
+
+QRgb * OcTree::palette()
+{
+    return m_palette;
+}
+
+int OcTree::index(QRgb pixel)
+{
+    OcTreeNode * currentNode = 0;
+    int red = qRed(pixel);
+    int green = qGreen(pixel);
+    int blue = qBlue(pixel);
+    currentNode = rootNode;
+    for (int pos = 0; pos < 8; pos++) {
+
+        int childNum = f(red, green, blue, pos);
+        OcTreeNode * childNode = currentNode->children[childNum];
+        if (childNode) {
+            currentNode = childNode;
+        } else {
+            break;
+        }
+    }
+    return currentNode->data->paletteIndex;
+}
+
+void OcTree::createPalette()
+{
     OcTreeNode * currentNode = 0;
     int leafCount = 0;
     QList<OcTreeNode*> parents;
 
-    qDebug() << image.width() << image.height();
-    for (int i = 0; i < image.width(); i++)
-        for (int j = 0; j < image.height(); j++) {
-            QRgb pixel = image.pixel(i, j);
+    for (int i = 0; i < m_image.width(); i++)
+        for (int j = 0; j < m_image.height(); j++) {
+            QRgb pixel = m_image.pixel(i, j);
             int red = qRed(pixel);
             int green = qGreen(pixel);
             int blue = qBlue(pixel);
@@ -163,52 +202,18 @@ void createPalette(const QImage & image, QRgb * palette)
         }
     }
 
-    qDebug() << leafCount;
-
-//    QRgb palette[256];
     QList<OcTreeNode*> leaves;
 
     findLeaves(rootNode, leaves);
     for (int index = 0; index < 256; index++) {
-//        qDebug() << "loop" << index << leaves.count();
         OcTreeNode * currentnode = leaves.at(index >= leaves.count() ? leaves.count() -1 : index);
 //        OcTreeNode * currentnode = leaves.at(index);
         int red   = currentnode->data->red / currentnode->data->references;
         int green = currentnode->data->green / currentnode->data->references;
         int blue  = currentnode->data->blue / currentnode->data->references;
-//        qDebug() << currentnode->data->references << red << green << blue;
-        palette[index] = qRgb(red, green, blue);
+        currentnode->data->paletteIndex = index;
+        m_palette[index] = qRgb(red, green, blue);
     }
-    QImage img(8, 8, QImage::Format_RGB32);
-    for(int i = 0; i< 8; i++)
-        for(int j = 0; j< 8; j++) {
-            img.setPixel(i,j, palette[i*8 + j]);
-    }
-//    QLabel * l = new QLabel;
-//    l->setPixmap(QPixmap().fromImage(img.scaled(32, 32)));
-//    l->show();
-    qDebug() << "written";
 }
 
-double calcColorDistance(QRgb color1, QRgb color2)
-{
-    int dRed = qRed(color1) - qRed(color2);
-    int dGreen = qGreen(color1) - qGreen(color2);
-    int dBlue = qBlue(color1) - qBlue(color2);
-    return sqrt(dRed*dRed + dGreen*dGreen + dBlue*dBlue);
-}
-
-quint8 getNearestColor(QRgb color, QRgb *palette)
-{
-    quint8 pos = 0;
-    double dist = calcColorDistance(color, palette[0]);
-    for (int i = 0; i < 256; i++) {
-        double currentDist = calcColorDistance(color, palette[i]);
-        if (dist > currentDist) {
-            pos = i;
-            dist = currentDist;
-        }
-    }
-    return pos;
-}
 

@@ -6,6 +6,7 @@
 
 #include "blpheader.h"
 #include "jpeg/qjpeghandler.h"
+#include "octree.h"
 
 #include <QDebug>
 
@@ -391,17 +392,11 @@ bool BLPHandler::writeJPEG(const QImage &image)
     return true;
 }
 
-void createPalette(const QImage & image, QRgb * palette);
-quint8 getNearestColor(QRgb color, QRgb *palette);
-
 bool BLPHandler::writePaletted(const QImage &image)
 {
     QImage result = image;
     BLPHeader blp;
-    int width = image.width();
-    int height = image.height();
 
-//    ARGB2BGRA(result); // Changes colors in source image
     fillHeader(result, blp);
     //Writing Header to create paletted image
     blp.BLPType[3] = '1';
@@ -413,45 +408,29 @@ bool BLPHandler::writePaletted(const QImage &image)
     blp.pictureType = 0x5;
     blp.pictureSubType = 0x0;
 
-    int numMipmaps = 1;
-    QRgb palette[256];
-    createPalette(image, palette);
+    OcTree tree(image);
+    QRgb * palette = tree.palette();
 
-//    QByteArray pal;
-//    for (int i = 0; i< 256; i++) {
-//        pal.append(palette[i]);
-//    }
     blp.mipMapOffset[0] = BLP1_HEADER_SIZE + 256*4;
     blp.mipMapSize[0] = blp.width*blp.height;
-
-    quint8 indexList[blp.width][blp.height];
 
     QDataStream s(device());
 
     s.setByteOrder(QDataStream::LittleEndian);
 
     writeHeader(s, blp);
-//    writeJPEGData(s, data);
 
     for (int i = 0; i < 256; i++) {
-        quint32 color;
-        quint8 red = qRed(palette[i]);
-        quint8 green = qGreen(palette[i]);
-        quint8 blue = qBlue(palette[i]);
-        color = (red << 16) + (green << 8) + blue;
-        s << color;
+        s << palette[i];
     }
 
     for (quint32 i = 0; i < blp.width; i++)
         for (quint32 j = 0; j < blp.height; j++) {
-        quint8 index = getNearestColor(image.pixel(j, i), palette);
-//        s << indexList[i][j];
+        quint8 index = tree.index(image.pixel(j, i));
         s << index;
     }
-//qDebug() << "paletted written";
 
     return true;
-
 }
 
 bool BLPHandler::write(const QImage &image)
