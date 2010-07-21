@@ -9,6 +9,7 @@
 #include "ipluginmanager.h"
 #include "filemanager.h"
 #include "coreconstants.h"
+#include "ipreferences.h"
 
 //class IActionManager;
 //class IContext;

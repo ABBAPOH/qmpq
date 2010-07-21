@@ -8,7 +8,8 @@
 class QSettings;
 class PreferencesManager : public IPreferences
 {
-Q_OBJECT
+    Q_OBJECT
+
 public:
     PreferencesManager(QObject * parent = 0);
     ~PreferencesManager();

@@ -14,15 +14,16 @@ LIBS += -L../../../Core/bin \
     -lCore
 
 HEADERS += imageviewer.h \
-    imageviewerplugin.h
+    imageviewerplugin.h \
+    preferences.h
 SOURCES += imageviewer.cpp \
-    imageviewerplugin.cpp
+    imageviewerplugin.cpp \
+    preferences.cpp
 FORMS += imageviewer.ui \
-    imageSettingsDialog.ui
+    imageSettings.ui
 
 RESOURCES += imageviewer.qrc
 
 target.path += ../../../app/bin/plugins
 mac:target.path = ../../../app/bin/QMPQ.app/Contents/MacOS/qmpqplugins
 INSTALLS += target
-

@@ -2,7 +2,6 @@
 #define QMPQIMAGEVIEWER_H
 
 #include <QWidget>
-#include <QSettings>
 
 namespace Ui
 {
@@ -41,13 +40,9 @@ signals:
 private:
     Ui::ImageViewer *ui;
     QImage m_image;
-    QSettings * m_settings;
     QLabel * label;
     double scale;
     bool m_modified;
-
-    void savePreferences(const ImageSettingsDialog * dialog);
-    void loadPreferences(ImageSettingsDialog * dialog);
 };
 
 #endif // QMPQIMAGEVIEWER_H

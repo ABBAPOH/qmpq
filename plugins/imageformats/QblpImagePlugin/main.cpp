@@ -12,12 +12,12 @@ public:
 
 QStringList BLPPlugin::keys() const
 {
-        return QStringList() << "blp" << "BLP";
+        return QStringList() << "blp" << "BLP" << "blp1jpg" << "blp1pal";
 }
 
 QImageIOPlugin::Capabilities BLPPlugin::capabilities(QIODevice *device, const QByteArray &format) const
 {
-        if (format == "blp" || format == "blp1jpeg")
+        if (format == "blp" || format == "blp1jpg" || format == "blp1pal")
                 return Capabilities(CanRead | CanWrite);
         if (!format.isEmpty())
                 return 0;

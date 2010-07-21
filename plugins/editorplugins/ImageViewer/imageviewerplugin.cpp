@@ -79,10 +79,15 @@ void ImageViewerInterface::save(const QString &file)
     QFileInfo info(path);
 
     if (info.suffix().toLower() == "blp") {
-    //        writer.setQuality(m_settings->value("blpCompression").toInt());
-    //    else if (info.suffix().toLower() == "jpg" || info.suffix().toLower() == "jpeg")
-    //        writer.setQuality(m_settings->value("jpgCompression").toInt());
-//        writer.setFormat("blp1jpeg");
+        ICore * core = ICore::instance();
+        IPreferences * preferences = qobject_cast<IPreferences *>(core->getObject("PreferencesManager"));
+        Q_ASSERT(preferences);
+        QVariant blpType = preferences->value("ImageViewer/ImageSettings/blptype");
+        writer.setFormat(blpType.toString().toAscii());
+        if (blpType == "blp1jpg") {
+            int quality = preferences->value("ImageViewer/ImageSettings/blpjpegquality").toInt();
+            writer.setQuality(quality);
+        }
     }
     writer.write(m_editor->image());
     m_editor->setModified(false);
@@ -123,6 +128,9 @@ void ImageViewerFactory::shutdown()
 
 //================================== ImageViewerPlugin ==================================
 
+#include <preferencesmanager.h>
+#include "preferences.h"
+
 void ImageViewerPlugin::initialize()
 {
     ICore * core = ICore::instance();
@@ -152,6 +160,9 @@ void ImageViewerPlugin::initialize()
     core->actionManager()->registerAction(actionZoomReset, Core::ACTION_ZOOM_RESET);
 
     connect(core->editorFactoryManager(), SIGNAL(currentEditorChanged(IEditor*)), SLOT(updateActions()));
+
+    PreferencesManager * preferencesManager = qobject_cast<PreferencesManager *>(core->getObject("PreferencesManager"));
+    preferencesManager->addPreferencesPage(new ImagePreferencesPage(preferencesManager));
 }
 
 ImageViewerInterface * ImageViewerPlugin::editor()

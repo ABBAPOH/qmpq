@@ -462,5 +462,5 @@ void BLPHandler::setOption(ImageOption option, const QVariant &value)
 
 bool BLPHandler::supportsOption(ImageOption option) const
 {
-    return option == Quality;
+    return option == Quality || option == SubType;
 }

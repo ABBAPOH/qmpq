@@ -7,7 +7,8 @@
 
 class IPreferences : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
+
 public:
     IPreferences(QObject * parent = 0) : QObject(parent) {}
     virtual ~IPreferences() {}
