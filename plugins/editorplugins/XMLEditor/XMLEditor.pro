@@ -3,7 +3,10 @@ TEMPLATE = lib
 CONFIG += plugin
 QT += xml
 
-DESTDIR = bin
+include(QXMLViewer/QXMLViewer.pro)
+
+DESTDIR = ../../../bin/plugins
+mac:DESTDIR = ../../../bin/QMPQ.app/Contents/MacOS/qmpqplugins
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
@@ -17,7 +20,6 @@ LIBS += -L../../../Core/bin \
 INCLUDEPATH += QXMLViewer/
 
 DEPENDPATH +=  QXMLViewer/
-include(QXMLViewer/QXMLViewer.pro)
 #INCLUDEPATH += /Users/arch/c++/Qt4/QXMLViewer/
 
 HEADERS += xmleditorplugin.h \
@@ -25,7 +27,3 @@ HEADERS += xmleditorplugin.h \
 
 SOURCES += xmleditorplugin.cpp \
 #    xmleditor.cpp \
-
-target.path += ../../../app/bin/plugins
-mac:target.path = ../../../app/bin/QMPQ.app/Contents/MacOS/qmpqplugins
-INSTALLS += target

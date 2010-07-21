@@ -1,7 +1,9 @@
 TARGET = CodeEditor
 TEMPLATE = lib
 
-DESTDIR = bin
+DESTDIR += ../../../bin/plugins
+mac:DESTDIR = ../../../bin/QMPQ.app/Contents/MacOS/qmpqplugins
+
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
@@ -26,7 +28,3 @@ SOURCES += codeeditor.cpp \
     galaxysyntaxhighlighter.cpp
 
 RESOURCES += codeeditor.qrc
-
-target.path += ../../../app/bin/plugins
-mac:target.path = ../../../app/bin/QMPQ.app/Contents/MacOS/qmpqplugins
-INSTALLS += target

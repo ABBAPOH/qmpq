@@ -4,7 +4,7 @@
 TARGET = QMPQ
 TEMPLATE = app
 
-DESTDIR = bin
+DESTDIR = ../bin
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build

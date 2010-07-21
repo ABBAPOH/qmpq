@@ -10,7 +10,10 @@ mac: {
 }
 #TEMPLATE = app
 
-DESTDIR = bin
+unix:DESTDIR = ../bin/
+mac:DESTDIR = ../bin/QMPQ.app/Contents/MacOS
+win32:DESTDIR = ../bin/
+
 OBJECTS_DIR = build
 MOC_DIR = build
 
@@ -45,7 +48,3 @@ HEADERS += qmpqfileengine.h \
     qmpqarchive_p.h \
     mpqfileinfoiterator.h \
     qmpqarchiveex.h
-unix:target.path = /usr/local/lib
-mac:target.path = ../app/bin/QMPQ.app/Contents/MacOS
-win32:target.path = ../app/bin/
-INSTALLS += target

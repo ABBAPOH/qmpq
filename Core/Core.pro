@@ -4,7 +4,9 @@
 TARGET = Core
 TEMPLATE = lib
 
-DESTDIR = bin
+unix:DESTDIR = ../bin
+mac:DESTDIR = ../bin/QMPQ.app/Contents/MacOS
+win32:DESTDIR = ../bin
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
@@ -36,8 +38,3 @@ SOURCES += core.cpp \
     actionmanager.cpp \
     filemanager.cpp \
     preferencesmanager.cpp
-
-unix:target.path = /usr/local/lib
-mac:target.path = ../app/bin/QMPQ.app/Contents/MacOS
-win32:target.path = ../app/bin
-INSTALLS += target
