@@ -30,9 +30,9 @@ mv QMPQ.app/Contents/MacOS/imageformats/libQddsImagePlugin.1.0.0.dylib QMPQ.app/
 rm -R QMPQ.app/Contents/MacOS/imageformats
 
 echo "deploying imageformats"
-./deployLib_mac.sh QMPQ.app/Contents/PlugIns/imageformats/libQblpImagePlugin.dylib
-./deployLib_mac.sh QMPQ.app/Contents/PlugIns/imageformats/libQtgaImagePlugin.dylib 
-./deployLib_mac.sh QMPQ.app/Contents/PlugIns/imageformats/libQddsImagePlugin.dylib 
+deploylib QMPQ.app/Contents/PlugIns/imageformats/libQblpImagePlugin.dylib
+deploylib QMPQ.app/Contents/PlugIns/imageformats/libQtgaImagePlugin.dylib 
+deploylib QMPQ.app/Contents/PlugIns/imageformats/libQddsImagePlugin.dylib 
 
 echo "deploying qmpqplugins"
 deploylib QMPQ.app/Contents/PlugIns/qmpqplugins/libCodeEditor.dylib
