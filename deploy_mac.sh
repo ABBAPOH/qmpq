@@ -1,5 +1,14 @@
 #!/bin/bash
 
+function deploylib
+{
+    install_name_tool -change QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore $1
+    install_name_tool -change QtGui.framework/Versions/4/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui $1
+    install_name_tool -change QtXml.framework/Versions/4/QtXml @executable_path/../Frameworks/QtXml.framework/Versions/4/QtXml $1
+
+    install_name_tool -change libCore.1.dylib @executable_path/../Frameworks/libCore.1.dylib $1
+} 
+
 rm -R QMPQ.app
 cp -R bin/QMPQ.app QMPQ.app
 
@@ -26,6 +35,6 @@ echo "deploying imageformats"
 ./deployLib_mac.sh QMPQ.app/Contents/PlugIns/imageformats/libQddsImagePlugin.dylib 
 
 echo "deploying qmpqplugins"
-./deployLib_mac.sh QMPQ.app/Contents/PlugIns/qmpqplugins/libCodeEditor.dylib
-./deployLib_mac.sh QMPQ.app/Contents/PlugIns/qmpqplugins/libImageViewer.dylib
-./deployLib_mac.sh QMPQ.app/Contents/PlugIns/qmpqplugins/libQXMLViewer.dylib
+deploylib QMPQ.app/Contents/PlugIns/qmpqplugins/libCodeEditor.dylib
+deploylib QMPQ.app/Contents/PlugIns/qmpqplugins/libImageViewer.dylib
+deploylib QMPQ.app/Contents/PlugIns/qmpqplugins/libQXMLViewer.dylib
