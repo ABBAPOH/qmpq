@@ -1,6 +1,7 @@
 #include "codeeditorplugin.h"
 
 #include <QtCore/QtPlugin>
+#include <QtCore/QTextCodec>
 #include <QtGui/QToolBar>
 #include <QtGui/QFileDialog>
 #include <QtCore/QSignalMapper>
@@ -47,12 +48,12 @@ bool CodeEditorInterface::open(const QString &filePath)
         m_currentFile = filePath;
         QFile file(filePath);
         if (file.open(QFile::ReadOnly | QFile::Text)) {
-            m_editor->setPlainText(file.readAll());
+            QTextCodec * codec = QTextCodec::codecForName("UTF-8");
+            m_editor->setPlainText(codec->toUnicode(file.readAll()));
             m_editor->setHighligher(QFileInfo(filePath).suffix());
         }
     }
     
-//    m_editor->open(filePath);
     return true;
 }
 
@@ -60,8 +61,8 @@ void CodeEditorInterface::save(const QString &filePath)
 {
     QFile file(filePath == "" ? m_currentFile : filePath);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
-//        QString data = ui->textEdit->toPlainText();
-        file.write(m_editor->toPlainText().toLocal8Bit());
+        QTextCodec * codec = QTextCodec::codecForName("UTF-8");
+        file.write(codec->fromUnicode(m_editor->toPlainText()));
         file.close();
         m_editor->setModified(false);
     }
