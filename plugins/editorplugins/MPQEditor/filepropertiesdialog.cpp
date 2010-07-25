@@ -3,6 +3,7 @@
 
 #include <QMetaEnum>
 
+#include "../../../../QMPQFileEngine/qmpqfileengine.h"
 #include "../../../../QMPQFileEngine/qmpqarchive.h"
 #include "../../../../QMPQFileEngine/mpqfileinfo.h"
 
@@ -22,7 +23,11 @@ void FilePropertiesDialog::setInfo(QMPQArchive * archive, const QString & file)
 {
     m_archive = archive;
 
-    MPQFileInfo info = archive->fileInfo(file);
+    QLocale locale = QMPQFileEngine::localeFromName(file);
+    archive->setLocale(locale);
+    MPQFileInfo info = archive->fileInfo(QMPQFileEngine::fileNameFromName(file));
+    archive->setLocale(QLocale(QLocale::C));
+
     QTreeWidgetItem * item = 0;
 
     item = ui->treeWidget->topLevelItem(0);

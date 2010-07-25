@@ -45,6 +45,10 @@ public:
     bool setSize(qint64 size);
     qint64 write(const char * data, qint64 len);
 
+    static QString localeNameFromName(const QString name);
+    static QLocale localeFromName(const QString name);
+    static QString fileNameFromName(const QString name);
+
 private:
     void initArchive();
 

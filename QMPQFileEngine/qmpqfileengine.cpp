@@ -10,7 +10,7 @@
 #include <QtCore/QDirIterator>
 #include <QtCore/QDateTime>
 
-QString localeFromName(const QString name)
+QString QMPQFileEngine::localeNameFromName(const QString name)
 {
     if (name.isEmpty())
         return "";
@@ -22,7 +22,14 @@ QString localeFromName(const QString name)
     return "";
 }
 
-QString archiveNameFromName(const QString name) {
+QLocale QMPQFileEngine::localeFromName(const QString name)
+{
+    QString localeName = localeNameFromName(name);
+    return localeName == "" ? QLocale(QLocale::C) : QLocale(localeName);
+}
+
+QString QMPQFileEngine::fileNameFromName(const QString name)
+{
     if (name.startsWith('(') &&
         name.at(7) == ' ' &&
         name.at(6) == ')') {
@@ -269,7 +276,10 @@ bool QMPQFileEngine::remove()
         d->archive->close();
         return file.remove();
     } else {
-        return d->archive->remove(d_func()->innerPath);
+        d->archive->setLocale(QLocale(d->localeName));
+        bool result = d->archive->remove(d_func()->innerPath);
+        d->archive->setLocale(QLocale(QLocale::C));
+        return result;
     }
 }
 
@@ -335,8 +345,8 @@ void QMPQFileEngine::setFileName(const QString & fileName)
     d->baseName = file.mid(file.lastIndexOf('/') + 1);
     d->innerPath = file.mid(4 + d->archiveFilePath.length() + 1);
     d->innerPath = d->innerPath.replace("/", "\\");
-    d->localeName = localeFromName(d->innerPath);
-    d->innerPath = archiveNameFromName(d->innerPath);
+    d->localeName = localeNameFromName(d->innerPath);
+    d->innerPath = fileNameFromName(d->innerPath);
 }
 
 bool QMPQFileEngine::setPermissions(uint /*perms*/)
