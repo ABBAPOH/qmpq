@@ -2,7 +2,7 @@ TARGET = ImageViewer
 TEMPLATE = lib
 CONFIG += plugin
 
-DESTDIR += ../../../bin/plugins
+DESTDIR += ../../../bin/qmpqplugins
 mac:DESTDIR = ../../../bin/QMPQ.app/Contents/MacOS/qmpqplugins
 OBJECTS_DIR = build
 MOC_DIR = build

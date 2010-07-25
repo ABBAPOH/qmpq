@@ -847,7 +847,7 @@
         <location filename="app/mainwindowplugin.cpp" line="137"/>
         <source>&lt;b&gt;QMPQ 1.7 beta 1&lt;/b&gt; is a Qt-based program that allows to manipulate with Blizzard&apos;s MPQ-archives. Copyright 2010 Nevermore (N) aka ABBAPOH</source>
         <oldsource>&lt;b&gt;QMPQ 1.7 alpha&lt;/b&gt; is a Qt-based program that allows to manipulate with Blizzard&apos;s MPQ-archives. Copyright 2010 Nevermore (N) aka ABBAPOH</oldsource>
-        <translation type="unfinished">&lt;b&gt;QMPQ 1.7 beta 1&lt;/b&gt; - программа, использующая библиотеку Qt, предазначеная для работы с mpq архивами компании Blzzard. Права 2010 Nevermore (N) aka ABBAPOH</translation>
+        <translation type="unfinished">&lt;b&gt;QMPQ 1.7 beta 1&lt;/b&gt; - программа, использующая библиотеку Qt, предназначенная для работы с mpq архивами компании Blzzard. Права 2010 Nevermore (N) aka ABBAPOH</translation>
     </message>
     <message>
         <location filename="app/mainwindowplugin.cpp" line="147"/>
