@@ -5,9 +5,31 @@
 #include "mpqfileengineiterator.h"
 #include "mpqsettings.h"
 #include "qmpqfileenginehandler.h"
+#include "mpqfileinfo.h"
 
 #include <QtCore/QDirIterator>
 #include <QtCore/QDateTime>
+
+QString localeFromName(const QString name)
+{
+    if (name.isEmpty())
+        return "";
+    if (name.startsWith('(') &&
+        name.at(7) == ' ' &&
+        name.at(6) == ')') {
+        return name.mid(1, 5);
+    }
+    return "";
+}
+
+QString archiveNameFromName(const QString name) {
+    if (name.startsWith('(') &&
+        name.at(7) == ' ' &&
+        name.at(6) == ')') {
+        return name.mid(8);
+    }
+    return name;
+}
 
 QString QMPQFileEnginePrivate::getArchiveFilePath(const QString & path)
 {
@@ -49,7 +71,17 @@ QAbstractFileEngine::Iterator * QMPQFileEngine::beginEntryList(QDir::Filters fil
 {
     Q_D(QMPQFileEngine);
 //    return new MPQFileEngineIterator(filters, filterNames, d->archive->treeItem(d->innerPath));
-    return new MPQFileEngineIterator(filters, filterNames, d->archive->entryList(d->innerPath));
+    QList<MPQFileInfo> infos = d->archive->entryList(d->innerPath);
+    QStringList entries;
+    foreach (MPQFileInfo info, infos) {
+        if (info.isValid() &&  // this is a file, not dir
+            info.locale() != QLocale(QLocale::C)) {
+                entries.append(QString('(') + info.locale().name() + ") " + info.name());
+        } else {
+            entries.append(info.name());
+        }
+    }
+    return new MPQFileEngineIterator(filters, filterNames, entries);
 }
 
 bool QMPQFileEngine::caseSensitive() const
@@ -63,7 +95,7 @@ bool QMPQFileEngine::close()
 
     if (d->openMode & QIODevice::WriteOnly) {
         if (!d->archive->remove(d->innerPath)) {
-            qDebug() << "QMPQFileEngine::close - can't remove";
+            qWarning() << "QMPQFileEngine::close - can't remove";
         }
 
         QString suffix = QFileInfo(fileName(AbsoluteName)).suffix();
@@ -71,7 +103,7 @@ bool QMPQFileEngine::close()
         QMPQArchive::FileFlags flags = settings->fileFlags(suffix);
         QMPQArchive::CompressionFlags compression = settings->compressionFlags(suffix);
         if (!d->archive->add(d->fileData, d->innerPath, flags, compression)) {
-            qDebug() << "QMPQFileEngine::close - can't add";
+            qWarning() << "QMPQFileEngine::close - can't add";
             return false;
         }
     }
@@ -109,8 +141,10 @@ QAbstractFileEngine::FileFlags QMPQFileEngine::fileFlags(FileFlags type) const
         return result;
     }
     result |= d->archive->isDir(d->innerPath) ? QAbstractFileEngine::DirectoryType : QAbstractFileEngine::FileType;
+    d->archive->setLocale(QLocale(d->localeName));
     if (d->archive->exists(d->innerPath))
         result |= QAbstractFileEngine::ExistsFlag;
+    d->archive->setLocale(QLocale(QLocale::C));
     result |= QAbstractFileEngine::ReadOwnerPerm;
     result |= QAbstractFileEngine::WriteOwnerPerm;
     result |= QAbstractFileEngine::ReadUserPerm;
@@ -134,7 +168,6 @@ QString QMPQFileEngine::fileName(FileName file) const
         return d->baseName;
     }
     if (file == QAbstractFileEngine::PathName) {
-        qDebug("QMPQFileEngine::fileName");
         if (d->innerPath != "")
             return d->filePath.left(d->filePath.lastIndexOf('/') + 1);
         else
@@ -177,7 +210,10 @@ bool QMPQFileEngine::open(QIODevice::OpenMode mode)
     d->openMode = mode;
     d->offset = 0;
     if (mode & QIODevice::ReadOnly) {
+        d->archive->setLocale(QLocale(d->localeName));
         d->fileData = d->archive->read(d->innerPath);
+//        qDebug() << d->fileData;
+        d->archive->setLocale(QLocale(QLocale::C));
     }
     if (mode & QIODevice::WriteOnly) {
         d->fileData.clear();
@@ -299,7 +335,8 @@ void QMPQFileEngine::setFileName(const QString & fileName)
     d->baseName = file.mid(file.lastIndexOf('/') + 1);
     d->innerPath = file.mid(4 + d->archiveFilePath.length() + 1);
     d->innerPath = d->innerPath.replace("/", "\\");
-
+    d->localeName = localeFromName(d->innerPath);
+    d->innerPath = archiveNameFromName(d->innerPath);
 }
 
 bool QMPQFileEngine::setPermissions(uint /*perms*/)
@@ -315,7 +352,10 @@ bool QMPQFileEngine::setSize(qint64 /*size*/)
 qint64 QMPQFileEngine::size() const
 {
     Q_D(const QMPQFileEngine);
-    return d->archive->size(d->innerPath);
+    d->archive->setLocale(QLocale(d->localeName));
+    qint64 size = d->archive->size(d->innerPath);
+    d->archive->setLocale(QLocale(QLocale::C));
+    return size;
 }
 
 qint64 QMPQFileEngine::write(const char * data, qint64 maxlen)

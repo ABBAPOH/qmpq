@@ -5,6 +5,7 @@
 
 #include <QDebug>
 
+typedef QMPQArchiveExPrivate::Key Key;
 class Node
 {
 public:
@@ -39,18 +40,21 @@ public:
     inline bool isDir() const { return m_isDir; }
     inline Node * parent() const { return m_parent; }
 
+    inline MPQFileInfo info() const { return m_info; }
+
     QList<Node*> childItems;
     Node *m_parent;
 
     bool m_isDir;
     QString m_name;
     QString m_path;
+    MPQFileInfo m_info;
 };
 
 QMPQArchiveExPrivate::QMPQArchiveExPrivate()
 {
     rootNode = new Node(0, true);
-    hash.insert("", rootNode);
+    hash.insert(Key(""), rootNode);
 }
 
 QMPQArchiveExPrivate::~QMPQArchiveExPrivate()
@@ -62,7 +66,7 @@ void QMPQArchiveExPrivate::clear()
 {
     hash.clear();
     //not to lose root after cleaning
-    hash.insert("", rootNode);
+    hash.insert(Key(""), rootNode);
     qDeleteAll(rootNode->childItems);
     rootNode->childItems.clear();
 //    indexHash.clear();
@@ -122,18 +126,29 @@ bool QMPQArchiveEx::add(const QString & file, const QString & archivedName, File
     return result;
 }
 
-QStringList QMPQArchiveEx::entryList(const QString & name)
+//QStringList QMPQArchiveEx::entryList(const QString & name)
+//{
+//    QStringList result;
+//    Node * node = this->node(name);
+//    foreach (Node * child, node->childItems) {
+//        result.append(child->name());
+//    }
+//    return result;
+
+//}
+
+QList<MPQFileInfo> QMPQArchiveEx::entryList(const QString & name)
 {
-    QStringList result;
+    QList<MPQFileInfo> result;
     Node * node = this->node(name);
     foreach (Node * child, node->childItems) {
-        result.append(child->name());
+        result.append(child->info());
     }
     return result;
 
 }
 
-const QList<MPQFileInfo> QMPQArchiveEx::entryList()
+QList<MPQFileInfo> QMPQArchiveEx::entryList()
 {
     return d_func()->infoList;
 }
@@ -151,7 +166,7 @@ bool QMPQArchiveEx::isDir(const QString & path)
 
 bool QMPQArchiveEx::mkdir(const QString & path, bool createParentDirectories)
 {
-    return mkNode(path, createParentDirectories);
+    return mkNode(path, QLocale(QLocale::C), createParentDirectories);
 }
 
 bool QMPQArchiveEx::rename(const QString & oldName, const QString & newName)
@@ -191,8 +206,9 @@ QString QMPQArchiveEx::getFilePath(const QString & fullPath) const
 
 void QMPQArchiveEx::initFile(const MPQFileInfo & info)
 {
-    Node * node = mkNode(info.name(), true);
+    Node * node = mkNode(info.name(), info.locale(), true);
     node->m_isDir = false;
+    node->m_info = info;
 }
 
 void QMPQArchiveEx::initialize(QStringList listfile)
@@ -211,20 +227,20 @@ void QMPQArchiveEx::initialize(QStringList listfile)
     delete iterator;
 }
 
-Node * QMPQArchiveEx::mkNode(const QString & path, bool createParentDirectories)
+Node * QMPQArchiveEx::mkNode(const QString & path, const QLocale & locale, bool createParentDirectories)
 {
     Q_D(QMPQArchiveEx);
 
-    if (d->hash.contains(path)) {
-        return d->hash.value(path);
+    if (d->hash.contains(Key(path, locale))) {
+        return d->hash.value(Key(path, locale));
     } else {
         const QString & parentPath = getFilePath(path);
         Node * parent = node(parentPath);
         if (!parent && !createParentDirectories)
             return false;
-        parent = mkNode(parentPath, true);
+        parent = mkNode(parentPath, QLocale(QLocale::C), true);
         Node * item = new Node(parent, true);
-        d->hash.insert(path, item);
+        d->hash.insert(Key(path, locale), item);
         item->setName(getFileName(path));
         item->setPath(path);
         return item;
@@ -239,7 +255,9 @@ Node * QMPQArchiveEx::node(const QString & path) const
         return d->rootNode;
     }
 
-    if (d->hash.contains(path)) {
+    if (d->hash.contains(Key(path, locale()))) { // first try to find node in current locale
+        return d->hash.value(Key(path, locale()));
+    } else if (d->hash.contains(path)) { // else we use node in neutral locale
         return d->hash.value(path);
     } else {
         return 0;
@@ -283,7 +301,7 @@ bool QMPQArchiveEx::rename(Node * node, const QString & newName)
     const QString & oldName = node->path();
 //    qDebug() << oldName << newName;
 
-    if (d->hash.contains(newName)) {
+    if (d->hash.contains(Key(newName, locale()))) {
         //file or folder already exists
         return false;
     }
@@ -311,7 +329,7 @@ bool QMPQArchiveEx::rename(Node * node, const QString & newName)
     }
     //    qDebug() << "path: " << path << "name: " << name;
     delete node;
-    d->hash.remove(oldName);
+    d->hash.remove(Key(oldName, locale()));
 
 //    d->m_listFile.removeAll(oldName);
 //    d->m_listFile.append(newName);
@@ -347,7 +365,7 @@ bool QMPQArchiveEx::remove(Node * node)
     }
     delete node;
 //    d->m_listFile.removeAll(path);
-    d->hash.remove(path);
+    d->hash.remove(Key(path, locale()));
     return true;
 }
 

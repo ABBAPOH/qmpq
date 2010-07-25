@@ -10,6 +10,7 @@ class QMPQFileEnginePrivate
 
     QString archiveFilePath; // Path to archive itself
     QString innerPath; // Path within the archive
+    QString localeName;
 
     QString fileName; // The same filename that was passed to the QAbstractFileEngine.
 //    QString filePath; // The path to the file excluding the base name.
