@@ -19,7 +19,7 @@ LIBS += -L../bin \
 }
 LIBS += -L../3rdParty/QDirModel/bin \
     -lQDirModel
-LIBS += -L../Core/bin/ \
+LIBS += -L../bin/ \
     -lCore
 
 INCLUDEPATH += -I \
