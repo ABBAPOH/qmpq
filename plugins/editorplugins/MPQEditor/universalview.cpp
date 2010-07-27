@@ -149,6 +149,7 @@ void UniversalView::initViews()
 //        views[i]->setDragDropOverwriteMode(false);
 //        views[i]->setDefaultDropAction(Qt::MoveAction);
 //        views[i]->setSelectionMode(QAbstractItemView::ExtendedSelection);
+        views[i]->setFocusPolicy(Qt::NoFocus);
         connect(views[i], SIGNAL(doubleClicked(const QModelIndex &)), SIGNAL(doubleClicked(const QModelIndex &)));
     }
 }

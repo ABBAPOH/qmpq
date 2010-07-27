@@ -65,6 +65,7 @@ private:
 	IDirModel * m_model;
     ArchiveSuffixesManager * m_suffixesManager;
     MPQEditorError m_lastError;
+    bool sendingEvent;
 
     ModelType getModelType(const QString & path);
     void initModel(const QString & path);
@@ -98,6 +99,8 @@ public slots:
 private slots:
     void onDoubleClick(const QModelIndex & index);
     void onOpenRequest();
+protected:
+    void keyPressEvent ( QKeyEvent * event );
 };
 
 #endif // MPQEDITOR_H

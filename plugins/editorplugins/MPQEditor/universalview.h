@@ -54,6 +54,11 @@ public:
 
     ViewMode viewMode() { return m_viewMode; }
 
+    QAbstractItemView * currentView() const { return m_currentView; }
+
+    Qt::FocusPolicy	focusPolicy () const;
+    void setFocusPolicy(Qt::FocusPolicy policy);
+
 signals:
     void doubleClicked(const QModelIndex &);
 

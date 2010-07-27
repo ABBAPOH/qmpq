@@ -8,6 +8,7 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QAction>
 #include <QtGui/QClipboard>
+#include <QtGui/QKeyEvent>
 
 #include <QDebug>
 
@@ -32,7 +33,7 @@ MPQEditor::MPQEditor(QWidget *parent) :
     m_layout->setContentsMargins(0, 0, 0, 0);
     m_layout->addWidget(m_view);
     setLayout(m_layout);
-//    setFocusPolicy(Qt::StrongFocus);
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 MPQEditor::~MPQEditor()
@@ -328,7 +329,27 @@ void MPQEditor::copy()
 
 void MPQEditor::paste()
 {
-
+    QClipboard * clipboard = QApplication::clipboard();
+    const QMimeData * data = clipboard->mimeData();
+    QList<QUrl> urls = data->urls();
+    QDir dir(currentFile());
+    foreach (QUrl path, urls) {
+        QString filePath = path.toLocalFile();
+        QFile file(filePath);
+        QFileInfo info(filePath);
+        QString targetPath = dir.absolutePath() + '/' + info.fileName();
+        if (dir == info.dir()) {
+            int i = 0;
+            do  {
+                i++;
+                targetPath = dir.absolutePath() + '/' + info.baseName() + ' ' +
+                             QString::number(i) + '.' + info.suffix();
+            } while (QFile::exists(targetPath));
+            file.copy(targetPath);
+        } else {
+            file.copy(targetPath);
+        }
+    }
 }
 
 void MPQEditor::onDoubleClick(const QModelIndex & index)
@@ -351,3 +372,11 @@ void MPQEditor::onOpenRequest()
     emit openRequested(m_model->filePath(list.first()));
 }
 
+void MPQEditor::keyPressEvent ( QKeyEvent * event )
+{
+    if (!sendingEvent) {
+    sendingEvent = true;
+    qApp->sendEvent(m_view->currentView(), event);
+    sendingEvent = false;
+}
+}
