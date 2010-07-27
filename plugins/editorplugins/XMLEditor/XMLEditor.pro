@@ -14,7 +14,7 @@ RCC_DIR = build
 INCLUDEPATH += -I \
     ../../../Core
 
-LIBS += -L../../../Core/bin \
+LIBS += -L../../../bin \
     -lCore
 
 INCLUDEPATH += QXMLViewer/

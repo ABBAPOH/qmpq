@@ -13,7 +13,7 @@ CONFIG += plugin
 INCLUDEPATH += -I \
     ../../../Core
 
-LIBS += -L../../../Core/bin \
+LIBS += -L../../../bin \
     -lCore
 
 HEADERS += codeeditor.h \

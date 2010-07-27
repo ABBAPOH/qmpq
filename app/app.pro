@@ -14,12 +14,12 @@ LIBS += -L../plugins/editorplugins/MPQEditor/bin/ \
 mac: {
     LIBS += -framework QMPQFileEngine
 } else {
-LIBS += -L../QMPQFileEngine/bin \
+LIBS += -L../bin \
     -lQMPQFileEngine
 }
 LIBS += -L../3rdParty/QDirModel/bin \
     -lQDirModel
-LIBS += -L../Core/bin/ \
+LIBS += -L../bin/ \
     -lCore
 
 INCLUDEPATH += -I \
