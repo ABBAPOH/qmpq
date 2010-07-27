@@ -1,7 +1,7 @@
 TARGET = CodeEditor
 TEMPLATE = lib
 
-DESTDIR += ../../../bin/plugins
+DESTDIR += ../../../bin/qmpqplugins
 mac:DESTDIR = ../../../bin/QMPQ.app/Contents/MacOS/qmpqplugins
 
 OBJECTS_DIR = build

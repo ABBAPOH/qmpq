@@ -5,7 +5,7 @@ QT += xml
 
 include(QXMLViewer/QXMLViewer.pro)
 
-DESTDIR = ../../../bin/plugins
+DESTDIR = ../../../bin/qmpqplugins
 mac:DESTDIR = ../../../bin/QMPQ.app/Contents/MacOS/qmpqplugins
 OBJECTS_DIR = build
 MOC_DIR = build
