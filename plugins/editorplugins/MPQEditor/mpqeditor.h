@@ -92,6 +92,8 @@ public slots:
     void setViewMode(UniversalView::ViewMode mode);
     void newFolder(const QString & name = "");
     void setNameFilter(const QString & filter);
+    void copy() ;
+    void paste();
 //    void remove();
 private slots:
     void onDoubleClick(const QModelIndex & index);

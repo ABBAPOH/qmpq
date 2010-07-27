@@ -1,9 +1,13 @@
 #include "mpqeditor.h"
 
-#include <QtGui/QHBoxLayout>
 #include <QtCore/QAbstractItemModel>
+#include <QtCore/QMimeData>
+#include <QtCore/QUrl>
+#include <QtGui/QApplication>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QMessageBox>
 #include <QtGui/QAction>
+#include <QtGui/QClipboard>
 
 #include <QDebug>
 
@@ -28,6 +32,7 @@ MPQEditor::MPQEditor(QWidget *parent) :
     m_layout->setContentsMargins(0, 0, 0, 0);
     m_layout->addWidget(m_view);
     setLayout(m_layout);
+//    setFocusPolicy(Qt::StrongFocus);
 }
 
 MPQEditor::~MPQEditor()
@@ -307,6 +312,23 @@ void MPQEditor::newFolder(const QString & name)
 void MPQEditor::setNameFilter(const QString & filter)
 {
     m_model->setNameFilters(QStringList() << currentFile().split('/') << filter);
+}
+
+void MPQEditor::copy()
+{
+    QClipboard * clipboard = QApplication::clipboard();
+    QMimeData * data = new QMimeData();
+    QList<QUrl> urls;
+    foreach (QString path, selectedPaths()) {
+        urls.append(QUrl::fromLocalFile(path));
+    }
+    data->setUrls(urls);
+    clipboard->setMimeData(data);
+}
+
+void MPQEditor::paste()
+{
+
 }
 
 void MPQEditor::onDoubleClick(const QModelIndex & index)
