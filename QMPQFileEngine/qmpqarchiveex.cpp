@@ -137,12 +137,25 @@ bool QMPQArchiveEx::add(const QString & file, const QString & archivedName, File
 
 //}
 
+QStringList QMPQArchiveEx::dirList(const QString & name)
+{
+    QStringList result;
+    Node * node = this->node(name);
+    foreach (Node * child, node->childItems) {
+        if (child->isDir())
+            result.append(child->name());
+    }
+    return result;
+
+}
+
 QList<MPQFileInfo> QMPQArchiveEx::entryList(const QString & name)
 {
     QList<MPQFileInfo> result;
     Node * node = this->node(name);
     foreach (Node * child, node->childItems) {
-        result.append(child->info());
+        if (!child->isDir())
+            result.append(child->info());
     }
     return result;
 
@@ -238,6 +251,7 @@ Node * QMPQArchiveEx::mkNode(const QString & path, const QLocale & locale, bool 
         Node * parent = node(parentPath);
         if (!parent && !createParentDirectories)
             return false;
+        qDebug() << path << parentPath;
         parent = mkNode(parentPath, QLocale(QLocale::C), true);
         Node * item = new Node(parent, true);
         d->hash.insert(Key(path, locale), item);

@@ -1,7 +1,7 @@
 #include "setfilelocaledialog.h"
 #include "ui_setfilelocaledialog.h"
 
-#include <../../../../QMPQFileEngine/qmpqarchive.h>
+#include <qmpqarchive.h>
 
 SetFileLocaleDialog::SetFileLocaleDialog(QWidget *parent) :
     QDialog(parent),

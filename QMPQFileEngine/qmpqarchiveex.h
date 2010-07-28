@@ -24,6 +24,7 @@ public:
 //    QStringList entryList(const QString & name);
     QList<MPQFileInfo> entryList(const QString & name);
     QList<MPQFileInfo> entryList();
+    QStringList dirList(const QString & name);
     bool exists(const QString & path);
     bool isDir(const QString & path);
     bool mkdir(const QString & path, bool createParentDirectories);

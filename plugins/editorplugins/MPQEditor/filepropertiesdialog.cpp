@@ -3,9 +3,9 @@
 
 #include <QMetaEnum>
 
-#include "../../../../QMPQFileEngine/qmpqfileengine.h"
-#include "../../../../QMPQFileEngine/qmpqarchive.h"
-#include "../../../../QMPQFileEngine/mpqfileinfo.h"
+#include <qmpqfileengine.h>
+#include <qmpqarchiveex.h>
+#include <mpqfileinfo.h>
 
 FilePropertiesDialog::FilePropertiesDialog(QWidget *parent) :
     QDialog(parent),

@@ -81,13 +81,16 @@ QAbstractFileEngine::Iterator * QMPQFileEngine::beginEntryList(QDir::Filters fil
     QList<MPQFileInfo> infos = d->archive->entryList(d->innerPath);
     QStringList entries;
     foreach (MPQFileInfo info, infos) {
-        if (info.isValid() &&  // this is a file, not dir
-            info.locale() != QLocale(QLocale::C)) {
-                entries.append(QString('(') + info.locale().name() + ") " + info.name());
+        if (info.locale() != QLocale(QLocale::C)) {
+           entries.append(QString('(') + info.locale().name() + ") " + info.name());
         } else {
             entries.append(info.name());
         }
     }
+    foreach (QString dirName, d->archive->dirList(d->innerPath)) {
+        entries.append(dirName);
+    }
+
     return new MPQFileEngineIterator(filters, filterNames, entries);
 }
 

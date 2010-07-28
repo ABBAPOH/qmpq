@@ -8,6 +8,7 @@
 #include "../../../3rdParty/QDirModel/qdirmodel.h"
 #include <QtGui/QFileSystemModel>
 
+
 class QAbstractItemModel;
 class QDirModel;
 class QFileSystemModel;
@@ -38,7 +39,7 @@ public:
     virtual bool remove(const QModelIndex & index) const;
     virtual void setNameFilters(const QStringList & filters) { m_model->setNameFilters(filters); }
 private:
-	QDirModel * m_model;
+        MyDirModel * m_model;
 };
 
 class FileSystemModelWrapper : public IDirModel

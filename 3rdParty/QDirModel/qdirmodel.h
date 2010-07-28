@@ -54,9 +54,9 @@ QT_MODULE(Gui)
 
 #ifndef QT_NO_DIRMODEL
 
-class QDirModelPrivate;
+class MyDirModelPrivate;
 
-class QDirModel : public QAbstractItemModel
+class MyDirModel : public QAbstractItemModel
 {
     Q_OBJECT
     Q_PROPERTY(bool resolveSymlinks READ resolveSymlinks WRITE setResolveSymlinks)
@@ -70,11 +70,11 @@ public:
         FileNameRole
     };
 
-    QDirModel(const QString & rootPath, const QStringList &nameFilters, QDir::Filters filters,
+    MyDirModel(const QString & rootPath, const QStringList &nameFilters, QDir::Filters filters,
               QDir::SortFlags sort, QObject *parent = 0);
-    QDirModel(const QString & rootPath, QObject *parent = 0);
-    explicit QDirModel(QObject *parent = 0);
-    ~QDirModel();
+    MyDirModel(const QString & rootPath, QObject *parent = 0);
+    explicit MyDirModel(QObject *parent = 0);
+    ~MyDirModel();
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     QModelIndex parent(const QModelIndex &child) const;
@@ -143,12 +143,12 @@ public Q_SLOTS:
     void refresh(const QModelIndex &parent = QModelIndex());
 
 protected:
-    QDirModel(QDirModelPrivate &, QObject *parent = 0);
+    MyDirModel(MyDirModelPrivate &, QObject *parent = 0);
     friend class QFileDialogPrivate;
 
 private:
-    Q_DECLARE_PRIVATE(QDirModel)
-    Q_DISABLE_COPY(QDirModel)
+    Q_DECLARE_PRIVATE(MyDirModel)
+    Q_DISABLE_COPY(MyDirModel)
     Q_PRIVATE_SLOT(d_func(), void _q_refresh())
 };
 

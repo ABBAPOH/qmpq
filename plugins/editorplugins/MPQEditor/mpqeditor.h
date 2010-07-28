@@ -28,7 +28,6 @@ class QListView;
 class QColumnView;
 class QTableView;
 class QTreeView;
-class QDirModel;
 class FileSystemModel;
 class QAbstractItemModel;
 class QStackedLayout;
