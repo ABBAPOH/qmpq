@@ -61,7 +61,7 @@ private:
     QHBoxLayout * m_layout;
     QString m_currentFile;
     QAction * openAction;
-	IDirModel * m_model;
+    IDirModel * m_model;
     ArchiveSuffixesManager * m_suffixesManager;
     MPQEditorError m_lastError;
     bool sendingEvent;

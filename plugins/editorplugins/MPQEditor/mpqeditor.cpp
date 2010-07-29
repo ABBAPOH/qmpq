@@ -350,6 +350,7 @@ void MPQEditor::paste()
             file.copy(targetPath);
         }
     }
+    this->m_model->refresh(m_model->index(currentFile()));
 }
 
 void MPQEditor::onDoubleClick(const QModelIndex & index)
