@@ -230,7 +230,7 @@ void MPQSettingsWidget::setCurrentOptions(int value)
     ui->checkBox_CheckSum->setChecked(flags.testFlag(QMPQArchive::SectorCRC));
 }
 
-#include <QtGui>
+//#include <QtGui>
 #include <QComboBox>
 // #include "delegate.h"
 

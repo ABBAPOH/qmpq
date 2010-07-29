@@ -11,4 +11,5 @@ OBJECTS_DIR = build
 RCC_DIR = build
 
 SOURCES += qdirmodel.cpp
-HEADERS += qdirmodel.h
+HEADERS += qdirmodel.h \
+    qdirmodel_p.h

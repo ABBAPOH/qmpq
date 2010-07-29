@@ -9,7 +9,7 @@ IDirModel::~IDirModel() {}
 
 DirModelWrapper::DirModelWrapper(const QString & path)
 {
-    m_model = new QDirModel(path);
+    m_model = new MyDirModel(path);
     m_model->setReadOnly(false);
     m_model->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
     m_model->setIconProvider(new MyFileIconProvider);

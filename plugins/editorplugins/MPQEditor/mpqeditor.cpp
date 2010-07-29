@@ -14,8 +14,8 @@
 
 #include <icore.h>
 
-#include "../../../../QMPQFileEngine/qmpqfileengine.h"
-#include "../../../../QMPQFileEngine/qmpqarchiveex.h"
+#include <qmpqfileengine.h>
+#include <qmpqarchiveex.h>
 
 #include "universalview.h"
 #include "idirmodel.h"
@@ -137,7 +137,7 @@ void MPQEditor::reopenUsingListfile(const QByteArray &listfile)
             archive->open(archivePath, 0, listfile);
 //            currentView->update(m_model->index(archivePath));
 //            m_model->update(archivePath);
-            QDirModel * model = qobject_cast<QDirModel *>(m_model->model());
+            MyDirModel * model = qobject_cast<MyDirModel *>(m_model->model());
             if (model)
                 model->refresh(model->index(archivePath));
         }
@@ -190,8 +190,8 @@ void MPQEditor::add(const QStringList & files)
         bool result = file.copy(newPath);
         ok |= result;
 
-        //  we manually refresh model if it is QDirModel or it's subclass
-        QDirModel * model = qobject_cast<QDirModel *>(m_model->model());
+        //  we manually refresh model if it is MyDirModel or it's subclass
+        MyDirModel * model = qobject_cast<MyDirModel *>(m_model->model());
         if (model)
             model->refresh(m_model->index(info.absolutePath()));
         if (!result) {
@@ -270,8 +270,8 @@ void MPQEditor::rename()
 
 void MPQEditor::refresh(const QString & path)
 {
-    //  we manually refresh model if it is QDirModel or it's subclass
-    QDirModel * model = qobject_cast<QDirModel *>(m_model->model());
+    //  we manually refresh model if it is MyDirModel or it's subclass
+    MyDirModel * model = qobject_cast<MyDirModel *>(m_model->model());
     if (model)
         model->refresh(m_model->index(path));
 }
@@ -354,6 +354,7 @@ void MPQEditor::paste()
             file.copy(targetPath);
         }
     }
+    this->m_model->refresh(m_model->index(currentFile()));
 }
 
 void MPQEditor::onDoubleClick(const QModelIndex & index)

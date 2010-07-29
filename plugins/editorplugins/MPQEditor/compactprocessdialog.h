@@ -2,7 +2,7 @@
 #define COMPACTPROCESSDIALOG_H
 
 #include <QDialog>
-#include "../../../../QMPQFileEngine/qmpqarchiveex.h"
+#include <qmpqarchive.h>
 
 namespace Ui {
     class CompactProcessDialog;

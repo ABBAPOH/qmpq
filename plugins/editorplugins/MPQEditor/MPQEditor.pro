@@ -1,13 +1,18 @@
 TARGET = MPQEditor
 TEMPLATE = lib
+
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
+
 CONFIG += plugin \
     static
 INCLUDEPATH += -I \
     ../../../Core/
+INCLUDEPATH += -I \
+    ../../../QMPQFileEngine/
+
 HEADERS += mpqeditor.h \
     mpqeditorplugin.h \
     universalview.h \
@@ -21,6 +26,7 @@ HEADERS += mpqeditor.h \
     archivepropertiesdialog.h \
     filepropertiesdialog.h \
     setfilelocaledialog.h
+
 SOURCES += mpqeditor.cpp \
     mpqeditorplugin.cpp \
     main.cpp \
@@ -35,7 +41,9 @@ SOURCES += mpqeditor.cpp \
     archivepropertiesdialog.cpp \
     filepropertiesdialog.cpp \
     setfilelocaledialog.cpp
+
 RESOURCES += mpqeditor.qrc
+
 FORMS += compactprocessdialog.ui \
     hashtablesizedialog.ui \
     verifyfilesdialog.ui \

@@ -25,9 +25,9 @@
 #include "archivepropertiesdialog.h"
 #include "filepropertiesdialog.h"
 
-#include "../../../../QMPQFileEngine/qmpqfileengine.h"
-#include "../../../../QMPQFileEngine/qmpqarchiveex.h"
-#include "../../../../QMPQFileEngine/mpqfileinfo.h"
+#include <qmpqfileengine.h>
+#include <qmpqarchiveex.h>
+#include <mpqfileinfo.h>
 
 //================================== MPQEditorPlugin ==================================
 
@@ -625,5 +625,5 @@ void MPQEditorPlugin::initActions()
     toolsMenu->addMenu(menu);
 }
 
-//Q_EXPORT_PLUGIN2(mpq_editor_factory, MPQEditorFactory)
+//Q_EXPORT_PLUGIN2(mpq_editor_plugin, MPQEditorPlugin)
 Q_EXPORT_PLUGIN(MPQEditorPlugin)

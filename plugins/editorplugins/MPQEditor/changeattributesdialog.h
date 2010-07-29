@@ -2,7 +2,7 @@
 #define CHANGEATTRIBUTESDIALOG_H
 
 #include <QDialog>
-#include "../../../../QMPQFileEngine/qmpqarchive.h"
+#include <qmpqarchive.h>
 
 namespace Ui {
     class ChangeAttributesDialog;

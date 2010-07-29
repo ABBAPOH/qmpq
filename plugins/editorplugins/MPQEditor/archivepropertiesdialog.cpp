@@ -3,7 +3,7 @@
 
 #include <QMetaEnum>
 
-#include "../../../../QMPQFileEngine/qmpqarchive.h"
+#include <qmpqarchive.h>
 
 ArchivePropertiesDialog::ArchivePropertiesDialog(QWidget *parent) :
     QDialog(parent),

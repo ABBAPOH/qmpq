@@ -8,6 +8,12 @@ MPQFileInfoData::MPQFileInfoData() :
 {
 }
 
+void MPQFileInfoData::setName(const QString & name)
+{
+    baseName = name.mid(name.lastIndexOf('\\') + 1);
+    this->name = name;
+}
+
 MPQFileInfo::MPQFileInfo() : data(new MPQFileInfoData)
 {
 }
@@ -25,6 +31,11 @@ MPQFileInfo &MPQFileInfo::operator=(const MPQFileInfo &rhs)
 
 MPQFileInfo::~MPQFileInfo()
 {
+}
+
+QString MPQFileInfo::baseName() const
+{
+    return data->baseName;
 }
 
 QString MPQFileInfo::name() const
