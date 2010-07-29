@@ -278,7 +278,7 @@ MPQFileInfo QMPQArchive::fileInfo(const QString & fileName)
         // we don't detach data because we're continue filling resultInfo (not changing a copy)
         char buffer[255];
         SFileGetFileName(hFile, buffer);
-        resultInfo.data->name = QString(buffer);
+        resultInfo.data->setName(QString(buffer));
         SFileCloseFile(hFile);
     }
 
@@ -300,7 +300,7 @@ MPQFileInfo QMPQArchive::fileInfo(quint32 index)
         // we don't detach data because we're continue filling resultInfo (not changing a copy)
         char buffer[255];
         SFileGetFileName(hFile, buffer);
-        resultInfo.data->name = QString(buffer);
+        resultInfo.data->setName(QString(buffer));
         SFileCloseFile(hFile);
     }
 
@@ -373,13 +373,6 @@ bool QMPQArchive::open(const QString & name, OpenFlags flags)
     if (!result) {
         setLastError();
         return false;
-    }
-
-    LCID arr[100];
-    DWORD maxLocales = 100;
-    SFileEnumLocales(d->mpq, "(listfile)", arr, &maxLocales, 0);
-    for(int i = 0; i < 100; i++) {
-        qDebug() << arr[i];
     }
 
     d->file = name;

@@ -24,6 +24,7 @@ public:
     MPQFileInfo &operator=(const MPQFileInfo &);
     ~MPQFileInfo();
 
+    QString baseName() const;
     QString name() const;
     bool isValid() const;
     quint32 hashIndex() const;

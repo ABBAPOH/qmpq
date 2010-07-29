@@ -8,6 +8,7 @@ class MPQFileInfoData : public QSharedData {
 public:
     MPQFileInfoData();
 
+    QString baseName;
     QString name;
     bool valid;
     quint32 hashIndex;
@@ -20,6 +21,8 @@ public:
     quint32 compressedSize;
     QMPQArchive::FileFlags fileFlags;
     quint64 fileTime;
+
+    void setName(const QString & name);
 };
 
 class QMPQArchivePrivate

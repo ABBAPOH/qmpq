@@ -82,9 +82,9 @@ QAbstractFileEngine::Iterator * QMPQFileEngine::beginEntryList(QDir::Filters fil
     QStringList entries;
     foreach (MPQFileInfo info, infos) {
         if (info.locale() != QLocale(QLocale::C)) {
-           entries.append(QString('(') + info.locale().name() + ") " + info.name());
+           entries.append(QString('(') + info.locale().name() + ") " + info.baseName());
         } else {
-            entries.append(info.name());
+            entries.append(info.baseName());
         }
     }
     foreach (QString dirName, d->archive->dirList(d->innerPath)) {
@@ -222,7 +222,6 @@ bool QMPQFileEngine::open(QIODevice::OpenMode mode)
     if (mode & QIODevice::ReadOnly) {
         d->archive->setLocale(QLocale(d->localeName));
         d->fileData = d->archive->read(d->innerPath);
-//        qDebug() << d->fileData;
         d->archive->setLocale(QLocale(QLocale::C));
     }
     if (mode & QIODevice::WriteOnly) {
