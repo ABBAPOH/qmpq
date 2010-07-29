@@ -244,6 +244,10 @@ void MPQEditor::extract(const QString & destDir)
 
 void MPQEditor::remove(const QModelIndex & index)
 {
+    QItemSelectionModel * model = m_view->currentView()->selectionModel();
+    model->clearSelection();
+    model->select(m_model->model()->index(index.row() + 1, index.column(), index.parent()), QItemSelectionModel::Select);
+    m_view->currentView()->setSelectionModel(model);
     m_model->remove(index);
 }
 
