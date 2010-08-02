@@ -253,7 +253,7 @@ void MPQEditor::remove()
     QModelIndexList indexes = selectedIndexes();
 //    qSort(indexes.begin(), indexes.end());
 
-    QString lastFile = m_model->filePath(indexes.last());
+//    QString lastFile = m_model->filePath(indexes.last());
     QStringList files;
     for(int i = indexes.count() - 1; i > -1; --i) {
         files.append(m_model->filePath(indexes.at(i)));
@@ -263,10 +263,10 @@ void MPQEditor::remove()
         remove(index);
     }
 
-    QItemSelectionModel * model = m_view->currentView()->selectionModel();
-    model->clearSelection();
-    model->select(m_model->index(lastFile, 0), QItemSelectionModel::Select);
-    m_view->currentView()->setSelectionModel(model);
+//    QItemSelectionModel * model = m_view->currentView()->selectionModel();
+//    model->clearSelection();
+//    model->select(m_model->index(lastFile, 0), QItemSelectionModel::Select);
+//    m_view->currentView()->setSelectionModel(model);
 }
 
 void MPQEditor::rename()
