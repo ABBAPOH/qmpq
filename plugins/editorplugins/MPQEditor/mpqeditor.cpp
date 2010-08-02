@@ -360,7 +360,10 @@ void MPQEditor::paste()
             do  {
                 i++;
                 targetPath = dir.absolutePath() + '/' + info.baseName() + ' ' +
-                             QString::number(i) + '.' + info.suffix();
+                             QString::number(i);
+                if (info.suffix() != "") {
+                    targetPath += '.' + info.suffix();
+                }
             } while (QFile::exists(targetPath));
             file.copy(targetPath);
         } else {
