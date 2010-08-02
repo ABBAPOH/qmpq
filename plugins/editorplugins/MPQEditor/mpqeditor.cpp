@@ -61,7 +61,6 @@ void MPQEditor::initModel(const QString & path)
     // we have to try to switch model
     ModelType currentType = getModelType(m_currentFile);
     ModelType newType = getModelType(path);
-    qDebug() << path << currentType << newType;
     //  if old path is not part of a new path, it is a chance that we have to switch archive
     if ( (currentType != newType || m_model == 0) || (!path.startsWith(m_currentFile)) )
     {
@@ -245,7 +244,6 @@ void MPQEditor::extract(const QString & destDir)
 void MPQEditor::remove(const QModelIndex & index)
 {
     if (index.isValid()) {
-        qDebug() << index/* << m_model->filePath(index)*/;
         m_model->remove(index);
     }
 }
@@ -304,7 +302,6 @@ bool MPQEditor::isMPQArchive(const QString & file)
 {
     QMPQFileEngine * engine = dynamic_cast<QMPQFileEngine*>(QFile(file).fileEngine());
     if (engine) {
-        qDebug("archive!");
         return true;
     }
     return false;
@@ -313,7 +310,6 @@ bool MPQEditor::isMPQArchive(const QString & file)
 void MPQEditor::newFolder(const QString & name)
 {
     QString dir = selectedDir();
-    qDebug() << dir;
     if (dir == "") {
 //        emit error;
     } else {
