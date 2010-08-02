@@ -424,7 +424,7 @@
 <context>
     <name>MPQEditor</name>
     <message>
-        <location filename="plugins/editorplugins/MPQEditor/mpqeditor.cpp" line="299"/>
+        <location filename="plugins/editorplugins/MPQEditor/mpqeditor.cpp" line="318"/>
         <source>New Folder</source>
         <translation type="unfinished">Новая папка</translation>
     </message>
@@ -845,9 +845,9 @@
     </message>
     <message>
         <location filename="app/mainwindowplugin.cpp" line="137"/>
-        <source>&lt;b&gt;QMPQ 1.7 beta 1&lt;/b&gt; is a Qt-based program that allows to manipulate with Blizzard&apos;s MPQ-archives. Copyright 2010 Nevermore (N) aka ABBAPOH</source>
-        <oldsource>&lt;b&gt;QMPQ 1.7 alpha&lt;/b&gt; is a Qt-based program that allows to manipulate with Blizzard&apos;s MPQ-archives. Copyright 2010 Nevermore (N) aka ABBAPOH</oldsource>
-        <translation type="unfinished">&lt;b&gt;QMPQ 1.7 beta 1&lt;/b&gt; - программа, использующая библиотеку Qt, предназначенная для работы с mpq архивами компании Blzzard. Права 2010 Nevermore (N) aka ABBAPOH</translation>
+        <source>&lt;b&gt;QMPQ 1.7 beta 2&lt;/b&gt; is a Qt-based program that allows to manipulate with Blizzard&apos;s MPQ-archives. Copyright 2010 Nevermore (N) aka ABBAPOH</source>
+        <oldsource>&lt;b&gt;QMPQ 1.7 beta 1&lt;/b&gt; is a Qt-based program that allows to manipulate with Blizzard&apos;s MPQ-archives. Copyright 2010 Nevermore (N) aka ABBAPOH</oldsource>
+        <translation type="unfinished">&lt;b&gt;QMPQ 1.7 beta 2&lt;/b&gt; - программа, использующая библиотеку Qt, предназначенная для работы с mpq архивами компании Blzzard. Права 2010 Nevermore (N) aka ABBAPOH</translation>
     </message>
     <message>
         <location filename="app/mainwindowplugin.cpp" line="147"/>
@@ -971,6 +971,36 @@
     </message>
 </context>
 <context>
+    <name>MyDirModel</name>
+    <message>
+        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="394"/>
+        <source>Name</source>
+        <translation type="unfinished">Имя</translation>
+    </message>
+    <message>
+        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="395"/>
+        <source>Size</source>
+        <translation type="unfinished">Размер</translation>
+    </message>
+    <message>
+        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="398"/>
+        <source>Kind</source>
+        <comment>Match OS X Finder</comment>
+        <translation type="unfinished">Тип</translation>
+    </message>
+    <message>
+        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="400"/>
+        <source>Type</source>
+        <comment>All other platforms</comment>
+        <translation type="unfinished">Тип</translation>
+    </message>
+    <message>
+        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="406"/>
+        <source>Date Modified</source>
+        <translation type="unfinished">Дата изменения</translation>
+    </message>
+</context>
+<context>
     <name>PreferencesWidget</name>
     <message>
         <location filename="app/preferenceswidget.ui" line="14"/>
@@ -991,31 +1021,26 @@
 <context>
     <name>QDirModel</name>
     <message>
-        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="471"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation type="obsolete">Имя</translation>
     </message>
     <message>
-        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="472"/>
         <source>Size</source>
-        <translation type="unfinished">Размер</translation>
+        <translation type="obsolete">Размер</translation>
     </message>
     <message>
-        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="475"/>
         <source>Kind</source>
         <comment>Match OS X Finder</comment>
-        <translation type="unfinished">Тип</translation>
+        <translation type="obsolete">Тип</translation>
     </message>
     <message>
-        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="477"/>
         <source>Type</source>
         <comment>All other platforms</comment>
-        <translation type="unfinished">Тип</translation>
+        <translation type="obsolete">Тип</translation>
     </message>
     <message>
-        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="483"/>
         <source>Date Modified</source>
-        <translation type="unfinished">Дата изменения</translation>
+        <translation type="obsolete">Дата изменения</translation>
     </message>
 </context>
 <context>
@@ -1039,7 +1064,7 @@
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="885"/>
+        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="808"/>
         <source>My Computer</source>
         <translation type="unfinished">Мой комъютер</translation>
     </message>
@@ -1047,37 +1072,35 @@
 <context>
     <name>QFileSystemModel</name>
     <message>
-        <location filename="3rdParty/FileSystemModel/private/qfilesystemmodel_p.h" line="258"/>
         <source>My Computer</source>
-        <translation type="unfinished">Мой компъютер</translation>
+        <translation type="obsolete">Мой компъютер</translation>
     </message>
     <message>
-        <location filename="3rdParty/FileSystemModel/private/qfilesystemmodel_p.h" line="260"/>
         <source>Computer</source>
-        <translation type="unfinished">Комъютер</translation>
+        <translation type="obsolete">Комъютер</translation>
     </message>
     <message>
-        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="1375"/>
+        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="1298"/>
         <source>%1 TB</source>
         <translation type="unfinished">%1 ТБ</translation>
     </message>
     <message>
-        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="1377"/>
+        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="1300"/>
         <source>%1 GB</source>
         <translation type="unfinished">%1 ГБ</translation>
     </message>
     <message>
-        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="1379"/>
+        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="1302"/>
         <source>%1 MB</source>
         <translation type="unfinished">%1 МБ</translation>
     </message>
     <message>
-        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="1381"/>
+        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="1304"/>
         <source>%1 KB</source>
         <translation type="unfinished">%1 КБ</translation>
     </message>
     <message>
-        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="1382"/>
+        <location filename="3rdParty/QDirModel/qdirmodel.cpp" line="1305"/>
         <source>%1 byte(s)</source>
         <translation type="unfinished">%1 байт</translation>
     </message>
